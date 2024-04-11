@@ -1,0 +1,31 @@
+{
+  "recommendations": [
+    "dbaeumer.vscode-eslint",
+    "bradlc.vscode-tailwindcss",
+    "gruntfuggly.todo-tree",
+    "aaron-bond.better-comments",
+    "mikestead.dotenv",
+    "bierner.markdown-mermaid",
+    "bpruitt-goddard.mermaid-markdown-syntax-highlighting",
+    "timonwong.shellcheck",
+    "foxundermoon.shell-format",
+    "xaver.clang-format",
+    "streetsidesoftware.code-spell-checker",
+    "naumovs.color-highlight",
+    "editorconfig.editorconfig",
+    "donjayamanne.githistory",
+    "eamodio.gitlens",
+    "asuka.insertnumbers",
+    "heaths.vscode-guid",
+    "davidanson.vscode-markdownlint",
+    "rvest.vs-code-prettier-eslint",
+    "plex.vscode-protolint",
+    "mechatroner.rainbow-csv",
+    "sonarsource.sonarlint-vscode",
+    "jock.svg",
+    "bibhasdn.unique-lines",
+    "zxh404.vscode-proto3",
+    "vscode-icons-team.vscode-icons",
+    "redhat.vscode-yaml"
+  ]
+}
