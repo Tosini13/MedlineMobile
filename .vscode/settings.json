@@ -1,0 +1,53 @@
+{
+  "cSpell.words": [
+    "asfield",
+    "chakra",
+    "connectrpc",
+    "fontsource",
+    "Formik",
+    "hubspot",
+    "iconify",
+    "KRATOS",
+    "omnipeak",
+    "pixelarticons",
+    "protos",
+    "SIGNUP",
+    "tablist",
+    "tanstack",
+    "testid"
+  ],
+  "cSpell.ignorePaths": [
+    "package-lock.json",
+    "node_modules",
+    "vscode-extension",
+    ".git/objects",
+    ".vscode",
+    ".vscode-insiders",
+    "src/translations/locales/common",
+    "src/translations/locales/*"
+  ],
+  "css.lint.unknownAtRules": "ignore",
+  "editor.codeActionsOnSave": {
+    "source.organizeImports": "explicit"
+  },
+  "editor.codeLens": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnPaste": true,
+  "editor.formatOnSave": true,
+  "editor.indentSize": 2,
+  "editor.linkedEditing": true,
+  "editor.renderWhitespace": "all",
+  "editor.tabSize": 2,
+  "[properties]": {
+    "editor.defaultFormatter": "foxundermoon.shell-format"
+  },
+  "[shellscript]": {
+    "editor.defaultFormatter": "foxundermoon.shell-format"
+  },
+  "[dotenv]": {
+    "editor.defaultFormatter": "foxundermoon.shell-format"
+  },
+  "[ignore]": {
+    "editor.defaultFormatter": "foxundermoon.shell-format"
+  }
+}
