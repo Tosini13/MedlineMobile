@@ -1,40 +1,27 @@
 import { FC } from "react";
-import { Text, View } from "../Themed";
 import { StyleSheet } from "react-native";
-import { Link } from "expo-router";
-
-const styles = StyleSheet.create({
-    tile: {
-        position: "relative",
-        borderRadius: 10,
-        backgroundColor: "#F0F5FC"
-    },
-    name: {
-        color: "#061C49",
-        fontSize: 16
-    }
-  });
-
-
-type LineType = {
-    id: string;
-    name: string;
-    color: string;
-}
+import { Text, View } from "../Themed";
+import { LineType } from "./types";
 
 type LineTilePropsType = {
-line: LineType
-}
+  line: LineType;
+};
 
-const LineTile:FC<LineTilePropsType> = ({line}) => (
-    <Link href="/modal">
-<View style={styles.tile}>
-    <Text style={styles.name}>
+const LineTile: FC<LineTilePropsType> = ({ line }) => {
+  const styles = StyleSheet.create({
+    tileBar: {
+      backgroundColor: line.color,
+    },
+  });
+
+  return (
+    <View className="flex flex-row rounded-lg bg-gray-100">
+      <View className="w-1.5 rounded-md" style={styles.tileBar} />
+      <Text className="mx-4 my-6 text-2xl font-medium text-[#061C49]">
         {line.name}
-    </Text>
-</View>
-</Link>)
+      </Text>
+    </View>
+  );
+};
 
 export default LineTile;
-
-  
