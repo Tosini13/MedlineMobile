@@ -1,4 +1,3 @@
-import Entypo from "@expo/vector-icons/Entypo";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { Link, Tabs } from "expo-router";
 import React from "react";
@@ -21,6 +20,7 @@ export default function TabLayout() {
 
   return (
     <Tabs
+      initialRouteName="lines"
       screenOptions={{
         tabBarActiveTintColor: Colors[colorScheme ?? "light"].tint,
         // Disable the static render of the header on web
@@ -54,15 +54,6 @@ export default function TabLayout() {
         options={{
           title: "Tab Two",
           tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
-        }}
-      />
-      <Tabs.Screen
-        name="lines"
-        options={{
-          title: "Lines",
-          tabBarIcon: ({ color }) => (
-            <Entypo size={25} name="flow-line" color={color} />
-          ),
         }}
       />
     </Tabs>
