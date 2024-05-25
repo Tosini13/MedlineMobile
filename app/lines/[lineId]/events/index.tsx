@@ -61,7 +61,7 @@ const LineEventsScreen: FC<LineEventsScreenPropsType> = ({}) => {
         />
       )}
       <Fab
-        onPress={() => router.push(`/lines/${lineId}/events/create`)}
+        onPress={() => router.navigate(`/lines/${lineId}/events/create`)}
         renderInPortal={false}
         shadow={0}
         placement="bottom-right"
