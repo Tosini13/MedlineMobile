@@ -5,36 +5,37 @@ import {
   TouchableHighlight,
 } from "react-native";
 
-import LineTile from "@/components/LineTile/LineTile";
+import EventTile from "@/components/EventTile/EventTile";
 import { Text } from "@/components/Themed";
+import { EVENT_DATE_FORMAT } from "@/constants/date";
 import { invokeAsyncWithDelay } from "@/helpers/helpers";
-import { getLinesMockData } from "@/helpers/mockData/linesMockAPIs";
+import { getLineEventsMockData } from "@/helpers/mockData/linesMockAPIs";
 import { FontAwesome6 } from "@expo/vector-icons";
 import { useQuery } from "@tanstack/react-query";
-import { useRouter } from "expo-router";
+import { format } from "date-fns";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import { Box, Fab } from "native-base";
 
-type LinesScreenPropsType = {};
+type LineEventsScreenPropsType = {};
 
-const LinesScreen: FC<LinesScreenPropsType> = ({}) => {
+const LineEventsScreen: FC<LineEventsScreenPropsType> = ({}) => {
   const router = useRouter();
+  const { lineId } = useLocalSearchParams<{ lineId: string }>();
 
   const { data, isPending } = useQuery({
-    queryKey: ["lines"],
-    queryFn: () => invokeAsyncWithDelay(getLinesMockData),
+    queryKey: ["lineEvents", lineId],
+    queryFn: () =>
+      invokeAsyncWithDelay(() => (lineId ? getLineEventsMockData(lineId) : [])),
     staleTime: 100000,
   });
 
-  const sections = [
-    {
-      title: "Upcoming events",
-      data: data ? [data[0]] : [],
-    },
-    {
-      title: "Your lines",
-      data: data ?? [],
-    },
-  ];
+  const sections =
+    (data &&
+      data?.map((event) => ({
+        title: format(new Date(event.date), EVENT_DATE_FORMAT),
+        data: [event],
+      }))) ??
+    [];
 
   return (
     <Box className="bg-white px-5 pb-5" flex={1}>
@@ -46,10 +47,10 @@ const LinesScreen: FC<LinesScreenPropsType> = ({}) => {
           keyExtractor={(item) => item.id}
           renderItem={(item) => (
             <TouchableHighlight
-              onPress={() => router.push(`/lines/${item.item.id}/events/`)}
+              onPress={() => router.push("/modal")}
               className="my-2"
             >
-              <LineTile line={item.item} />
+              <EventTile event={item.item} />
             </TouchableHighlight>
           )}
           renderSectionHeader={({ section: { title } }) => (
@@ -60,17 +61,17 @@ const LinesScreen: FC<LinesScreenPropsType> = ({}) => {
         />
       )}
       <Fab
-        onPress={() => router.push("/lines/create")}
+        onPress={() => router.push(`/lines/${lineId}/events/create`)}
         renderInPortal={false}
         shadow={0}
         placement="bottom-right"
         backgroundColor="#3347FF"
         size="lg"
         icon={<FontAwesome6 name="plus" size={16} color="white" />}
-        label="Add Line"
+        label="Add Event"
       />
     </Box>
   );
 };
 
-export default LinesScreen;
+export default LineEventsScreen;

@@ -34,7 +34,6 @@ const CreateLine: FC<CreateLinePropsType> = ({}) => {
     mutationFn: (values: CreateLineForm) =>
       invokeAsyncWithDelay(() => addLineMockData(values)),
     onSuccess: (line) => {
-      console.log("line !log", line);
       queryClient.setQueryData(["lines"], (old: LineType[]) => [...old, line]);
       router.push("/lines/");
     },

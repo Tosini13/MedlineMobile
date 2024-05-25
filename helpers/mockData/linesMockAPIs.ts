@@ -1,31 +1,8 @@
-import { LineType } from "@/types";
+import { EventType, LineType } from "@/types";
+import { MOCK_EVENTS } from "./mockEvents";
+import { MOCK_LINES } from "./mockLines";
 
-export const getLinesMockData = (): LineType[] => [
-  {
-    id: "aa",
-    name: "Knee",
-    color: "#f00",
-    events: [],
-  },
-  {
-    id: "ab",
-    name: "Ankle",
-    color: "#ff0",
-    events: [],
-  },
-  {
-    id: "ac",
-    name: "Hip",
-    color: "#0f0",
-    events: [],
-  },
-  {
-    id: "ad",
-    name: "Shoulder",
-    color: "#0ff",
-    events: [],
-  },
-];
+export const getLinesMockData = (): LineType[] => MOCK_LINES;
 
 export const addLineMockData = (line: Omit<LineType, "events" | "id">) => {
   const newLine = {
@@ -35,3 +12,16 @@ export const addLineMockData = (line: Omit<LineType, "events" | "id">) => {
   };
   return newLine;
 };
+
+export const getLineEventsMockData = (lineId: string): EventType[] | false => {
+  const line = MOCK_LINES.find((line) => line.id === lineId);
+
+  if (!line) return false;
+
+  return MOCK_EVENTS.filter((event) => event.lineId === lineId);
+};
+
+export const createEventMockData = (event: Omit<EventType, "id">) => ({
+  ...event,
+  id: Math.random().toString(36).substr(2, 9),
+});

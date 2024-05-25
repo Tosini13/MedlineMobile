@@ -1,7 +1,9 @@
 export const invokeAsyncWithDelay = async <T>(
-  getData: () => T,
+  getData: () => T | false,
   delay: number = 1000,
 ): Promise<T> => {
-  await new Promise((resolve) => setTimeout(() => resolve(null), delay));
-  return getData();
+  const response = getData();
+  return await new Promise<T>((resolve, reject) =>
+    setTimeout(() => (response ? resolve(response) : reject(null)), delay),
+  );
 };
