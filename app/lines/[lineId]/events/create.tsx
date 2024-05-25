@@ -1,5 +1,6 @@
 import Input from "@/components/form/Input/Input";
 import TextArea from "@/components/form/TextArea/TextArea";
+import { eventType } from "@/constants";
 import { invokeAsyncWithDelay } from "@/helpers/helpers";
 import { createEventMockData } from "@/helpers/mockData/linesMockAPIs";
 import { EventType } from "@/types";
@@ -8,7 +9,7 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { Formik } from "formik";
-import { Box, Button } from "native-base";
+import { Box, Button, Select } from "native-base";
 import { FC } from "react";
 import { ActivityIndicator } from "react-native";
 
@@ -62,26 +63,24 @@ const CreateEvent: FC<CreateEventPropsType> = ({}) => {
       >
         {({ handleChange, handleSubmit, values, setFieldValue }) => (
           <Box className="space-y-3" flex={1}>
-            {/* <Box>
+            <Box>
               <Select
                 selectedValue={values.type}
                 accessibilityLabel="Choose event type"
                 placeholder="Event type"
-                // _selectedItem={{
-                //   bg: "teal.600",
-                //   endIcon: (
-                //     <FontAwesome6 name="check" size={16} color="white" />
-                //   ),
-                // }}s
-                onValueChange={(itemValue) =>
-                  console.log("itemValue !log", itemValue)
-                }
+                _selectedItem={{
+                  bg: "teal.600",
+                  endIcon: (
+                    <FontAwesome6 name="check" size={16} color="white" />
+                  ),
+                }}
+                onValueChange={(itemValue) => setFieldValue("type", itemValue)}
               >
                 {Object.values(eventType).map((type) => (
                   <Select.Item key={type} label={type} value={type} />
                 ))}
               </Select>
-            </Box> */}
+            </Box>
             <Box>
               <DateTimePicker
                 value={values.date}
