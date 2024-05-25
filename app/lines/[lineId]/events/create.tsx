@@ -109,6 +109,7 @@ const CreateEvent: FC<CreateEventPropsType> = ({}) => {
               className="w-full bg-[#3347FF] py-3"
               rounded="full"
               onPress={handleSubmit}
+              disabled={isPending}
               leftIcon={
                 isPending ? (
                   <ActivityIndicator size={16} color="white" />
