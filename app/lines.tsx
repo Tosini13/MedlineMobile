@@ -46,7 +46,7 @@ const LinesScreen: FC<LinesScreenPropsType> = ({}) => {
           keyExtractor={(item) => item.id}
           renderItem={(item) => (
             <TouchableHighlight
-              onPress={() => router.navigate(`/lines/${item.item.id}/events/`)}
+              onPress={() => router.navigate(`/lines/${item.item.id}/events`)}
               className="my-2"
             >
               <LineTile line={item.item} />
