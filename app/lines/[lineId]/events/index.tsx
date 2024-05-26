@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, useEffect } from "react";
 import {
   ActivityIndicator,
   SectionList,
@@ -8,34 +8,66 @@ import {
 import EventTile from "@/components/EventTile/EventTile";
 import { Text } from "@/components/Themed";
 import { EVENT_DATE_FORMAT } from "@/constants/date";
-import { invokeAsyncWithDelay } from "@/helpers/helpers";
-import { getLineEventsMockData } from "@/helpers/mockData/linesMockAPIs";
+import { invokeAsyncWithDelay, setTitleData } from "@/helpers/helpers";
+import {
+  getLineEventsMockData,
+  getLinesMockData,
+} from "@/helpers/mockData/linesMockAPIs";
 import { FontAwesome6 } from "@expo/vector-icons";
 import { useQuery } from "@tanstack/react-query";
 import { format } from "date-fns";
-import { useLocalSearchParams, useRouter } from "expo-router";
+import { useLocalSearchParams, useNavigation, useRouter } from "expo-router";
 import { Box, Fab } from "native-base";
+
+const fetchLineAndEvents = async (lineId: string) => {
+  const line = await invokeAsyncWithDelay(() =>
+    Promise.all([getLinesMockData(lineId), getLineEventsMockData(lineId)]),
+  );
+
+  return {
+    line: line[0],
+    events: line[1],
+  };
+};
 
 type LineEventsScreenPropsType = {};
 
 const LineEventsScreen: FC<LineEventsScreenPropsType> = ({}) => {
-  const router = useRouter();
+  const navigation = useNavigation();
+
   const { lineId } = useLocalSearchParams<{ lineId: string }>();
 
   const { data, isPending } = useQuery({
     queryKey: ["lineEvents", lineId],
     queryFn: () =>
-      invokeAsyncWithDelay(() => (lineId ? getLineEventsMockData(lineId) : [])),
+      lineId
+        ? fetchLineAndEvents(lineId)
+        : {
+            line: [],
+            events: [],
+          },
     staleTime: 100000,
   });
 
+  useEffect(() => {
+    const lineName = data?.line[0].name ?? "";
+    const incomingEvents = (data?.events ?? []).length;
+
+    navigation.setOptions({
+      title: setTitleData({
+        lineName,
+        incomingEvents,
+      }),
+    });
+  }, [navigation, data?.line, data?.events]);
+
+  const router = useRouter();
+
   const sections =
-    (data &&
-      data?.map((event) => ({
-        title: format(new Date(event.date), EVENT_DATE_FORMAT),
-        data: [event],
-      }))) ??
-    [];
+    data?.events?.map((event) => ({
+      title: format(new Date(event.date), EVENT_DATE_FORMAT),
+      data: [event],
+    })) ?? [];
 
   return (
     <Box className="bg-white px-5 pb-5" flex={1}>

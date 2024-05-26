@@ -2,7 +2,13 @@ import { EventType, LineType } from "@/types";
 import { MOCK_EVENTS } from "./mockEvents";
 import { MOCK_LINES } from "./mockLines";
 
-export const getLinesMockData = (): LineType[] => MOCK_LINES;
+export const getLinesMockData = (linedId?: string): LineType[] => {
+  if (linedId) {
+    const line = MOCK_LINES.find((line) => line.id === linedId);
+    return line ? [line] : [];
+  }
+  return MOCK_LINES;
+};
 
 export const addLineMockData = (line: Omit<LineType, "events" | "id">) => {
   const newLine = {
@@ -13,10 +19,10 @@ export const addLineMockData = (line: Omit<LineType, "events" | "id">) => {
   return newLine;
 };
 
-export const getLineEventsMockData = (lineId: string): EventType[] | false => {
+export const getLineEventsMockData = (lineId: string): EventType[] => {
   const line = MOCK_LINES.find((line) => line.id === lineId);
 
-  if (!line) return false;
+  if (!line) return [];
 
   return MOCK_EVENTS.filter((event) => event.lineId === lineId);
 };
