@@ -12,7 +12,7 @@ import { useEffect } from "react";
 import HeaderTitle from "@/components/Header/HeaderTitle";
 import { useColorScheme } from "@/components/useColorScheme";
 import {
-  getCreateEventTitleData,
+  getEventFormTitleData,
   getEventsTitleData,
 } from "@/helpers/headerHelpers";
 import { AntDesign, Feather } from "@expo/vector-icons";
@@ -20,6 +20,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { NativeBaseProvider } from "native-base";
 import React from "react";
 import { Pressable } from "react-native";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 const queryClient = new QueryClient();
 
@@ -59,13 +60,17 @@ export default function RootLayout() {
   }
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-        <NativeBaseProvider>
-          <RootLayoutNav />
-        </NativeBaseProvider>
-      </ThemeProvider>
-    </QueryClientProvider>
+    <GestureHandlerRootView style={{ flex: 1, backgroundColor: "seashell" }}>
+      <QueryClientProvider client={queryClient}>
+        <ThemeProvider
+          value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
+        >
+          <NativeBaseProvider>
+            <RootLayoutNav />
+          </NativeBaseProvider>
+        </ThemeProvider>
+      </QueryClientProvider>
+    </GestureHandlerRootView>
   );
 }
 
@@ -165,12 +170,29 @@ function RootLayoutNav() {
           title: "",
           headerTitle: (props) => {
             const data =
-              props.children && getCreateEventTitleData(props.children);
+              props.children && getEventFormTitleData(props.children);
 
             return (
               <HeaderTitle
                 title={data && data.lineName ? data.lineName : "Events"}
                 subtitle="Create Event"
+              />
+            );
+          },
+        }}
+      />
+      <Stack.Screen
+        name="lines/[lineId]/events/[eventId]/edit"
+        options={{
+          title: "",
+          headerTitle: (props) => {
+            const data =
+              props.children && getEventFormTitleData(props.children);
+
+            return (
+              <HeaderTitle
+                title={data && data.lineName ? data.lineName : "Events"}
+                subtitle="Edit Event"
               />
             );
           },

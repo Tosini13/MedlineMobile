@@ -15,16 +15,16 @@ export const getEventsTitleData = (title: string) => {
   }
 };
 
-type CreateEventTitleData = {
+type EventFormTitleData = {
   lineName: string;
 };
 
-export const setCreateEventTitleData = (titleData: CreateEventTitleData) =>
+export const setEventFormTitleData = (titleData: EventFormTitleData) =>
   JSON.stringify(titleData);
-export const getCreateEventTitleData = (title: string) => {
+export const getEventFormTitleData = (title: string) => {
   if (title) {
     try {
-      return JSON.parse(title) as CreateEventTitleData;
+      return JSON.parse(title) as EventFormTitleData;
     } catch (e) {
       console.error("error !log", e);
     }
