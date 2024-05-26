@@ -61,31 +61,39 @@ const LineEventsScreen: FC<LineEventsScreenPropsType> = ({}) => {
       data: [event],
     })) ?? [];
 
-  return (
-    <Box className="bg-white px-5 pb-5" flex={1}>
-      {isPending ? (
+  if (isPending) {
+    return (
+      <Box
+        data-testid="line_events_page_loading"
+        className="bg-white px-5 py-5"
+        flex={1}
+      >
         <ActivityIndicator />
-      ) : (
-        <SectionList
-          sections={sections}
-          keyExtractor={(item) => item.id}
-          renderItem={(item) => (
-            <TouchableHighlight
-              onPress={() =>
-                router.navigate(`lines/${lineId}/events/${item.item.id}`)
-              }
-              className="my-2"
-            >
-              <EventTile event={item.item} />
-            </TouchableHighlight>
-          )}
-          renderSectionHeader={({ section: { title } }) => (
-            <Text className="bg-white py-0.5 text-lg font-semibold text-[#4B608B]">
-              {title}
-            </Text>
-          )}
-        />
-      )}
+      </Box>
+    );
+  }
+
+  return (
+    <Box data-testid="line_events_page" className="bg-white px-5 pb-5" flex={1}>
+      <SectionList
+        sections={sections}
+        keyExtractor={(item) => item.id}
+        renderItem={(item) => (
+          <TouchableHighlight
+            onPress={() =>
+              router.navigate(`lines/${lineId}/events/${item.item.id}`)
+            }
+            className="my-2"
+          >
+            <EventTile event={item.item} />
+          </TouchableHighlight>
+        )}
+        renderSectionHeader={({ section: { title } }) => (
+          <Text className="bg-white py-0.5 text-lg font-semibold text-[#4B608B]">
+            {title}
+          </Text>
+        )}
+      />
       <Fab
         onPress={() => router.navigate(`/lines/${lineId}/events/create`)}
         renderInPortal={false}

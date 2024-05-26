@@ -25,7 +25,13 @@ const EventPage: FC<EventPagePropsType> = ({}) => {
 
   const event = data?.[0];
 
-  if (isPending) return <ActivityIndicator />;
+  if (isPending) {
+    return (
+      <Box data-testid="event_page" className="bg-white px-5 py-5" flex={1}>
+        <ActivityIndicator />
+      </Box>
+    );
+  }
 
   return (
     <Box data-testid="event_page" className="bg-white px-5 py-5" flex={1}>

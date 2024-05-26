@@ -81,31 +81,31 @@ function RootLayoutNav() {
         },
         headerLeft: () => (
           <Pressable
-            className="center mx-1 flex h-9 w-9 items-center justify-center rounded-lg bg-[#4d74c8]"
+            className="center mx-1 flex h-11 w-11 items-center justify-center"
             onPress={() => router.back()}
           >
-            <AntDesign name="arrowleft" size={20} color="white" />
+            <AntDesign name="arrowleft" size={30} color="white" />
           </Pressable>
         ),
         headerRight: () => (
-          <Link href="/(modal)/menu" asChild>
-            <Pressable className="center mx-1 flex h-9 w-9 items-center justify-center rounded-lg bg-[#4d74c8]">
-              <Feather name="menu" size={20} color="white" />
+          <Link href="/menu" asChild>
+            <Pressable className="center mx-1 flex h-11 w-11 items-center justify-center">
+              <Feather name="menu" size={30} color="white" />
             </Pressable>
           </Link>
         ),
         headerTitle: () => (
           <HeaderTitle
-            title={"Welcome back!"}
-            subtitle={"How are you feeling today?"}
+            title="Welcome back!"
+            subtitle="How are you feeling today?"
           />
         ),
       }}
     >
       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
       <Stack.Screen
-        name="(modal)/menu"
-        options={{ presentation: "modal", title: "Menu" }}
+        name="menu"
+        options={{ presentation: "modal", headerShown: false }}
       />
       <Stack.Screen
         name="(modal)/search"
@@ -125,8 +125,8 @@ function RootLayoutNav() {
           title: "Lines",
           headerLeft: () => (
             <Link href="/(modal)/search" asChild>
-              <Pressable className="center mx-1 flex h-9 w-9 items-center justify-center rounded-lg bg-[#4d74c8]">
-                <Feather name="search" size={20} color="white" />
+              <Pressable className="center mx-1 flex h-11 w-11 items-center justify-center">
+                <Feather name="search" size={28} color="white" />
               </Pressable>
             </Link>
           ),
