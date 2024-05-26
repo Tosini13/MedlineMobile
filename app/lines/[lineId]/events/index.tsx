@@ -8,7 +8,12 @@ import {
 import EventTile from "@/components/EventTile/EventTile";
 import { Text } from "@/components/Themed";
 import { EVENT_DATE_FORMAT } from "@/constants/date";
-import { fetchLineAndEvents, setTitleData } from "@/helpers/helpers";
+import { setEventsTitleData } from "@/helpers/headerHelpers";
+import { invokeAsyncWithDelay } from "@/helpers/helpers";
+import {
+  getLineEventsMockData,
+  getLinesMockData,
+} from "@/helpers/mockData/linesMockAPIs";
 import { FontAwesome6 } from "@expo/vector-icons";
 import { useQuery } from "@tanstack/react-query";
 import { format } from "date-fns";
@@ -22,34 +27,36 @@ const LineEventsScreen: FC<LineEventsScreenPropsType> = ({}) => {
 
   const { lineId } = useLocalSearchParams<{ lineId: string }>();
 
-  const { data, isPending } = useQuery({
+  const { data: lineData } = useQuery({
+    queryKey: ["line", lineId],
+    queryFn: () =>
+      lineId ? invokeAsyncWithDelay(() => getLinesMockData(lineId)) : [],
+    staleTime: Infinity,
+  });
+
+  const { data: eventData, isPending } = useQuery({
     queryKey: ["lineEvents", lineId],
     queryFn: () =>
-      lineId
-        ? fetchLineAndEvents(lineId)
-        : {
-            line: [],
-            events: [],
-          },
+      lineId ? invokeAsyncWithDelay(() => getLineEventsMockData(lineId)) : [],
     staleTime: 100000,
   });
 
   useEffect(() => {
-    const lineName = data?.line[0].name ?? "";
-    const incomingEvents = (data?.events ?? []).length;
+    const lineName = lineData?.[0].name ?? "";
+    const incomingEvents = eventData?.length ?? 0;
 
     navigation.setOptions({
-      title: setTitleData({
+      title: setEventsTitleData({
         lineName,
         incomingEvents,
       }),
     });
-  }, [navigation, data?.line, data?.events]);
+  }, [navigation, lineData, eventData?.length]);
 
   const router = useRouter();
 
   const sections =
-    data?.events?.map((event) => ({
+    eventData?.map((event) => ({
       title: format(new Date(event.date), EVENT_DATE_FORMAT),
       data: [event],
     })) ?? [];
@@ -64,7 +71,9 @@ const LineEventsScreen: FC<LineEventsScreenPropsType> = ({}) => {
           keyExtractor={(item) => item.id}
           renderItem={(item) => (
             <TouchableHighlight
-              onPress={() => router.push("/modal")}
+              onPress={() =>
+                router.navigate(`lines/${lineId}/events/${item.item.id}`)
+              }
               className="my-2"
             >
               <EventTile event={item.item} />

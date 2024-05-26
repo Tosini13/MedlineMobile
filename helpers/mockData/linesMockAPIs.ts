@@ -19,10 +19,19 @@ export const addLineMockData = (line: Omit<LineType, "events" | "id">) => {
   return newLine;
 };
 
-export const getLineEventsMockData = (lineId: string): EventType[] => {
+export const getLineEventsMockData = (
+  lineId: string,
+  eventId?: string,
+): EventType[] => {
   const line = MOCK_LINES.find((line) => line.id === lineId);
 
   if (!line) return [];
+
+  if (eventId) {
+    return MOCK_EVENTS.filter(
+      (event) => event.lineId === lineId && event.id === eventId,
+    );
+  }
 
   return MOCK_EVENTS.filter((event) => event.lineId === lineId);
 };

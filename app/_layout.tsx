@@ -9,12 +9,15 @@ import { Link, Stack, useRouter } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
 
-import { Text } from "@/components/Themed";
+import HeaderTitle from "@/components/Header/HeaderTitle";
 import { useColorScheme } from "@/components/useColorScheme";
-import { getTitleData } from "@/helpers/helpers";
+import {
+  getCreateEventTitleData,
+  getEventsTitleData,
+} from "@/helpers/headerHelpers";
 import { AntDesign, Feather } from "@expo/vector-icons";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { Box, NativeBaseProvider } from "native-base";
+import { NativeBaseProvider } from "native-base";
 import React from "react";
 import { Pressable } from "react-native";
 
@@ -92,14 +95,10 @@ function RootLayoutNav() {
           </Link>
         ),
         headerTitle: () => (
-          <Box>
-            <Text className="text-center font-semibold text-white">
-              Welcome back!
-            </Text>
-            <Text className="text-center text-white">
-              How are you feeling today?
-            </Text>
-          </Box>
+          <HeaderTitle
+            title={"Welcome back!"}
+            subtitle={"How are you feeling today?"}
+          />
         ),
       }}
     >
@@ -124,9 +123,6 @@ function RootLayoutNav() {
         name="lines/index"
         options={{
           title: "Lines",
-          headerStyle: {
-            backgroundColor: "#0000ff",
-          },
           headerLeft: () => (
             <Link href="/(modal)/search" asChild>
               <Pressable className="center mx-1 flex h-9 w-9 items-center justify-center rounded-lg bg-[#4d74c8]">
@@ -137,29 +133,52 @@ function RootLayoutNav() {
         }}
       />
       <Stack.Screen
+        name="lines/create"
+        options={{
+          title: "Lines",
+          headerTitle: () => <HeaderTitle title="Create line" />,
+        }}
+      />
+      <Stack.Screen
         name="lines/[lineId]/events/index"
         options={{
           title: "",
-          headerStyle: {
-            backgroundColor: "#600000",
-          },
           headerTitle: (props) => {
-            const data = props.children && getTitleData(props.children);
+            const data = props.children && getEventsTitleData(props.children);
 
             return (
-              <Box>
-                <Text className="text-center font-semibold text-white">
-                  {data && data.lineName ? data.lineName : "Events"}
-                </Text>
-                <Text className="text-center text-white">
-                  {data && data.incomingEvents
+              <HeaderTitle
+                title={data && data.lineName ? data.lineName : "Events"}
+                subtitle={
+                  data && data.incomingEvents
                     ? `${data.incomingEvents} incoming events`
-                    : ""}
-                </Text>
-              </Box>
+                    : ""
+                }
+              />
             );
           },
         }}
+      />
+      <Stack.Screen
+        name="lines/[lineId]/events/create"
+        options={{
+          title: "",
+          headerTitle: (props) => {
+            const data =
+              props.children && getCreateEventTitleData(props.children);
+
+            return (
+              <HeaderTitle
+                title={data && data.lineName ? data.lineName : "Events"}
+                subtitle="Create Event"
+              />
+            );
+          },
+        }}
+      />
+      <Stack.Screen
+        name="lines/[lineId]/events/[eventId]"
+        options={{ presentation: "modal", title: "", headerShown: false }}
       />
     </Stack>
   );

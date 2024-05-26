@@ -1,16 +1,20 @@
 import Input from "@/components/form/Input/Input";
 import TextArea from "@/components/form/TextArea/TextArea";
 import { eventType } from "@/constants";
-import { FetchLineAndEventType, invokeAsyncWithDelay } from "@/helpers/helpers";
-import { createEventMockData } from "@/helpers/mockData/linesMockAPIs";
+import { setCreateEventTitleData } from "@/helpers/headerHelpers";
+import { invokeAsyncWithDelay } from "@/helpers/helpers";
+import {
+  createEventMockData,
+  getLinesMockData,
+} from "@/helpers/mockData/linesMockAPIs";
 import { EventType } from "@/types";
 import { FontAwesome6 } from "@expo/vector-icons";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useLocalSearchParams, useRouter } from "expo-router";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useLocalSearchParams, useNavigation, useRouter } from "expo-router";
 import { Formik } from "formik";
 import { Box, Button, Select } from "native-base";
-import { FC } from "react";
+import { FC, useEffect } from "react";
 import { ActivityIndicator } from "react-native";
 
 const byDate = (a: EventType, b: EventType) =>
@@ -24,7 +28,26 @@ type CreateEventPropsType = {};
 
 const CreateEvent: FC<CreateEventPropsType> = ({}) => {
   const router = useRouter();
+  const navigation = useNavigation();
   const { lineId } = useLocalSearchParams<{ lineId: string }>();
+
+  const { data: lineData } = useQuery({
+    queryKey: ["line", lineId],
+    queryFn: () =>
+      lineId ? invokeAsyncWithDelay(() => getLinesMockData(lineId)) : [],
+    staleTime: Infinity,
+  });
+
+  useEffect(() => {
+    const lineName = lineData?.[0].name ?? "";
+
+    navigation.setOptions({
+      title: setCreateEventTitleData({
+        lineName,
+      }),
+    });
+  }, [navigation, lineData]);
+
   const queryClient = useQueryClient();
   const { mutate, isPending } = useMutation({
     mutationFn: (values: CreateEventForm) =>
@@ -39,14 +62,10 @@ const CreateEvent: FC<CreateEventPropsType> = ({}) => {
       ),
     onSuccess: (event) => {
       if (event) {
-        queryClient.setQueryData(
-          ["lineEvents", lineId],
-          (old: FetchLineAndEventType) => ({
-            line: old.line,
-            events: [...(old.events ?? []), event].sort(byDate),
-          }),
+        queryClient.setQueryData(["lineEvents", lineId], (old: EventType[]) =>
+          [...(old ?? []), event].sort(byDate),
         );
-        router.navigate(`/lines/${lineId}/events/`);
+        router.push(`/lines/${lineId}/events/`);
       }
     },
   });
