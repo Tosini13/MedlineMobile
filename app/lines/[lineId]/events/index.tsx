@@ -8,27 +8,12 @@ import {
 import EventTile from "@/components/EventTile/EventTile";
 import { Text } from "@/components/Themed";
 import { EVENT_DATE_FORMAT } from "@/constants/date";
-import { invokeAsyncWithDelay, setTitleData } from "@/helpers/helpers";
-import {
-  getLineEventsMockData,
-  getLinesMockData,
-} from "@/helpers/mockData/linesMockAPIs";
+import { fetchLineAndEvents, setTitleData } from "@/helpers/helpers";
 import { FontAwesome6 } from "@expo/vector-icons";
 import { useQuery } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { useLocalSearchParams, useNavigation, useRouter } from "expo-router";
 import { Box, Fab } from "native-base";
-
-const fetchLineAndEvents = async (lineId: string) => {
-  const line = await invokeAsyncWithDelay(() =>
-    Promise.all([getLinesMockData(lineId), getLineEventsMockData(lineId)]),
-  );
-
-  return {
-    line: line[0],
-    events: line[1],
-  };
-};
 
 type LineEventsScreenPropsType = {};
 

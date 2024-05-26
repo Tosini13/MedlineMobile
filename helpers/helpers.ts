@@ -1,3 +1,9 @@
+import { EventType, LineType } from "@/types";
+import {
+  getLineEventsMockData,
+  getLinesMockData,
+} from "./mockData/linesMockAPIs";
+
 export const invokeAsyncWithDelay = async <T>(
   getData: () => T | false,
   delay: number = 1000,
@@ -22,4 +28,22 @@ export const getTitleData = (title: string) => {
       console.error("error !log", e);
     }
   }
+};
+
+export type FetchLineAndEventType = {
+  line: LineType[];
+  events: EventType[];
+};
+
+export const fetchLineAndEvents = async (
+  lineId: string,
+): Promise<FetchLineAndEventType> => {
+  const line = await invokeAsyncWithDelay(() =>
+    Promise.all([getLinesMockData(lineId), getLineEventsMockData(lineId)]),
+  );
+
+  return {
+    line: line[0],
+    events: line[1],
+  };
 };

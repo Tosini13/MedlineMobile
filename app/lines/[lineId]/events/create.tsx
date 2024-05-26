@@ -1,7 +1,7 @@
 import Input from "@/components/form/Input/Input";
 import TextArea from "@/components/form/TextArea/TextArea";
 import { eventType } from "@/constants";
-import { invokeAsyncWithDelay } from "@/helpers/helpers";
+import { FetchLineAndEventType, invokeAsyncWithDelay } from "@/helpers/helpers";
 import { createEventMockData } from "@/helpers/mockData/linesMockAPIs";
 import { EventType } from "@/types";
 import { FontAwesome6 } from "@expo/vector-icons";
@@ -39,8 +39,12 @@ const CreateEvent: FC<CreateEventPropsType> = ({}) => {
       ),
     onSuccess: (event) => {
       if (event) {
-        queryClient.setQueryData(["lineEvents", lineId], (old: EventType[]) =>
-          [...(old ?? []), event].sort(byDate),
+        queryClient.setQueryData(
+          ["lineEvents", lineId],
+          (old: FetchLineAndEventType) => ({
+            line: old.line,
+            events: [...(old.events ?? []), event].sort(byDate),
+          }),
         );
         router.navigate(`/lines/${lineId}/events/`);
       }
