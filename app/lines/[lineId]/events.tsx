@@ -14,8 +14,9 @@ import {
   getLineEventsMockData,
   getLinesMockData,
 } from "@/helpers/mockData/linesMockAPIs";
-import { FontAwesome6 } from "@expo/vector-icons";
-import { useQuery } from "@tanstack/react-query";
+import { EventType } from "@/types";
+import { FontAwesome6, MaterialIcons } from "@expo/vector-icons";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { useLocalSearchParams, useNavigation, useRouter } from "expo-router";
 import { Box, Fab } from "native-base";
@@ -29,6 +30,23 @@ const UnderlayLeft: FC<{ lineId: string; eventId: string }> = ({
 }) => {
   const router = useRouter();
   const { close } = useSwipeableItemParams();
+
+  const queryClient = useQueryClient();
+  const { mutate, isPending } = useMutation({
+    mutationFn: () => invokeAsyncWithDelay<string>(() => eventId),
+    onSuccess: () => {
+      const updateLineEvents = (old: EventType[]) =>
+        old.filter((e) => e.id !== eventId);
+
+      queryClient.setQueryData(["lineEvents", lineId], updateLineEvents);
+      queryClient.setQueryData(
+        ["lineEvents", lineId, eventId],
+        updateLineEvents,
+      );
+      close();
+    },
+  });
+
   return (
     <View className="flex flex-row-reverse items-stretch bg-transparent">
       <TouchableHighlight
@@ -37,13 +55,22 @@ const UnderlayLeft: FC<{ lineId: string; eventId: string }> = ({
         }
         className="w-16"
       >
-        <View className="h-full w-full bg-blue-500">
-          <Text className="my-auto text-center text-white">EDIT</Text>
+        <View className="flex h-full w-full items-center justify-center bg-blue-500">
+          <MaterialIcons name="edit" size={25} color="white" />
         </View>
       </TouchableHighlight>
-      <TouchableHighlight onPress={() => close()} className="w-16">
-        <View className="h-full w-full bg-red-500">
-          <Text className="my-auto text-center text-white">DELETE</Text>
+      <TouchableHighlight
+        onPress={() => {
+          mutate();
+        }}
+        className="w-16"
+      >
+        <View className="flex h-full w-full items-center justify-center bg-red-500">
+          {isPending ? (
+            <ActivityIndicator color="white" />
+          ) : (
+            <MaterialIcons name="delete" size={25} color="white" />
+          )}
         </View>
       </TouchableHighlight>
     </View>
