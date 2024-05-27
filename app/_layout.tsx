@@ -10,17 +10,34 @@ import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
 
 import HeaderTitle from "@/components/Header/HeaderTitle";
+import { Text } from "@/components/Themed";
 import { useColorScheme } from "@/components/useColorScheme";
 import {
   getEventFormTitleData,
   getEventsTitleData,
+  getLineFormTitleData,
 } from "@/helpers/headerHelpers";
-import { AntDesign, Feather } from "@expo/vector-icons";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { invokeAsyncWithDelay } from "@/helpers/helpers";
+import { LineType } from "@/types";
+import { AntDesign, Feather, MaterialIcons } from "@expo/vector-icons";
+import {
+  QueryClient,
+  QueryClientProvider,
+  useMutation,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { NativeBaseProvider } from "native-base";
 import React from "react";
-import { Pressable } from "react-native";
+import { ActivityIndicator, Pressable } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+
+import {
+  Menu,
+  MenuOption,
+  MenuOptions,
+  MenuProvider,
+  MenuTrigger,
+} from "react-native-popup-menu";
 
 const queryClient = new QueryClient();
 
@@ -61,21 +78,39 @@ export default function RootLayout() {
 
   return (
     <GestureHandlerRootView style={{ flex: 1, backgroundColor: "seashell" }}>
-      <QueryClientProvider client={queryClient}>
-        <ThemeProvider
-          value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
-        >
-          <NativeBaseProvider>
-            <RootLayoutNav />
-          </NativeBaseProvider>
-        </ThemeProvider>
-      </QueryClientProvider>
+      <MenuProvider>
+        <QueryClientProvider client={queryClient}>
+          <ThemeProvider
+            value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
+          >
+            <NativeBaseProvider>
+              <RootLayoutNav />
+            </NativeBaseProvider>
+          </ThemeProvider>
+        </QueryClientProvider>
+      </MenuProvider>
     </GestureHandlerRootView>
   );
 }
 
 function RootLayoutNav() {
   const router = useRouter();
+
+  const queryClient = useQueryClient();
+  const { mutate, isPending } = useMutation({
+    mutationFn: (value: string) =>
+      invokeAsyncWithDelay(() => {
+        return value;
+      }),
+    onSuccess: (lineId) => {
+      const updateLines = (old: LineType[]) =>
+        old.filter((e) => e.id !== lineId);
+
+      queryClient.setQueryData(["line", lineId], updateLines);
+      queryClient.setQueryData(["lines"], updateLines);
+      router.navigate("/lines");
+    },
+  });
   return (
     <Stack
       initialRouteName="lines"
@@ -152,14 +187,50 @@ function RootLayoutNav() {
             const data = props.children && getEventsTitleData(props.children);
 
             return (
-              <HeaderTitle
-                title={data && data.lineName ? data.lineName : "Events"}
-                subtitle={
-                  data && data.incomingEvents
-                    ? `${data.incomingEvents} incoming events`
-                    : ""
-                }
-              />
+              <Menu>
+                <MenuTrigger>
+                  <HeaderTitle
+                    title={data && data.lineName ? data.lineName : "Events"}
+                    subtitle={
+                      data && data.incomingEvents
+                        ? `${data.incomingEvents} incoming events`
+                        : ""
+                    }
+                  />
+                </MenuTrigger>
+                <MenuOptions>
+                  <MenuOption>
+                    <Link
+                      href={data ? `/lines/${data.lineId}/edit` : ""}
+                      asChild
+                    >
+                      <Pressable
+                        accessibilityLabel="Edit line"
+                        className="flex flex-row items-center gap-x-4"
+                      >
+                        <MaterialIcons name="edit" size={26} color="black" />
+                        <Text className="text-xl">Edit</Text>
+                      </Pressable>
+                    </Link>
+                  </MenuOption>
+                  <MenuOption>
+                    <Pressable
+                      accessibilityLabel="Delete event"
+                      className="flex flex-row items-center gap-x-4"
+                      onPress={() => {
+                        data && mutate(data.lineId);
+                      }}
+                    >
+                      {isPending ? (
+                        <ActivityIndicator color="black" />
+                      ) : (
+                        <MaterialIcons name="delete" size={26} color="black" />
+                      )}
+                      <Text className="text-xl">Delete</Text>
+                    </Pressable>
+                  </MenuOption>
+                </MenuOptions>
+              </Menu>
             );
           },
         }}
@@ -193,6 +264,22 @@ function RootLayoutNav() {
               <HeaderTitle
                 title={data && data.lineName ? data.lineName : "Events"}
                 subtitle="Edit Event"
+              />
+            );
+          },
+        }}
+      />
+      <Stack.Screen
+        name="lines/[lineId]/edit"
+        options={{
+          title: "",
+          headerTitle: (props) => {
+            const data = props.children && getLineFormTitleData(props.children);
+
+            return (
+              <HeaderTitle
+                title={data && data.lineName ? data.lineName : ""}
+                subtitle="Edit Line"
               />
             );
           },

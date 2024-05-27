@@ -99,13 +99,14 @@ const LineEventsScreen: FC<LineEventsScreenPropsType> = ({}) => {
   });
 
   useEffect(() => {
-    const lineName = lineData?.[0].name ?? "";
+    const line = lineData?.[0];
     const incomingEvents = eventData?.length ?? 0;
 
     navigation.setOptions({
       title: setEventsTitleData({
-        lineName,
+        lineName: line?.name ?? "",
         incomingEvents,
+        lineId: line?.id ?? "",
       }),
     });
   }, [navigation, lineData, eventData?.length]);

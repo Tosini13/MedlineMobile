@@ -12,6 +12,7 @@ export type EventType = {
 export type LineType = {
   id: string;
   name: string;
+  description: string;
   color: string;
   events: EventType[];
 };
