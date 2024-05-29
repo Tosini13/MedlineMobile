@@ -48,6 +48,7 @@ const LinesScreen: FC<LinesScreenPropsType> = ({}) => {
             <TouchableHighlight
               onPress={() => router.navigate(`/lines/${item.item.id}/events`)}
               className="my-2"
+              underlayColor="transparent"
             >
               <LineTile line={item.item} />
             </TouchableHighlight>
