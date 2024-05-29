@@ -6,83 +6,45 @@ import {
 } from "react-native";
 
 import EventTile from "@/components/EventTile/EventTile";
-import { Text, View } from "@/components/Themed";
+import { Text } from "@/components/Themed";
 import { EVENT_DATE_FORMAT } from "@/constants/date";
-import { setEventsTitleData } from "@/helpers/headerHelpers";
+import { useHeaderContext } from "@/context/HeaderContext";
 import { invokeAsyncWithDelay } from "@/helpers/helpers";
 import {
   getLineEventsMockData,
   getLinesMockData,
 } from "@/helpers/mockData/linesMockAPIs";
-import { EventType } from "@/types";
-import { FontAwesome6, MaterialIcons } from "@expo/vector-icons";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { FontAwesome6 } from "@expo/vector-icons";
+import { useQuery } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { useLocalSearchParams, useNavigation, useRouter } from "expo-router";
 import { Box, Fab } from "native-base";
-import SwipeableItem, {
-  useSwipeableItemParams,
-} from "react-native-swipeable-item";
+import SwipeableItem from "react-native-swipeable-item";
 
-const UnderlayLeft: FC<{ lineId: string; eventId: string }> = ({
-  lineId,
-  eventId,
-}) => {
-  const router = useRouter();
-  const { close } = useSwipeableItemParams();
+import React from "react";
 
-  const queryClient = useQueryClient();
-  const { mutate, isPending } = useMutation({
-    mutationFn: () => invokeAsyncWithDelay<string>(() => eventId),
-    onSuccess: () => {
-      const updateLineEvents = (old: EventType[]) =>
-        old.filter((e) => e.id !== eventId);
-
-      queryClient.setQueryData(["lineEvents", lineId], updateLineEvents);
-      queryClient.setQueryData(
-        ["lineEvents", lineId, eventId],
-        updateLineEvents,
-      );
-      close();
-    },
-  });
-
-  return (
-    <View className="flex flex-row-reverse items-stretch bg-transparent">
-      <TouchableHighlight
-        onPress={() =>
-          router.navigate(`/lines/${lineId}/events/${eventId}/edit`)
-        }
-        className="w-16"
-      >
-        <View className="flex h-full w-full items-center justify-center bg-blue-500">
-          <MaterialIcons name="edit" size={25} color="white" />
-        </View>
-      </TouchableHighlight>
-      <TouchableHighlight
-        onPress={() => {
-          mutate();
-        }}
-        className="w-16"
-      >
-        <View className="flex h-full w-full items-center justify-center bg-red-500">
-          {isPending ? (
-            <ActivityIndicator color="white" />
-          ) : (
-            <MaterialIcons name="delete" size={25} color="white" />
-          )}
-        </View>
-      </TouchableHighlight>
-    </View>
-  );
-};
+import EventTileActionButtons from "@/components/EventTile/EventTileActionButtons";
+import EventHeaderSettingsButton from "@/components/Header/EventHeaderSettingsButton";
 
 type LineEventsScreenPropsType = {};
 
 const LineEventsScreen: FC<LineEventsScreenPropsType> = ({}) => {
   const navigation = useNavigation();
+  const { setRightHeader, resetHeaders, setHeaderTitle } = useHeaderContext();
 
   const { lineId } = useLocalSearchParams<{ lineId: string }>();
+
+  useEffect(() => {
+    setHeaderTitle({
+      isPending: true,
+    });
+
+    if (!lineId) return;
+    setRightHeader({
+      node: <EventHeaderSettingsButton lineId={lineId} />,
+    });
+    return () => resetHeaders();
+  }, [setRightHeader, resetHeaders, setHeaderTitle, lineId]);
 
   const { data: lineData } = useQuery({
     queryKey: ["line", lineId],
@@ -102,12 +64,13 @@ const LineEventsScreen: FC<LineEventsScreenPropsType> = ({}) => {
     const line = lineData?.[0];
     const incomingEvents = eventData?.length ?? 0;
 
-    navigation.setOptions({
-      title: setEventsTitleData({
-        lineName: line?.name ?? "",
-        incomingEvents,
-        lineId: line?.id ?? "",
-      }),
+    if (!lineData || !eventData) return;
+
+    setHeaderTitle({
+      title: line?.name ?? "Events",
+      subtitle: incomingEvents
+        ? `${incomingEvents ?? 0} incoming events!`
+        : "loading",
     });
   }, [navigation, lineData, eventData?.length]);
 
@@ -141,7 +104,10 @@ const LineEventsScreen: FC<LineEventsScreenPropsType> = ({}) => {
             key={item.item.id}
             item={item}
             renderUnderlayLeft={() => (
-              <UnderlayLeft lineId={lineId ?? ""} eventId={item.item.id} />
+              <EventTileActionButtons
+                lineId={lineId ?? ""}
+                eventId={item.item.id}
+              />
             )}
             snapPointsLeft={[128]}
           >

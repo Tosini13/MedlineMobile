@@ -44,7 +44,8 @@
     "react-native-svg": "15.3.0",
     "react-native-swipeable-item": "^2.0.9",
     "react-native-web": "~0.19.12",
-    "reanimated-color-picker": "^3.0.3"
+    "reanimated-color-picker": "^3.0.3",
+    "tailwind-merge": "^2.3.0"
   },
   "devDependencies": {
     "@babel/core": "^7.24.6",
