@@ -1,7 +1,7 @@
+import { LineType } from "@/types";
 import { FC } from "react";
 import { StyleSheet } from "react-native";
 import { Text, View } from "../Themed";
-import { LineType } from "./types";
 
 type LineTilePropsType = {
   line: LineType;
