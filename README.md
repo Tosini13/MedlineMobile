@@ -11,3 +11,7 @@
 
 ## Routing
 - Routing is created with expo routing
+
+## Locked Dependencies
+- "react-native-reanimated": "3.10.1"
+- "tailwindcss": "3.3.2"
