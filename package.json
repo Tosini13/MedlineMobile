@@ -28,6 +28,7 @@
     "expo-status-bar": "~1.12.1",
     "expo-system-ui": "~3.0.4",
     "expo-web-browser": "~13.0.3",
+    "firebase": "^10.12.2",
     "formik": "^2.4.5",
     "native-base": "^3.4.28",
     "nativewind": "^2.0.11",
