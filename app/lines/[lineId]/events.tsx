@@ -67,7 +67,7 @@ const LineEventsScreen: FC<LineEventsScreenPropsType> = ({}) => {
     if (!lineData || !eventData) return;
 
     setHeaderTitle({
-      title: line?.name ?? "Events",
+      title: line?.title ?? "Events",
       subtitle: incomingEvents
         ? `${incomingEvents ?? 0} incoming events!`
         : "loading",

@@ -8,10 +8,10 @@ import { FC } from "react";
 import { ActivityIndicator } from "react-native";
 import ColorPicker, { HueSlider } from "reanimated-color-picker";
 
-export type LineFormType = Omit<LineType, "id" | "events">;
+export type LineFormType = Omit<LineType, "id" | "ownerId">;
 
 const emptyInitialValues: LineFormType = {
-  name: "",
+  title: "",
   description: "",
   color: "red",
 };
@@ -39,7 +39,7 @@ const LineForm: FC<LineFormPropsType> = ({
             <Input
               placeholder="Line name"
               onChangeText={handleChange("name")}
-              value={values.name}
+              value={values.title}
             />
           </Box>
           <Box>
@@ -60,7 +60,7 @@ const LineForm: FC<LineFormPropsType> = ({
           <Button
             className="w-full bg-[#3347FF] py-3"
             rounded="full"
-            onPress={handleSubmit}
+            onPress={() => handleSubmit()}
             leftIcon={
               isPending ? (
                 <ActivityIndicator size={16} color="white" />
