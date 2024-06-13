@@ -8,13 +8,13 @@ import { Box } from "native-base";
 import { FC } from "react";
 
 type CreateLineForm = {
-  name: string;
-  description: string;
+  title: string;
+  description?: string;
   color: string;
 };
 
 const initialValues: CreateLineForm = {
-  name: "",
+  title: "",
   description: "",
   color: "red",
 };
@@ -26,7 +26,9 @@ const CreateLine: FC<CreateLinePropsType> = ({}) => {
   const queryClient = useQueryClient();
   const { mutate, isPending } = useMutation({
     mutationFn: (values: CreateLineForm) =>
-      invokeAsyncWithDelay(() => addLineMockData(values)),
+      invokeAsyncWithDelay(() =>
+        addLineMockData({ ...values, ownerId: "mock" }),
+      ),
     onSuccess: (line) => {
       queryClient.setQueryData(["lines"], (old: LineType[]) => [...old, line]);
       router.push("/lines/");

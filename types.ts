@@ -5,7 +5,15 @@ export type EventType = {
   title: string;
   date: string;
   description: string;
+  type: (typeof eventType)[keyof typeof eventType];
+};
+
+export type MockEventType = {
   lineId: string;
+  id: string;
+  title: string;
+  date: string;
+  description: string;
   type: (typeof eventType)[keyof typeof eventType];
 };
 

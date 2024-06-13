@@ -1,10 +1,8 @@
 import EventForm, { EventFormType } from "@/components/EventForm/EventForm";
 import { setEventFormTitleData } from "@/helpers/headerHelpers";
 import { invokeAsyncWithDelay } from "@/helpers/helpers";
-import {
-  createEventMockData,
-  getLinesMockData,
-} from "@/helpers/mockData/linesMockAPIs";
+import { createEventMockData } from "@/helpers/mockData/linesMockAPIs";
+import { API } from "@/services/api";
 import { EventType } from "@/types";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocalSearchParams, useNavigation, useRouter } from "expo-router";
@@ -23,17 +21,14 @@ const CreateEvent: FC<CreateEventPropsType> = ({}) => {
 
   const { data: lineData } = useQuery({
     queryKey: ["line", lineId],
-    queryFn: () =>
-      lineId ? invokeAsyncWithDelay(() => getLinesMockData(lineId)) : [],
+    queryFn: () => (lineId ? API.lines.getById(lineId) : null),
     staleTime: Infinity,
   });
 
   useEffect(() => {
-    const lineName = lineData?.[0].name ?? "";
-
     navigation.setOptions({
       title: setEventFormTitleData({
-        lineName,
+        lineName: lineData?.title ?? "",
       }),
     });
   }, [navigation, lineData]);
@@ -46,7 +41,6 @@ const CreateEvent: FC<CreateEventPropsType> = ({}) => {
           lineId &&
           createEventMockData({
             ...values,
-            lineId,
             date: values.date.toString(),
           }),
       ),

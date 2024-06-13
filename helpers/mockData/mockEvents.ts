@@ -1,7 +1,7 @@
 import { eventType } from "@/constants";
-import { EventType } from "@/types";
+import { MockEventType } from "@/types";
 
-export const MOCK_EVENTS: EventType[] = [
+export const MOCK_EVENTS: MockEventType[] = [
   {
     id: "aa1",
     title: "Knee pain",

@@ -1,7 +1,7 @@
 import LineForm, { LineFormType } from "@/components/LineForm/LineForm";
 import { setLineFormTitleData } from "@/helpers/headerHelpers";
 import { invokeAsyncWithDelay } from "@/helpers/helpers";
-import { getLinesMockData } from "@/helpers/mockData/linesMockAPIs";
+import { API } from "@/services/api";
 import { LineType } from "@/types";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocalSearchParams, useNavigation, useRouter } from "expo-router";
@@ -20,19 +20,14 @@ const EditLine: FC<EditLinePropsType> = ({}) => {
 
   const { data: lineData, isPending } = useQuery({
     queryKey: ["line", lineId],
-    queryFn: () =>
-      lineId ? invokeAsyncWithDelay(() => getLinesMockData(lineId)) : [],
+    queryFn: () => (lineId ? API.lines.getById(lineId) : null),
     staleTime: Infinity,
   });
 
-  const line = lineData?.[0];
-
   useEffect(() => {
-    const lineName = lineData?.[0].name ?? "";
-
     navigation.setOptions({
       title: setLineFormTitleData({
-        lineName,
+        lineName: lineData?.title ?? "",
       }),
     });
   }, [navigation, lineData]);
@@ -45,7 +40,7 @@ const EditLine: FC<EditLinePropsType> = ({}) => {
           ? {
               ...values,
               id: lineId,
-              events: [],
+              ownerId: "mock",
             }
           : undefined,
       ),
@@ -74,7 +69,7 @@ const EditLine: FC<EditLinePropsType> = ({}) => {
       <LineForm
         isPending={isMutationPending}
         onSubmit={(values) => mutate(values)}
-        initialValues={line ? line : undefined}
+        initialValues={lineData ?? undefined}
       />
     </Box>
   );

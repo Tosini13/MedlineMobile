@@ -9,11 +9,6 @@ import EventTile from "@/components/EventTile/EventTile";
 import { Text } from "@/components/Themed";
 import { EVENT_DATE_FORMAT } from "@/constants/date";
 import { useHeaderContext } from "@/context/HeaderContext";
-import { invokeAsyncWithDelay } from "@/helpers/helpers";
-import {
-  getLineEventsMockData,
-  getLinesMockData,
-} from "@/helpers/mockData/linesMockAPIs";
 import { FontAwesome6 } from "@expo/vector-icons";
 import { useQuery } from "@tanstack/react-query";
 import { format } from "date-fns";
@@ -25,6 +20,8 @@ import React from "react";
 
 import EventTileActionButtons from "@/components/EventTile/EventTileActionButtons";
 import EventHeaderSettingsButton from "@/components/Header/EventHeaderSettingsButton";
+import { API } from "@/services/api";
+import { envs } from "@/utils/utils";
 
 type LineEventsScreenPropsType = {};
 
@@ -48,26 +45,23 @@ const LineEventsScreen: FC<LineEventsScreenPropsType> = ({}) => {
 
   const { data: lineData } = useQuery({
     queryKey: ["line", lineId],
-    queryFn: () =>
-      lineId ? invokeAsyncWithDelay(() => getLinesMockData(lineId)) : [],
-    staleTime: Infinity,
+    queryFn: () => (lineId ? API.lines.getById(lineId) : null),
+    staleTime: envs.defaultStaleTime,
   });
 
   const { data: eventData, isPending } = useQuery({
     queryKey: ["lineEvents", lineId],
-    queryFn: () =>
-      lineId ? invokeAsyncWithDelay(() => getLineEventsMockData(lineId)) : [],
-    staleTime: 100000,
+    queryFn: () => (lineId ? API.events.get(lineId) : []),
+    staleTime: envs.defaultStaleTime,
   });
 
   useEffect(() => {
-    const line = lineData?.[0];
     const incomingEvents = eventData?.length ?? 0;
 
     if (!lineData || !eventData) return;
 
     setHeaderTitle({
-      title: line?.title ?? "Events",
+      title: lineData?.title ?? "Events",
       subtitle: incomingEvents
         ? `${incomingEvents ?? 0} incoming events!`
         : "loading",

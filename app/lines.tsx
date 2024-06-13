@@ -8,13 +8,12 @@ import {
 import LineTile from "@/components/LineTile/LineTile";
 import { Text } from "@/components/Themed";
 import { API } from "@/services/api";
+import { envs } from "@/utils/utils";
 import { FontAwesome6 } from "@expo/vector-icons";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
 import { Box, Fab } from "native-base";
 import { twMerge } from "tailwind-merge";
-
-const staleTime = 1000 * 60 * 60;
 
 type LinesScreenPropsType = {};
 
@@ -24,7 +23,7 @@ const LinesScreen: FC<LinesScreenPropsType> = ({}) => {
   const { data, isPending } = useQuery({
     queryKey: ["lines"],
     queryFn: API.lines.get,
-    staleTime: staleTime,
+    staleTime: envs.defaultStaleTime,
   });
 
   const sections = [

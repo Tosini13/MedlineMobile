@@ -1,4 +1,4 @@
-import { EventType, LineType } from "@/types";
+import { EventType, LineType, MockEventType } from "@/types";
 import { MOCK_EVENTS } from "./mockEvents";
 import { MOCK_LINES } from "./mockLines";
 
@@ -22,7 +22,7 @@ export const addLineMockData = (line: Omit<LineType, "events" | "id">) => {
 export const getLineEventsMockData = (
   lineId: string,
   eventId?: string,
-): EventType[] => {
+): MockEventType[] => {
   const line = MOCK_LINES.find((line) => line.id === lineId);
 
   if (!line) return [];
