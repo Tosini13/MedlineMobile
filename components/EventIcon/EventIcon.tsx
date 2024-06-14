@@ -14,15 +14,15 @@ const EventIcon: FC<EventIconPropsType> = ({
   color = "black",
 }) => {
   switch (type) {
-    case "appointment":
+    case "MA":
       return <FontAwesome name="calendar" size={size} color={color} />;
-    case "test":
+    case "MT":
       return <FontAwesome name="stethoscope" size={size} color={color} />;
-    case "surgery":
+    case "S":
       return <Fontisto name="injection-syringe" size={size} color={color} />;
-    case "occurrence":
+    case "O":
       return <FontAwesome5 name="user-injured" size={size} color={color} />;
-    case "other":
+    default:
       return <FontAwesome name="question" size={size} color={color} />;
   }
 };

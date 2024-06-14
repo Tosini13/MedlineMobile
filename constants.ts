@@ -1,7 +1,7 @@
 export const eventType = {
-  appointment: "A",
+  appointment: "MA",
   occurrence: "O",
-  test: "T",
+  test: "MT",
   surgery: "S",
   other: "other",
 } as const;
