@@ -2,13 +2,13 @@ import { FC } from "react";
 import { ActivityIndicator, TouchableHighlight } from "react-native";
 
 import { View } from "@/components/Themed";
-import { invokeAsyncWithDelay } from "@/helpers/helpers";
 import { EventType } from "@/types";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
 import { useSwipeableItemParams } from "react-native-swipeable-item";
 
+import { API } from "@/services/api";
 import React from "react";
 
 type EventTileActionButtonsPropsType = {
@@ -25,7 +25,7 @@ const EventTileActionButtons: FC<EventTileActionButtonsPropsType> = ({
 
   const queryClient = useQueryClient();
   const { mutate, isPending } = useMutation({
-    mutationFn: () => invokeAsyncWithDelay<string>(() => eventId),
+    mutationFn: () => API.events.delete(lineId, eventId),
     onSuccess: () => {
       const updateLineEvents = (old: EventType[]) =>
         old.filter((e) => e.id !== eventId);
@@ -51,12 +51,7 @@ const EventTileActionButtons: FC<EventTileActionButtonsPropsType> = ({
           <MaterialIcons name="edit" size={25} color="white" />
         </View>
       </TouchableHighlight>
-      <TouchableHighlight
-        onPress={() => {
-          mutate();
-        }}
-        className="w-16"
-      >
+      <TouchableHighlight onPress={() => mutate()} className="w-16">
         <View className="flex h-full w-full items-center justify-center bg-red-500">
           {isPending ? (
             <ActivityIndicator color="white" />
