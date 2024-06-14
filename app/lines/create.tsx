@@ -1,7 +1,7 @@
 import LineForm from "@/components/LineForm/LineForm";
-import { invokeAsyncWithDelay } from "@/helpers/helpers";
-import { addLineMockData } from "@/helpers/mockData/linesMockAPIs";
+import { API } from "@/services/api";
 import { LineType } from "@/types";
+import { envs } from "@/utils/utils";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
 import { Box } from "native-base";
@@ -26,9 +26,7 @@ const CreateLine: FC<CreateLinePropsType> = ({}) => {
   const queryClient = useQueryClient();
   const { mutate, isPending } = useMutation({
     mutationFn: (values: CreateLineForm) =>
-      invokeAsyncWithDelay(() =>
-        addLineMockData({ ...values, ownerId: "mock" }),
-      ),
+      API.lines.add({ ...values, ownerId: envs.testOwnerId }),
     onSuccess: (line) => {
       queryClient.setQueryData(["lines"], (old: LineType[]) => [...old, line]);
       router.push("/lines/");
