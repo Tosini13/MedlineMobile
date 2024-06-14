@@ -1,4 +1,5 @@
 import { Firestore, collection, getDocs } from "firebase/firestore/lite";
+import { getEventDate } from "./helpers";
 
 export async function getEvents(db: Firestore, lineId: string) {
   const eventsRef = collection(db, "lines", lineId, "events");
@@ -7,7 +8,7 @@ export async function getEvents(db: Firestore, lineId: string) {
     const data = doc.data();
     return {
       ...data,
-      date: new Date(data.date.seconds * 1000).toISOString(),
+      date: getEventDate(data.date),
       id: doc.id,
     };
   });

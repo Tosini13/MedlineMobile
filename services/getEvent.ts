@@ -1,4 +1,5 @@
 import { Firestore, doc, getDoc } from "firebase/firestore/lite";
+import { getEventDate } from "./helpers";
 
 export async function getEvent(db: Firestore, lineId: string, eventId: string) {
   const eventRef = doc(db, "lines", lineId, "events", eventId);
@@ -7,7 +8,7 @@ export async function getEvent(db: Firestore, lineId: string, eventId: string) {
   return eventSnapshot.exists() && data
     ? {
         ...data,
-        date: new Date(data.date.seconds * 1000).toISOString(),
+        date: getEventDate(data.date),
         id: eventSnapshot.id,
       }
     : null;
