@@ -38,7 +38,7 @@ const LineForm: FC<LineFormPropsType> = ({
           <Box>
             <Input
               placeholder="Line name"
-              onChangeText={handleChange("name")}
+              onChangeText={handleChange("title")}
               value={values.title}
             />
           </Box>
