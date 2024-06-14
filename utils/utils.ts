@@ -8,4 +8,10 @@ export const envs = {
   appId: process.env.EXPO_PUBLIC_APP_ID,
   measurementId: process.env.EXPO_PUBLIC_MEASUREMENT_ID,
   defaultStaleTime: Number(process.env.EXPO_PUBLIC_DEFAULT_STALE_TIME) ?? 0,
+  testOwnerId: process.env.EXPO_PUBLIC_TEST_OWNER_ID ?? "",
 };
+
+export const returnPromiseError = (message: string) =>
+  new Promise(() => {
+    throw new Error(message);
+  }).then(() => null);
