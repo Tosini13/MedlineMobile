@@ -25,6 +25,7 @@ import HeaderButton, {
   defaultHeaderButtonProps,
 } from "@/components/Header/HeaderButton";
 import LeftHeaderGoBack from "@/components/Header/LeftHeaderGoBack";
+import { Text } from "@/components/Themed";
 import HeaderContextProvider, {
   useHeaderContext,
 } from "@/context/HeaderContext";
@@ -128,14 +129,21 @@ function RootLayoutNav() {
 
           return (
             <HeaderTitle
-              title={title ?? "Welcome back!"}
-              subtitle={subtitle ?? "How are you feeling today?"}
+              title={title ?? ""}
+              subtitle={subtitle}
               isPending={isPending}
             />
           );
         },
       }}
     >
+      <Stack.Screen
+        name="(auth)/login"
+        options={{
+          title: "Log in",
+          headerLeft: () => <Text></Text>,
+        }}
+      />
       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
       <Stack.Screen
         name="menu"
