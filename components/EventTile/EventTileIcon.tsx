@@ -3,6 +3,21 @@ import { FC } from "react";
 import EventIcon from "../EventIcon/EventIcon";
 import { Text, View } from "../Themed";
 
+const getTypeName = (type: EventType["type"]) => {
+  switch (type) {
+    case "MA":
+      return "appointment";
+    case "MT":
+      return "test";
+    case "S":
+      return "surgery";
+    case "O":
+      return "occurrence";
+    default:
+      return "question";
+  }
+};
+
 type EventTileIconPropsType = {
   type: EventType["type"];
 };
@@ -17,7 +32,7 @@ const EventTileIcon: FC<EventTileIconPropsType> = ({ type }) => {
         <EventIcon type={type} />
       </View>
       <Text className="mx-auto mt-0.5 text-center text-xs text-[#061C49]">
-        {type}
+        {getTypeName(type)}
       </Text>
     </View>
   );

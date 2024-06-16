@@ -1,11 +1,8 @@
 import EventForm, { EventFormType } from "@/components/EventForm/EventForm";
 import { setEventFormTitleData } from "@/helpers/headerHelpers";
-import { invokeAsyncWithDelay } from "@/helpers/helpers";
-import {
-  getLineEventsMockData,
-  getLinesMockData,
-} from "@/helpers/mockData/linesMockAPIs";
+import { API } from "@/services/api";
 import { EventType } from "@/types";
+import { returnPromiseError } from "@/utils/utils";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocalSearchParams, useNavigation, useRouter } from "expo-router";
 import { Box } from "native-base";
@@ -24,31 +21,23 @@ const EditEvent: FC<EditEventPropsType> = ({}) => {
     lineId: string;
     eventId: string;
   }>();
-
   const { data: lineData } = useQuery({
     queryKey: ["line", lineId],
-    queryFn: () =>
-      lineId ? invokeAsyncWithDelay(() => getLinesMockData(lineId)) : [],
+    queryFn: () => (lineId ? API.lines.getById(lineId) : null),
     staleTime: Infinity,
   });
 
-  const { data, isPending } = useQuery({
+  const { data: event, isPending } = useQuery({
     queryKey: ["lineEvents", lineId, eventId],
-    queryFn: () =>
-      lineId
-        ? invokeAsyncWithDelay(() => getLineEventsMockData(lineId, eventId))
-        : [],
+    queryFn: async () =>
+      lineId && eventId ? API.events.getById(lineId, eventId) : null,
     staleTime: 100000,
   });
 
-  const event = data?.[0];
-
   useEffect(() => {
-    const lineName = lineData?.[0].name ?? "";
-
     navigation.setOptions({
       title: setEventFormTitleData({
-        lineName,
+        lineName: lineData?.title ?? "",
       }),
     });
   }, [navigation, lineData]);
@@ -56,27 +45,29 @@ const EditEvent: FC<EditEventPropsType> = ({}) => {
   const queryClient = useQueryClient();
   const { mutate, isPending: isMutationPending } = useMutation({
     mutationFn: (values: EventFormType) =>
-      invokeAsyncWithDelay<EventType | undefined>(() =>
-        lineId && eventId
-          ? {
-              ...values,
-              lineId,
-              id: eventId,
-              date: values.date.toString(),
-            }
-          : undefined,
-      ),
+      lineId && eventId
+        ? API.events.update(lineId, eventId, {
+            ...values,
+            date: values.date.toISOString(),
+          })
+        : returnPromiseError("Line id or event id is missing"),
     onSuccess: (event) => {
       if (event) {
-        const updateLineEvents = (old: EventType[]) =>
-          old.map((e) => (e.id === eventId ? event : e)).sort(byDate);
+        try {
+          queryClient.setQueryData(
+            ["lineEvents", lineId],
 
-        queryClient.setQueryData(["lineEvents", lineId], updateLineEvents);
-        queryClient.setQueryData(
-          ["lineEvents", lineId, eventId],
-          updateLineEvents,
-        );
-        router.push(`/lines/${lineId}/events/`);
+            (old: EventType[]) =>
+              old.map((e) => (e.id === eventId ? event : e)).sort(byDate),
+          );
+          queryClient.setQueryData(
+            ["lineEvents", lineId, eventId],
+            () => event,
+          );
+          router.push(`/lines/${lineId}/events/`);
+        } catch (e) {
+          console.log("e", e);
+        }
       }
     },
   });

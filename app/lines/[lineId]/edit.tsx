@@ -1,8 +1,8 @@
 import LineForm, { LineFormType } from "@/components/LineForm/LineForm";
 import { setLineFormTitleData } from "@/helpers/headerHelpers";
-import { invokeAsyncWithDelay } from "@/helpers/helpers";
-import { getLinesMockData } from "@/helpers/mockData/linesMockAPIs";
+import { API } from "@/services/api";
 import { LineType } from "@/types";
+import { envs, returnPromiseError } from "@/utils/utils";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocalSearchParams, useNavigation, useRouter } from "expo-router";
 import { Box } from "native-base";
@@ -20,19 +20,14 @@ const EditLine: FC<EditLinePropsType> = ({}) => {
 
   const { data: lineData, isPending } = useQuery({
     queryKey: ["line", lineId],
-    queryFn: () =>
-      lineId ? invokeAsyncWithDelay(() => getLinesMockData(lineId)) : [],
+    queryFn: () => (lineId ? API.lines.getById(lineId) : null),
     staleTime: Infinity,
   });
 
-  const line = lineData?.[0];
-
   useEffect(() => {
-    const lineName = lineData?.[0].name ?? "";
-
     navigation.setOptions({
       title: setLineFormTitleData({
-        lineName,
+        lineName: lineData?.title ?? "",
       }),
     });
   }, [navigation, lineData]);
@@ -40,23 +35,23 @@ const EditLine: FC<EditLinePropsType> = ({}) => {
   const queryClient = useQueryClient();
   const { mutate, isPending: isMutationPending } = useMutation({
     mutationFn: (values: LineFormType) =>
-      invokeAsyncWithDelay<LineType | undefined>(() =>
-        lineId
-          ? {
-              ...values,
-              id: lineId,
-              events: [],
-            }
-          : undefined,
-      ),
+      lineId
+        ? API.lines.update(lineId, {
+            ...values,
+            ownerId: envs.testOwnerId,
+          })
+        : returnPromiseError("Line id is missing"),
     onSuccess: (line) => {
       if (line) {
-        const updateLineEvents = (old: LineType[]) =>
-          old.map((e) => (e.id === line.id ? line : e));
-
-        queryClient.setQueryData(["line", lineId], updateLineEvents);
-        queryClient.setQueryData(["lines"], updateLineEvents);
-        router.navigate(`/lines/${lineId}/events`);
+        try {
+          queryClient.setQueryData(["line", lineId], () => line);
+          queryClient.setQueryData(["lines"], (old: LineType[]) =>
+            old.map((e) => (e.id === line.id ? line : e)),
+          );
+          router.navigate(`/lines/${lineId}/events`);
+        } catch (e) {
+          console.log("e", e);
+        }
       }
     },
   });
@@ -74,7 +69,7 @@ const EditLine: FC<EditLinePropsType> = ({}) => {
       <LineForm
         isPending={isMutationPending}
         onSubmit={(values) => mutate(values)}
-        initialValues={line ? line : undefined}
+        initialValues={lineData ?? undefined}
       />
     </Box>
   );
