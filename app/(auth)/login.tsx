@@ -3,8 +3,8 @@ import LoginForm, {
   LoginFormType,
 } from "@/components/auth/LoginForm/LoginForm";
 import { useHeaderContext } from "@/context/HeaderContext";
-import { returnPromiseError } from "@/utils/utils";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { API } from "@/services/api";
+import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
 import { FC, useEffect } from "react";
 
@@ -22,14 +22,12 @@ const Login: FC<LoginPropsType> = ({}) => {
   }, [setRightHeader, resetHeaders, setHeaderTitle]);
 
   const router = useRouter();
-  const queryClient = useQueryClient();
   const { mutate, isPending } = useMutation({
     mutationFn: (values: LoginFormType) =>
-      returnPromiseError("Not implemented"),
-    // onSuccess: (line) => {
-    //   queryClient.setQueryData(["lines"], (old: LineType[]) => [...old, line]);
-    //   router.push("/lines/");
-    // },
+      API.auth.signIn(values.identifier, values.password),
+    onSuccess: (res) => {
+      // router.push("/lines/");
+    },
   });
 
   return (
