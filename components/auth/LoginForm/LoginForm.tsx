@@ -27,14 +27,14 @@ const LoginForm: FC<LoginFormPropsType> = ({ onSubmit }) => {
     >
       {({ handleChange, handleSubmit, values }) => (
         <Box className="w-full space-y-3" flex={1}>
-          <Box className="bg-transparent">
+          <Box>
             <Input
               placeholder="identifier"
               onChangeText={handleChange("identifier")}
               value={values.identifier}
             />
           </Box>
-          <Box className="bg-transparent">
+          <Box>
             <Input
               placeholder="password"
               type="password"
