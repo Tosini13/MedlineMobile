@@ -1,17 +1,15 @@
-import { View } from "@/components/Themed";
-import { Link } from "expo-router";
+import AuthorizedMenu from "@/components/Menu/AuthorizedMenu";
+import NonAuthorizedMenu from "@/components/Menu/NonAuthorizedMenu";
+import { getAuth } from "firebase/auth";
 import { FC } from "react";
 
 type MenuPropsType = {};
 
 const Menu: FC<MenuPropsType> = ({}) => {
-  return (
-    <View className="flex h-full flex-col items-center justify-between p-4 pb-8">
-      <Link href="/(auth)/login" className="text-blue-500">
-        Log in
-      </Link>
-    </View>
-  );
+  if (getAuth().currentUser) {
+    return <AuthorizedMenu />;
+  }
+  return <NonAuthorizedMenu />;
 };
 
 export default Menu;

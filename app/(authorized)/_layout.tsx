@@ -1,19 +1,15 @@
-import { Slot, useRouter } from "expo-router";
-import { getAuth } from "firebase/auth";
-import { FC, useEffect } from "react";
+import { useAuthContext } from "@/context/auth.context";
+import { Redirect, Slot } from "expo-router";
+import { FC } from "react";
 
 type AuthorizedLayoutPropsType = {};
 
 const AuthorizedLayout: FC<AuthorizedLayoutPropsType> = ({}) => {
-  const router = useRouter();
+  const { isLoggedIn } = useAuthContext();
 
-  useEffect(() => {
-    getAuth().onAuthStateChanged((user) => {
-      if (!user) {
-        router.push("/(non-authorized)/login");
-      }
-    });
-  }, []);
+  if (!isLoggedIn) {
+    return <Redirect href="/(non-authorized)/login" />;
+  }
 
   return <Slot />;
 };

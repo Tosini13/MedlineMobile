@@ -29,6 +29,7 @@ import { Text } from "@/components/Themed";
 import HeaderContextProvider, {
   useHeaderContext,
 } from "@/context/HeaderContext";
+import { AuthProvider } from "@/context/auth.context";
 import { MenuProvider } from "react-native-popup-menu";
 
 const queryClient = new QueryClient();
@@ -76,9 +77,11 @@ export default function RootLayout() {
             value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
           >
             <NativeBaseProvider>
-              <HeaderContextProvider>
-                <RootLayoutNav />
-              </HeaderContextProvider>
+              <AuthProvider>
+                <HeaderContextProvider>
+                  <RootLayoutNav />
+                </HeaderContextProvider>
+              </AuthProvider>
             </NativeBaseProvider>
           </ThemeProvider>
         </QueryClientProvider>
