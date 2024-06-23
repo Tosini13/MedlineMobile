@@ -76,7 +76,7 @@ const LinesScreen: FC<LinesScreenPropsType> = ({}) => {
         />
       )}
       <Fab
-        onPress={() => router.push("/lines/create")}
+        onPress={() => router.push("/(authorized)/lines/create")}
         renderInPortal={false}
         shadow={0}
         placement="bottom-right"

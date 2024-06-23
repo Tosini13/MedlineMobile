@@ -35,7 +35,7 @@ const EventHeaderSettingsButton: FC<EventHeaderSettingsButtonPropsType> = ({
           old.filter((e) => e.id !== lineId),
         );
         setIsOpen(false);
-        router.navigate("/lines");
+        router.navigate("/(authorized)/lines");
       } catch (e) {
         console.log("e", e);
       }
@@ -67,7 +67,7 @@ const EventHeaderSettingsButton: FC<EventHeaderSettingsButtonPropsType> = ({
             className="flex w-full flex-row items-center gap-x-4 px-4 py-3"
             onPress={() => {
               setIsOpen(false);
-              router.navigate(`/lines/${lineId}/edit`);
+              router.navigate(`/(authorized)/lines/${lineId}/edit`);
             }}
           >
             <MaterialIcons name="edit" size={26} color="black" />

@@ -64,7 +64,7 @@ const EditEvent: FC<EditEventPropsType> = ({}) => {
             ["lineEvents", lineId, eventId],
             () => event,
           );
-          router.push(`/lines/${lineId}/events/`);
+          router.push(`/(authorized)/lines/${lineId}/events/`);
         } catch (e) {
           console.log("e", e);
         }

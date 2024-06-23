@@ -43,7 +43,7 @@ const CreateEvent: FC<CreateEventPropsType> = ({}) => {
         queryClient.setQueryData(["lineEvents", lineId], (old: EventType[]) =>
           [...(old ?? []), event].sort(byDate),
         );
-        router.push(`/lines/${lineId}/events/`);
+        router.push(`/(authorized)/lines/${lineId}/events/`);
       }
     },
   });

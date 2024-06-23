@@ -43,7 +43,9 @@ const EventTileActionButtons: FC<EventTileActionButtonsPropsType> = ({
     <View className="flex flex-row-reverse items-stretch bg-transparent">
       <TouchableHighlight
         onPress={() =>
-          router.navigate(`/lines/${lineId}/events/${eventId}/edit`)
+          router.navigate(
+            `/(authorized)/lines/${lineId}/events/${eventId}/edit`,
+          )
         }
         className="w-16"
       >

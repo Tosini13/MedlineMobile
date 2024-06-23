@@ -25,8 +25,8 @@ const Login: FC<LoginPropsType> = ({}) => {
   const { mutate, isPending } = useMutation({
     mutationFn: (values: LoginFormType) =>
       API.auth.signIn(values.identifier, values.password),
-    onSuccess: (res) => {
-      // router.push("/lines/");
+    onSuccess: () => {
+      router.push("/(authorized)/lines");
     },
   });
 

@@ -138,7 +138,7 @@ function RootLayoutNav() {
       }}
     >
       <Stack.Screen
-        name="(auth)/login"
+        name="(non-authorized)/login"
         options={{
           title: "Log in",
           headerLeft: () => <Text></Text>,
@@ -162,7 +162,7 @@ function RootLayoutNav() {
         options={{ presentation: "modal", headerShown: false }}
       />
       <Stack.Screen
-        name="lines"
+        name="(authorized)/lines"
         options={{
           title: "Lines",
           headerLeft: () => (
@@ -179,15 +179,15 @@ function RootLayoutNav() {
         }}
       />
       <Stack.Screen
-        name="lines/create"
+        name="(authorized)/lines/create"
         options={{
           title: "Lines",
           headerTitle: () => <HeaderTitle title="Create line" />,
         }}
       />
-      <Stack.Screen name="lines/[lineId]/events" />
+      <Stack.Screen name="(authorized)/lines/[lineId]/events" />
       <Stack.Screen
-        name="lines/[lineId]/events/create"
+        name="(authorized)/lines/[lineId]/events/create"
         options={{
           title: "",
           headerTitle: (props) => {
@@ -204,7 +204,7 @@ function RootLayoutNav() {
         }}
       />
       <Stack.Screen
-        name="lines/[lineId]/events/[eventId]/edit"
+        name="(authorized)/lines/[lineId]/events/[eventId]/edit"
         options={{
           title: "",
           headerTitle: (props) => {
@@ -221,7 +221,7 @@ function RootLayoutNav() {
         }}
       />
       <Stack.Screen
-        name="lines/[lineId]/edit"
+        name="(authorized)/lines/[lineId]/edit"
         options={{
           title: "",
           headerTitle: (props) => {
@@ -237,7 +237,7 @@ function RootLayoutNav() {
         }}
       />
       <Stack.Screen
-        name="lines/[lineId]/events/[eventId]"
+        name="(authorized)/lines/[lineId]/events/[eventId]"
         options={{ presentation: "modal", title: "", headerShown: false }}
       />
     </Stack>
