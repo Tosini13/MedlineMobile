@@ -9,7 +9,6 @@ const AuthorizedLayout: FC<AuthorizedLayoutPropsType> = ({}) => {
 
   useEffect(() => {
     getAuth().onAuthStateChanged((user) => {
-      console.log("AuthorizedLayout user !log", user);
       if (!user) {
         router.push("/(non-authorized)/login");
       }
