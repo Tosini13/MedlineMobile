@@ -14,7 +14,10 @@ const AuthorizedMenu: FC<AuthorizedMenuPropsType> = ({}) => {
   const { mutate, isPending } = useMutation({
     mutationKey: ["logout"],
     mutationFn: async () =>
-      API.auth.signOut().then(() => router.push("/(non-authorized)/login")),
+      API.auth.signOut().then(() => {
+        router.back();
+        router.navigate("/(non-authorized)/login");
+      }),
   });
 
   return (
@@ -26,11 +29,10 @@ const AuthorizedMenu: FC<AuthorizedMenuPropsType> = ({}) => {
       </View>
       <View>
         <Button
-          className="text-blue-500"
           onPress={() => mutate()}
           leftIcon={
             isPending ? (
-              <ActivityIndicator color={"white"} size={24} />
+              <ActivityIndicator color="white" size={24} />
             ) : (
               <MaterialIcons name="logout" size={24} color="white" />
             )
