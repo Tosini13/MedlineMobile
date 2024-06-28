@@ -1,4 +1,5 @@
 import { useAuthContext } from "@/context/auth.context";
+import { routes } from "@/utils/utils";
 import { Redirect, Slot } from "expo-router";
 import { FC } from "react";
 
@@ -8,9 +9,8 @@ const AuthorizedLayout: FC<AuthorizedLayoutPropsType> = ({}) => {
   const { isLoggedIn } = useAuthContext();
 
   if (!isLoggedIn) {
-    return <Redirect href="/(non-authorized)/login" />;
+    return <Redirect href={routes.login} />;
   }
-
   return <Slot />;
 };
 

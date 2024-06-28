@@ -5,29 +5,51 @@ import {
   TouchableHighlight,
 } from "react-native";
 
+import HeaderButton, {
+  defaultHeaderButtonProps,
+} from "@/components/Header/HeaderButton";
 import LineTile from "@/components/LineTile/LineTile";
 import { Text } from "@/components/Themed";
 import { useHeaderContext } from "@/context/HeaderContext";
 import { API } from "@/services/api";
-import { envs } from "@/utils/utils";
-import { FontAwesome6 } from "@expo/vector-icons";
+import { envs, routes } from "@/utils/utils";
+import { Feather, FontAwesome6 } from "@expo/vector-icons";
 import { useQuery } from "@tanstack/react-query";
-import { useRouter } from "expo-router";
+import { Link, useRouter } from "expo-router";
 import { Box, Fab } from "native-base";
 import { twMerge } from "tailwind-merge";
+
+const HEADER_TITLE = {
+  title: "Welcome back",
+  subtitle: "How are you feeling today?",
+};
+
+const LEFT_HEADER = {
+  node: (
+    <Link href={routes.search} asChild>
+      <HeaderButton>
+        <Feather
+          name="search"
+          size={defaultHeaderButtonProps.icon.size}
+          color={defaultHeaderButtonProps.icon.color}
+        />
+      </HeaderButton>
+    </Link>
+  ),
+};
 
 type LinesScreenPropsType = {};
 
 const LinesScreen: FC<LinesScreenPropsType> = ({}) => {
-  const { setRightHeader, resetHeaders, setHeaderTitle } = useHeaderContext();
+  const { setRightHeader, resetHeaders, setHeaderTitle, setLeftHeader } =
+    useHeaderContext();
 
   useEffect(() => {
-    setHeaderTitle({
-      title: "Welcome back",
-      subtitle: "How are you feeling today?",
-    });
+    setHeaderTitle(HEADER_TITLE);
+    setLeftHeader(LEFT_HEADER);
     return () => resetHeaders();
-  }, [setRightHeader, resetHeaders, setHeaderTitle]);
+  }, [setRightHeader, resetHeaders, setHeaderTitle, setLeftHeader]);
+
   const router = useRouter();
 
   const { data, isPending } = useQuery({
@@ -58,7 +80,7 @@ const LinesScreen: FC<LinesScreenPropsType> = ({}) => {
           keyExtractor={(item) => item.id}
           renderItem={(item) => (
             <TouchableHighlight
-              onPress={() => router.navigate(`/lines/${item.item.id}/events`)}
+              onPress={() => router.push(`/lines/${item.item.id}/events`)}
               className={twMerge(
                 "my-2",
                 item.index === (data?.length ?? 0) - 1 && "mb-10",

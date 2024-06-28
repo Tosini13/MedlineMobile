@@ -11,15 +11,18 @@ import { FC, useEffect } from "react";
 type LoginPropsType = {};
 
 const Login: FC<LoginPropsType> = ({}) => {
-  const { setRightHeader, resetHeaders, setHeaderTitle } = useHeaderContext();
+  const { resetHeaders, setHeaderTitle, setLeftHeader } = useHeaderContext();
 
   useEffect(() => {
     setHeaderTitle({
       title: "Login",
       subtitle: "",
     });
+    setLeftHeader({
+      node: null,
+    });
     return () => resetHeaders();
-  }, [setRightHeader, resetHeaders, setHeaderTitle]);
+  }, [resetHeaders, setHeaderTitle, setLeftHeader]);
 
   const router = useRouter();
   const { mutate, isPending } = useMutation({

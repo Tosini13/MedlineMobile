@@ -27,7 +27,8 @@ type LineEventsScreenPropsType = {};
 
 const LineEventsScreen: FC<LineEventsScreenPropsType> = ({}) => {
   const navigation = useNavigation();
-  const { setRightHeader, resetHeaders, setHeaderTitle } = useHeaderContext();
+  const { setRightHeader, resetHeaders, setLeftHeader, setHeaderTitle } =
+    useHeaderContext();
 
   const { lineId } = useLocalSearchParams<{ lineId: string }>();
 
@@ -41,7 +42,7 @@ const LineEventsScreen: FC<LineEventsScreenPropsType> = ({}) => {
       node: <EventHeaderSettingsButton lineId={lineId} />,
     });
     return () => resetHeaders();
-  }, [setRightHeader, resetHeaders, setHeaderTitle, lineId]);
+  }, [setRightHeader, resetHeaders, setHeaderTitle, setLeftHeader, lineId]);
 
   const { data: lineData } = useQuery({
     queryKey: ["line", lineId],
