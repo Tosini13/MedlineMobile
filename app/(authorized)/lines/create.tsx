@@ -1,11 +1,13 @@
+import HeaderTitle from "@/components/Header/HeaderTitle";
 import LineForm from "@/components/LineForm/LineForm";
+import { useHeaderContext } from "@/context/HeaderContext";
 import { API } from "@/services/api";
 import { LineType } from "@/types";
-import { envs } from "@/utils/utils";
+import { envs, routes } from "@/utils/utils";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useRouter } from "expo-router";
+import { Stack, useRouter } from "expo-router";
 import { Box } from "native-base";
-import { FC } from "react";
+import { FC, useEffect } from "react";
 
 type CreateLineForm = {
   title: string;
@@ -22,6 +24,16 @@ const initialValues: CreateLineForm = {
 type CreateLinePropsType = {};
 
 const CreateLine: FC<CreateLinePropsType> = ({}) => {
+  const { resetHeaders, setHeaderTitle, setLeftHeader } = useHeaderContext();
+
+  useEffect(() => {
+    setHeaderTitle({
+      title: "Create line",
+      subtitle: "",
+    });
+    return () => resetHeaders();
+  }, [resetHeaders, setHeaderTitle, setLeftHeader]);
+
   const router = useRouter();
   const queryClient = useQueryClient();
   const { mutate, isPending } = useMutation({
@@ -29,18 +41,26 @@ const CreateLine: FC<CreateLinePropsType> = ({}) => {
       API.lines.add({ ...values, ownerId: envs.testOwnerId }),
     onSuccess: (line) => {
       queryClient.setQueryData(["lines"], (old: LineType[]) => [...old, line]);
-      router.push("/(authorized)/lines/");
+      router.push(routes.lines);
     },
   });
 
   return (
-    <Box className="bg-white p-5" flex={1}>
-      <LineForm
-        initialValues={initialValues}
-        isPending={isPending}
-        onSubmit={(values) => mutate(values)}
+    <>
+      <Stack.Screen
+        options={{
+          title: "Create line",
+          headerTitle: () => <HeaderTitle title="Create line" />,
+        }}
       />
-    </Box>
+      <Box className="bg-white p-5" flex={1}>
+        <LineForm
+          initialValues={initialValues}
+          isPending={isPending}
+          onSubmit={(values) => mutate(values)}
+        />
+      </Box>
+    </>
   );
 };
 

@@ -1,17 +1,45 @@
 import { useAuthContext } from "@/context/auth.context";
-import { Redirect, Slot } from "expo-router";
+import { routes } from "@/utils/utils";
+import { Redirect, Stack } from "expo-router";
 import { FC } from "react";
+import { ActivityIndicator } from "react-native";
 
-type AuthorizedLayoutPropsType = {};
+type LayoutPropsType = {};
 
-const AuthorizedLayout: FC<AuthorizedLayoutPropsType> = ({}) => {
+const Layout: FC<LayoutPropsType> = ({}) => {
   const { isLoggedIn } = useAuthContext();
 
   if (!isLoggedIn) {
-    return <Redirect href="/(non-authorized)/login" />;
+    return <Redirect href={`/${routes.login}`} />;
   }
-
-  return <Slot />;
+  return (
+    <Stack
+      screenOptions={{
+        headerTitleAlign: "center",
+        headerStyle: {
+          backgroundColor: "#608ae3",
+        },
+        headerTintColor: "#fff",
+      }}
+    >
+      <Stack.Screen
+        name={routes.events}
+        options={{
+          headerTitle: ({ tintColor }) => (
+            <ActivityIndicator color={tintColor} />
+          ),
+        }}
+      />
+      <Stack.Screen
+        name={routes.event}
+        options={{
+          headerTitle: ({ tintColor }) => (
+            <ActivityIndicator color={tintColor} />
+          ),
+        }}
+      />
+    </Stack>
+  );
 };
 
-export default AuthorizedLayout;
+export default Layout;

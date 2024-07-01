@@ -1,5 +1,6 @@
 import { View } from "@/components/Themed";
 import { API } from "@/services/api";
+import { routes } from "@/utils/utils";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useMutation } from "@tanstack/react-query";
 import { Link, useRouter } from "expo-router";
@@ -23,7 +24,7 @@ const AuthorizedMenu: FC<AuthorizedMenuPropsType> = ({}) => {
   return (
     <View className="flex h-full flex-col items-center justify-between p-4 pb-8">
       <View>
-        <Link href="/(authorized)/lines/" className="text-blue-500">
+        <Link href={routes.lines} className="text-blue-500">
           Lines
         </Link>
       </View>

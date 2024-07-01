@@ -15,3 +15,17 @@ export const returnPromiseError = (message: string) =>
   new Promise(() => {
     throw new Error(message);
   }).then(() => null);
+
+export const routes = {
+  lines: "lines",
+  createLine: "lines/create",
+  editLine: "lines/[lineId]/edit",
+  events: "lines/[lineId]/events",
+  event: "lines/[lineId]/events/[eventId]",
+  createEvent: "lines/[lineId]/events/create",
+  editEvent: "lines/[lineId]/events/[eventId]/edit",
+  search: "search",
+  menu: "menu",
+  login: "(non-authorized)/login",
+  signup: "(non-authorized)/signup",
+};

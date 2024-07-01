@@ -1,10 +1,16 @@
 import EventForm, { EventFormType } from "@/components/EventForm/EventForm";
+import HeaderTitle from "@/components/Header/HeaderTitle";
 import { setEventFormTitleData } from "@/helpers/headerHelpers";
 import { API } from "@/services/api";
 import { EventType } from "@/types";
-import { returnPromiseError } from "@/utils/utils";
+import { returnPromiseError, routes } from "@/utils/utils";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useLocalSearchParams, useNavigation, useRouter } from "expo-router";
+import {
+  Stack,
+  useLocalSearchParams,
+  useNavigation,
+  useRouter,
+} from "expo-router";
 import { Box } from "native-base";
 import { FC, useEffect } from "react";
 
@@ -43,15 +49,32 @@ const CreateEvent: FC<CreateEventPropsType> = ({}) => {
         queryClient.setQueryData(["lineEvents", lineId], (old: EventType[]) =>
           [...(old ?? []), event].sort(byDate),
         );
-        router.push(`/(authorized)/lines/${lineId}/events/`);
+        lineId && router.push(routes.createEvent.replace("[lineId]", lineId));
       }
     },
   });
 
   return (
-    <Box className="bg-white p-5" flex={1}>
-      <EventForm isPending={isPending} onSubmit={(values) => mutate(values)} />
-    </Box>
+    <>
+      <Stack.Screen
+        options={{
+          title: "Create Event",
+          headerTitle: () => (
+            <HeaderTitle
+              title="Create event"
+              subtitle={lineData?.title}
+              isPending={isPending}
+            />
+          ),
+        }}
+      />
+      <Box className="bg-white p-5" flex={1}>
+        <EventForm
+          isPending={isPending}
+          onSubmit={(values) => mutate(values)}
+        />
+      </Box>
+    </>
   );
 };
 
