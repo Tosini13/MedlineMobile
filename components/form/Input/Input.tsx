@@ -1,20 +1,38 @@
-import { Box, IInputProps, Input as NativeBaseInput } from "native-base";
-import { FC } from "react";
+import { AntDesign } from "@expo/vector-icons";
+import {
+  Box,
+  IInputProps,
+  Input as NativeBaseInput,
+  Pressable,
+} from "native-base";
+import { FC, useState } from "react";
 
 type InputPropsType = IInputProps;
 
 const Input: FC<InputPropsType> = (props) => {
+  const [visible, setVisible] = useState(false);
+
   return (
-    <Box className="bg-[#EFF2F6]">
+    <Box className="rounded-lg bg-[#EFF2F6]">
       <NativeBaseInput
         className="w-full py-3"
         size="2xl"
-        rounded="lg"
         _focus={{
           borderColor: "#3347FF",
           backgroundColor: "transparent",
         }}
+        rightElement={
+          props.type === "password" ? (
+            <Pressable
+              onPress={() => setVisible((prev) => !prev)}
+              className="px-2"
+            >
+              <AntDesign name={visible ? "eye" : "eyeo"} size={20} />
+            </Pressable>
+          ) : undefined
+        }
         {...props}
+        type={visible ? "text" : props.type}
       />
     </Box>
   );

@@ -8,10 +8,18 @@ import { getEvent } from "./getEvent";
 import { getEvents } from "./getEvents";
 import { getLine } from "./getLine";
 import { getLines } from "./getLines";
+import { signIn } from "./signIn";
+import { signOut } from "./signOut";
+import { signUp } from "./signUp";
 import { updateEvent } from "./updateEvent";
 import { updateLine } from "./updateLine";
 
 export const API = {
+  auth: {
+    signIn,
+    signOut,
+    signUp,
+  },
   lines: {
     get: () => getLines(db) as Promise<LineType[]>,
     getById: (lineId: string) =>

@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, useEffect } from "react";
 import {
   ActivityIndicator,
   SectionList,
@@ -7,6 +7,7 @@ import {
 
 import LineTile from "@/components/LineTile/LineTile";
 import { Text } from "@/components/Themed";
+import { useHeaderContext } from "@/context/HeaderContext";
 import { API } from "@/services/api";
 import { envs } from "@/utils/utils";
 import { FontAwesome6 } from "@expo/vector-icons";
@@ -18,6 +19,15 @@ import { twMerge } from "tailwind-merge";
 type LinesScreenPropsType = {};
 
 const LinesScreen: FC<LinesScreenPropsType> = ({}) => {
+  const { setRightHeader, resetHeaders, setHeaderTitle } = useHeaderContext();
+
+  useEffect(() => {
+    setHeaderTitle({
+      title: "Welcome back",
+      subtitle: "How are you feeling today?",
+    });
+    return () => resetHeaders();
+  }, [setRightHeader, resetHeaders, setHeaderTitle]);
   const router = useRouter();
 
   const { data, isPending } = useQuery({
@@ -66,7 +76,7 @@ const LinesScreen: FC<LinesScreenPropsType> = ({}) => {
         />
       )}
       <Fab
-        onPress={() => router.push("/lines/create")}
+        onPress={() => router.push("/(authorized)/lines/create")}
         renderInPortal={false}
         shadow={0}
         placement="bottom-right"

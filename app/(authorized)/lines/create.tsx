@@ -29,7 +29,7 @@ const CreateLine: FC<CreateLinePropsType> = ({}) => {
       API.lines.add({ ...values, ownerId: envs.testOwnerId }),
     onSuccess: (line) => {
       queryClient.setQueryData(["lines"], (old: LineType[]) => [...old, line]);
-      router.push("/lines/");
+      router.push("/(authorized)/lines/");
     },
   });
 
