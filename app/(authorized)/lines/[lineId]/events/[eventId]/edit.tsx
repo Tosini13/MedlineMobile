@@ -1,12 +1,12 @@
 import EventForm, { EventFormType } from "@/components/EventForm/EventForm";
-import { setEventFormTitleData } from "@/helpers/headerHelpers";
+import HeaderTitle from "@/components/Header/HeaderTitle";
 import { API } from "@/services/api";
 import { EventType } from "@/types";
 import { returnPromiseError } from "@/utils/utils";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useLocalSearchParams, useNavigation, useRouter } from "expo-router";
+import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { Box } from "native-base";
-import { FC, useEffect } from "react";
+import { FC } from "react";
 import { ActivityIndicator } from "react-native";
 
 const byDate = (a: EventType, b: EventType) =>
@@ -16,16 +16,10 @@ type EditEventPropsType = {};
 
 const EditEvent: FC<EditEventPropsType> = ({}) => {
   const router = useRouter();
-  const navigation = useNavigation();
   const { lineId, eventId } = useLocalSearchParams<{
     lineId: string;
     eventId: string;
   }>();
-  const { data: lineData } = useQuery({
-    queryKey: ["line", lineId],
-    queryFn: () => (lineId ? API.lines.getById(lineId) : null),
-    staleTime: Infinity,
-  });
 
   const { data: event, isPending } = useQuery({
     queryKey: ["lineEvents", lineId, eventId],
@@ -33,14 +27,6 @@ const EditEvent: FC<EditEventPropsType> = ({}) => {
       lineId && eventId ? API.events.getById(lineId, eventId) : null,
     staleTime: 100000,
   });
-
-  useEffect(() => {
-    navigation.setOptions({
-      title: setEventFormTitleData({
-        lineName: lineData?.title ?? "",
-      }),
-    });
-  }, [navigation, lineData]);
 
   const queryClient = useQueryClient();
   const { mutate, isPending: isMutationPending } = useMutation({
@@ -72,28 +58,34 @@ const EditEvent: FC<EditEventPropsType> = ({}) => {
     },
   });
 
-  if (isPending) {
-    return (
-      <Box
-        data-testid="edit_event_page"
-        className="bg-white px-5 py-5"
-        flex={1}
-      >
-        <ActivityIndicator />
-      </Box>
-    );
-  }
-
   return (
-    <Box data-testid="edit_event_page" className="bg-white p-5" flex={1}>
-      <EventForm
-        isPending={isMutationPending}
-        onSubmit={(values) => mutate(values)}
-        initialValues={
-          event ? { ...event, date: new Date(event.date) } : undefined
-        }
+    <>
+      <Stack.Screen
+        options={{
+          title: "Edit Event",
+          headerTitle: () => (
+            <HeaderTitle
+              title="Edit event"
+              subtitle={event?.title}
+              isPending={isPending}
+            />
+          ),
+        }}
       />
-    </Box>
+      <Box data-testid="edit_event_page" className="bg-white p-5" flex={1}>
+        {isPending ? (
+          <ActivityIndicator />
+        ) : (
+          <EventForm
+            isPending={isMutationPending}
+            onSubmit={(values) => mutate(values)}
+            initialValues={
+              event ? { ...event, date: new Date(event.date) } : undefined
+            }
+          />
+        )}
+      </Box>
+    </>
   );
 };
 

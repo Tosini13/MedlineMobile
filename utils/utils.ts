@@ -17,14 +17,15 @@ export const returnPromiseError = (message: string) =>
   }).then(() => null);
 
 export const routes = {
-  lines: "(authorized)/lines",
-  createLine: "(authorized)/lines/create",
-  editLine: "(authorized)/lines/[lineId]/edit",
-  events: "(authorized)/lines/[lineId]/events",
-  event: "(authorized)/lines/[lineId]/events/[eventId]",
-  createEvent: "(authorized)/lines/[lineId]/events/create",
-  editEvent: "(authorized)/lines/[lineId]/events/[eventId]/edit",
+  lines: "lines",
+  createLine: "lines/create",
+  editLine: "lines/[lineId]/edit",
+  events: "lines/[lineId]/events",
+  event: "lines/[lineId]/events/[eventId]",
+  createEvent: "lines/[lineId]/events/create",
+  editEvent: "lines/[lineId]/events/[eventId]/edit",
   search: "search",
   menu: "menu",
   login: "(non-authorized)/login",
+  signup: "(non-authorized)/signup",
 };

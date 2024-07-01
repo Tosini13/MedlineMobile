@@ -4,6 +4,7 @@ import LoginForm, {
 } from "@/components/auth/LoginForm/LoginForm";
 import { useHeaderContext } from "@/context/HeaderContext";
 import { API } from "@/services/api";
+import { routes } from "@/utils/utils";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
 import { FC, useEffect } from "react";
@@ -29,7 +30,7 @@ const Login: FC<LoginPropsType> = ({}) => {
     mutationFn: (values: LoginFormType) =>
       API.auth.signIn(values.identifier, values.password),
     onSuccess: () => {
-      router.push("/(authorized)/lines");
+      router.push(routes.lines);
     },
   });
 

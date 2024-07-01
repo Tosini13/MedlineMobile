@@ -1,10 +1,16 @@
+import HeaderTitle from "@/components/Header/HeaderTitle";
 import LineForm, { LineFormType } from "@/components/LineForm/LineForm";
 import { setLineFormTitleData } from "@/helpers/headerHelpers";
 import { API } from "@/services/api";
 import { LineType } from "@/types";
 import { envs, returnPromiseError } from "@/utils/utils";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useLocalSearchParams, useNavigation, useRouter } from "expo-router";
+import {
+  Stack,
+  useLocalSearchParams,
+  useNavigation,
+  useRouter,
+} from "expo-router";
 import { Box } from "native-base";
 import { FC, useEffect } from "react";
 import { ActivityIndicator } from "react-native";
@@ -56,22 +62,32 @@ const EditLine: FC<EditLinePropsType> = ({}) => {
     },
   });
 
-  if (isPending) {
-    return (
-      <Box data-testid="edit_line_page" className="bg-white px-5 py-5" flex={1}>
-        <ActivityIndicator />
-      </Box>
-    );
-  }
-
   return (
-    <Box data-testid="edit_line_page" className="bg-white p-5" flex={1}>
-      <LineForm
-        isPending={isMutationPending}
-        onSubmit={(values) => mutate(values)}
-        initialValues={lineData ?? undefined}
+    <>
+      <Stack.Screen
+        options={{
+          title: lineData?.title ?? "Events",
+          headerTitle: () => (
+            <HeaderTitle
+              title="Edit line"
+              subtitle={lineData?.title}
+              isPending={isPending}
+            />
+          ),
+        }}
       />
-    </Box>
+      <Box data-testid="edit_line_page" className="bg-white p-5" flex={1}>
+        {isPending ? (
+          <ActivityIndicator />
+        ) : (
+          <LineForm
+            isPending={isMutationPending}
+            onSubmit={(values) => mutate(values)}
+            initialValues={lineData ?? undefined}
+          />
+        )}
+      </Box>
+    </>
   );
 };
 
