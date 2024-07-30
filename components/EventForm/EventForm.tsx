@@ -1,13 +1,13 @@
 import Input from "@/components/form/Input/Input";
 import TextArea from "@/components/form/TextArea/TextArea";
-import { eventType } from "@/constants";
+import { eventType, eventTypesTranslationKeys } from "@/constants";
 import { EventType } from "@/types";
 import { FontAwesome6 } from "@expo/vector-icons";
-import DateTimePicker from "@react-native-community/datetimepicker";
 import { Formik } from "formik";
 import { Box, Button, Select } from "native-base";
 import { FC } from "react";
 import { ActivityIndicator } from "react-native";
+import DateTimePicker from "../DateTimePicker/DateTimePicker";
 
 export type EventFormType = Omit<EventType, "id" | "lineId" | "date"> & {
   date: Date;
@@ -17,7 +17,7 @@ const emptyInitialValues: EventFormType = {
   title: "",
   description: "",
   date: new Date(),
-  type: "appointment",
+  type: "MA",
 };
 
 type EventFormPropsType = {
@@ -51,7 +51,11 @@ const EventForm: FC<EventFormPropsType> = ({
               onValueChange={(itemValue) => setFieldValue("type", itemValue)}
             >
               {Object.values(eventType).map((type) => (
-                <Select.Item key={type} label={type} value={type} />
+                <Select.Item
+                  key={type}
+                  label={eventTypesTranslationKeys[type]}
+                  value={type}
+                />
               ))}
             </Select>
           </Box>
@@ -59,8 +63,7 @@ const EventForm: FC<EventFormPropsType> = ({
             <DateTimePicker
               value={values.date}
               mode="datetime"
-              display="default"
-              onChange={(_e, date) => {
+              onChange={(date) => {
                 setFieldValue("date", date);
               }}
             />
@@ -82,7 +85,7 @@ const EventForm: FC<EventFormPropsType> = ({
           <Button
             className="w-full bg-[#3347FF] py-3"
             rounded="full"
-            onPress={handleSubmit}
+            onPress={() => handleSubmit()}
             disabled={isPending}
             leftIcon={
               isPending ? (
@@ -92,7 +95,7 @@ const EventForm: FC<EventFormPropsType> = ({
               )
             }
           >
-            {initialValues ? "Save event" :"Create event"}
+            {initialValues ? "Save event" : "Create event"}
           </Button>
         </Box>
       )}
