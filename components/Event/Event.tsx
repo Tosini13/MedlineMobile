@@ -1,3 +1,4 @@
+import { eventTypesTranslationKeys } from "@/constants";
 import { EventType } from "@/types";
 import { format } from "date-fns";
 import { FC } from "react";
@@ -15,7 +16,7 @@ const Event: FC<EventPropsType> = ({
         <View className="flex flex-row items-center justify-between">
           <EventIcon type={type} />
           <Text className="ml-2 text-lg font-medium text-[#061C49] first-letter:capitalize">
-            {type}
+            {eventTypesTranslationKeys[type]}
           </Text>
         </View>
         <Text className="text-lg">{format(date, "HH:mm dd MMM yyyy")}</Text>

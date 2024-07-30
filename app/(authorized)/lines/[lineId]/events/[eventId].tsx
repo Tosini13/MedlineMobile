@@ -1,5 +1,6 @@
 import Event from "@/components/Event/Event";
 import HeaderTitle from "@/components/Header/HeaderTitle";
+import { eventTypesTranslationKeys } from "@/constants";
 import { API } from "@/services/api";
 import { envs } from "@/utils/utils";
 import { useQuery } from "@tanstack/react-query";
@@ -37,7 +38,9 @@ const EventPage: FC<EventPagePropsType> = ({}) => {
           title: "Event",
           headerTitle: () => (
             <HeaderTitle
-              title="Event"
+              title={
+                data?.type ? eventTypesTranslationKeys[data.type] : "Event"
+              }
               subtitle={data?.title ?? ""}
               isPending={isPending}
             />
