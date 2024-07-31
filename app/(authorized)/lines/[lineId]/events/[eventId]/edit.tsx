@@ -2,7 +2,7 @@ import EventForm, { EventFormType } from "@/components/EventForm/EventForm";
 import HeaderTitle from "@/components/Header/HeaderTitle";
 import { API } from "@/services/api";
 import { EventType } from "@/types";
-import { returnPromiseError } from "@/utils/utils";
+import { returnPromiseError, routes } from "@/utils/utils";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { Box } from "native-base";
@@ -50,7 +50,13 @@ const EditEvent: FC<EditEventPropsType> = ({}) => {
             ["lineEvents", lineId, eventId],
             () => event,
           );
-          router.push(`/(authorized)/lines/${lineId}/events/`);
+          lineId &&
+            eventId &&
+            router.replace(
+              routes.event
+                .replace("[lineId]", lineId)
+                .replace("[eventId]", eventId),
+            );
         } catch (e) {
           console.log("e", e);
         }
