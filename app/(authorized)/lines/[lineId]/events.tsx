@@ -21,7 +21,11 @@ import EventTileActionButtons from "@/components/EventTile/EventTileActionButton
 import EventHeaderSettingsButton from "@/components/Header/EventHeaderSettingsButton";
 import HeaderTitle from "@/components/Header/HeaderTitle";
 import { API } from "@/services/api";
+import { EventType } from "@/types";
 import { envs } from "@/utils/utils";
+
+const byDate = (eventA: EventType, eventB: EventType) =>
+  new Date(eventB.date).getTime() - new Date(eventA.date).getTime();
 
 type LineEventsScreenPropsType = {};
 
@@ -43,7 +47,7 @@ const LineEventsScreen: FC<LineEventsScreenPropsType> = ({}) => {
   const router = useRouter();
 
   const sections =
-    eventData?.map((event) => ({
+    eventData?.sort(byDate)?.map((event) => ({
       title: format(new Date(event.date), EVENT_DATE_FORMAT),
       data: [event],
     })) ?? [];
