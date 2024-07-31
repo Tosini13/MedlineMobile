@@ -40,14 +40,15 @@ const LineEventsScreen: FC<LineEventsScreenPropsType> = ({}) => {
 
   const { data: eventData, isPending } = useQuery({
     queryKey: ["lineEvents", lineId],
-    queryFn: () => (lineId ? API.events.get(lineId) : []),
+    queryFn: () =>
+      lineId ? API.events.get(lineId).then((data) => data.sort(byDate)) : [],
     staleTime: envs.defaultStaleTime,
   });
 
   const router = useRouter();
 
   const sections =
-    eventData?.sort(byDate)?.map((event) => ({
+    eventData?.map((event) => ({
       title: format(new Date(event.date), EVENT_DATE_FORMAT),
       data: [event],
     })) ?? [];
