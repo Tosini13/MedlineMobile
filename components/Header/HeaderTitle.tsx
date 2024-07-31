@@ -28,10 +28,16 @@ const HeaderTitle: FC<HeaderTitlePropsType> = ({
   return (
     <Box
       data-testid="header_title"
-      className="flex flex-col items-center justify-center space-y-0.5"
+      className="flex max-w-[150px] flex-col items-center justify-center space-y-0.5"
     >
-      <Text className="text-center font-semibold text-white">{title}</Text>
-      {subtitle && <Text className="text-center text-white">{subtitle}</Text>}
+      <Text numberOfLines={1} className="text-center font-semibold text-white">
+        {title}
+      </Text>
+      {subtitle && (
+        <Text numberOfLines={1} className="text-center text-white">
+          {subtitle}
+        </Text>
+      )}
     </Box>
   );
 };

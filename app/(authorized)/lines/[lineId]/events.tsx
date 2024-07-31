@@ -81,12 +81,9 @@ const LineEventsScreen: FC<LineEventsScreenPropsType> = ({}) => {
             : undefined,
         }}
       />
-      <Box
-        data-testid="line_events_page"
-        className="bg-white px-5 pb-5"
-        flex={1}
-      >
+      <Box data-testid="line_events_page" className="bg-white pb-5" flex={1}>
         <SectionList
+          className="px-4"
           sections={sections}
           keyExtractor={(item) => item.id}
           renderItem={(item) => (

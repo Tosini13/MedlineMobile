@@ -14,7 +14,10 @@ const EventTile: FC<EventTilePropsType> = ({ event }) => {
       <View className="my-auto h-fit bg-transparent">
         <EventTileIcon type={event.type} />
       </View>
-      <Text className="mx-3 my-auto text-2xl font-medium text-[#061C49]">
+      <Text
+        numberOfLines={2}
+        className="mx-3 my-auto flex-1 text-2xl font-medium text-[#061C49]"
+      >
         {event.title}
       </Text>
       <Text className="text-md my-auto ml-auto font-medium text-[#7c7e83]">
