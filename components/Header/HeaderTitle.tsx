@@ -28,7 +28,7 @@ const HeaderTitle: FC<HeaderTitlePropsType> = ({
   return (
     <Box
       data-testid="header_title"
-      className="flex max-w-[150px] flex-col items-center justify-center space-y-0.5"
+      className="flex max-w-[200px] flex-col items-center justify-center space-y-0.5"
     >
       <Text numberOfLines={1} className="text-center font-semibold text-white">
         {title}
