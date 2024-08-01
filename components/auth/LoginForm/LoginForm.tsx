@@ -29,6 +29,7 @@ const LoginForm: FC<LoginFormPropsType> = ({ onSubmit }) => {
         <Box className="w-full space-y-3" flex={1}>
           <Box>
             <Input
+              autoComplete="email"
               placeholder="identifier"
               onChangeText={handleChange("identifier")}
               value={values.identifier}
