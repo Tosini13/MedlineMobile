@@ -3,14 +3,22 @@ import TextArea from "@/components/form/TextArea/TextArea";
 import { eventType, eventTypesTranslationKeys } from "@/constants";
 import { EventType } from "@/types";
 import { FontAwesome6 } from "@expo/vector-icons";
+import { DocumentPickerAsset, getDocumentAsync } from "expo-document-picker";
 import { Formik } from "formik";
-import { Box, Button, Select } from "native-base";
+import { Box, Button, Image, Select } from "native-base";
 import { FC } from "react";
-import { ActivityIndicator } from "react-native";
+import { ActivityIndicator, Linking, TouchableOpacity } from "react-native";
 import DateTimePicker from "../DateTimePicker/DateTimePicker";
+import { Text, View } from "../Themed";
+
+const imageMimeTypes = ["image/jpeg", "image/png", "image/jpg"];
+
+const fileBoxClassName =
+  "flex h-20 w-20 flex-col items-center justify-center overflow-hidden rounded-md border border-dashed border-gray-500/20";
 
 export type EventFormType = Omit<EventType, "id" | "lineId" | "date"> & {
   date: Date;
+  files?: DocumentPickerAsset[];
 };
 
 const emptyInitialValues: EventFormType = {
@@ -82,6 +90,56 @@ const EventForm: FC<EventFormPropsType> = ({
               value={values.description}
             />
           </Box>
+          <View>
+            <Text>
+              {`You chose ${Number(values.files?.length ?? 0)} ${values.files?.length === 1 ? "file" : "files"}`}
+            </Text>
+            <View className="flex flex-row">
+              {values.files?.map((file) => (
+                <View key={file.uri} className="m-1 w-20">
+                  {file.mimeType === "application/pdf" && (
+                    <TouchableOpacity
+                      onPress={() =>
+                        Linking.openURL(file.uri).catch((err) => {
+                          console.error(err);
+                        })
+                      }
+                    >
+                      <Box className={fileBoxClassName}>
+                        <FontAwesome6 name="file-pdf" size={32} color="red" />
+                      </Box>
+                    </TouchableOpacity>
+                  )}
+                  {file.mimeType && imageMimeTypes.includes(file.mimeType) && (
+                    <Box className={fileBoxClassName}>
+                      <Image
+                        className="mb-1 h-full w-full object-cover object-left-top"
+                        alt={file.name}
+                        source={{
+                          uri: file.uri,
+                        }}
+                      />
+                    </Box>
+                  )}
+                  <Text numberOfLines={1} className="text-center">
+                    {file.name}
+                  </Text>
+                </View>
+              ))}
+            </View>
+          </View>
+          <Button
+            onPress={() =>
+              getDocumentAsync({
+                multiple: true,
+                type: ["application/pdf", "image/*"],
+              }).then((res) => {
+                setFieldValue("files", res.assets);
+              })
+            }
+          >
+            {`${values.files?.length ?? 0 > 0 ? "Change" : "Choose"} files`}
+          </Button>
           <Button
             className="w-full bg-[#3347FF] py-3"
             rounded="full"
