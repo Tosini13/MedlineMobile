@@ -44,8 +44,7 @@ export const API = {
   },
   events: {
     get: (lineId: string) => getEvents(db, lineId) as Promise<EventType[]>,
-    getById: (lineId: string, eventId: string) =>
-      getEvent(db, lineId, eventId) as Promise<EventType | null>,
+    getById: (lineId: string, eventId: string) => getEvent(db, lineId, eventId),
     add: (
       lineId: string,
       event: Omit<EventType, "id">,
@@ -81,7 +80,7 @@ export const API = {
     updateDocuments: (lineId: string, eventId: string, documents: string[]) =>
       updateEventRemoveDocuments(db, lineId, eventId, documents),
     delete: (lineId: string, eventId: string) =>
-      deleteEvent(db, lineId, eventId) as Promise<string>,
+      deleteEvent(db, storage, lineId, eventId),
     getDocuments: (lineId: string, eventId: string) =>
       getDocuments(storage, lineId, eventId),
   },
