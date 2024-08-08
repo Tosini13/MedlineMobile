@@ -37,7 +37,8 @@ export const API = {
     get: () => getLines(db) as Promise<LineType[]>,
     getById: (lineId: string) =>
       getLine(db, lineId) as Promise<LineType | null>,
-    add: (line: Omit<LineType, "id">) => addLine(db, line) as Promise<LineType>,
+    add: (line: Omit<LineType, "id" | "ownerId">) =>
+      addLine(db, line) as Promise<LineType>,
     update: (lineId: string, line: Omit<LineType, "id">) =>
       updateLine(db, lineId, line) as Promise<LineType>,
     delete: (lineId: string) => deleteLine(db, storage, lineId),

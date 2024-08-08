@@ -3,25 +3,25 @@ import { Formik } from "formik";
 import { Box, Button } from "native-base";
 import { FC } from "react";
 
-export type LoginFormType = {
+export type SignUpFormType = {
   identifier: string;
   password: string;
 };
 
-const emptyInitialValues: LoginFormType = {
+const emptyInitialValues: SignUpFormType = {
   identifier: "",
   password: "",
 };
 
-type LoginFormPropsType = {
+type SignUpFormPropsType = {
   isPending?: boolean;
-  onSubmit: (values: LoginFormType) => void;
+  onSubmit: (values: SignUpFormType) => void;
 };
 
-const LoginForm: FC<LoginFormPropsType> = ({ onSubmit }) => {
+const SignUpForm: FC<SignUpFormPropsType> = ({ onSubmit }) => {
   return (
     <Formik
-      data-testid="login_form"
+      data-testid="sign_up_form"
       initialValues={emptyInitialValues}
       onSubmit={(values) => onSubmit(values)}
     >
@@ -48,7 +48,7 @@ const LoginForm: FC<LoginFormPropsType> = ({ onSubmit }) => {
             rounded="full"
             onPress={() => handleSubmit()}
           >
-            Log in
+            Sign up
           </Button>
         </Box>
       )}
@@ -56,4 +56,4 @@ const LoginForm: FC<LoginFormPropsType> = ({ onSubmit }) => {
   );
 };
 
-export default LoginForm;
+export default SignUpForm;

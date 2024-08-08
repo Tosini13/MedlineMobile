@@ -52,7 +52,7 @@ const CreateEvent: FC<CreateEventPropsType> = ({}) => {
         : returnPromiseError("Line id is missing"),
     onSuccess: (event) => {
       if (event) {
-        queryClient.setQueryData(["lineEvents", lineId], (old: EventType[]) =>
+        queryClient.setQueryData(["lineEvents", lineId], (old?: EventType[]) =>
           [...(old ?? []), event].sort(byDate),
         );
         lineId && router.navigate(routes.events.replace("[lineId]", lineId));

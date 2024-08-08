@@ -54,7 +54,7 @@ const LinesScreen: FC<LinesScreenPropsType> = ({}) => {
 
   const router = useRouter();
 
-  const { data, isPending } = useQuery({
+  const { data, isPending, status } = useQuery({
     queryKey: ["lines"],
     queryFn: API.lines.get,
     staleTime: envs.defaultStaleTime,
@@ -62,8 +62,8 @@ const LinesScreen: FC<LinesScreenPropsType> = ({}) => {
 
   const sections = [
     {
-      title: "Upcoming events",
-      data: data ? [data[0]] : [],
+      title: "Upcoming lines",
+      data: data?.length ? [data[0]] : [],
     },
     {
       title: "Your lines",
@@ -86,9 +86,8 @@ const LinesScreen: FC<LinesScreenPropsType> = ({}) => {
         }}
       />
       <Box className="bg-white" flex={1}>
-        {isPending ? (
-          <ActivityIndicator />
-        ) : (
+        {isPending && <ActivityIndicator />}
+        {status === "success" && data.length > 0 && (
           <SectionList
             className="px-4"
             sections={sections}
@@ -111,6 +110,9 @@ const LinesScreen: FC<LinesScreenPropsType> = ({}) => {
               </Text>
             )}
           />
+        )}
+        {status === "success" && !data.length && (
+          <Text className="mt-5 text-center text-gray-500">No lines yet</Text>
         )}
         <Fab
           onPress={() => router.push("/(authorized)/lines/create")}
