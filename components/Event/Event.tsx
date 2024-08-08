@@ -30,7 +30,7 @@ const DocumentsList: FC<DocumentsListPropsType> = ({
 
   if (status === "pending") {
     return (
-      <View className="flex flex-1 items-center justify-center">
+      <View className="mt-2 flex flex-1 items-center justify-center">
         <ActivityIndicator />
       </View>
     );
