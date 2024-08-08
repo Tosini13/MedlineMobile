@@ -1,7 +1,9 @@
 import Input from "@/components/form/Input/Input";
+import { FontAwesome } from "@expo/vector-icons";
 import { Formik } from "formik";
 import { Box, Button } from "native-base";
 import { FC } from "react";
+import { ActivityIndicator } from "react-native";
 
 export type LoginFormType = {
   identifier: string;
@@ -18,7 +20,7 @@ type LoginFormPropsType = {
   onSubmit: (values: LoginFormType) => void;
 };
 
-const LoginForm: FC<LoginFormPropsType> = ({ onSubmit }) => {
+const LoginForm: FC<LoginFormPropsType> = ({ onSubmit, isPending }) => {
   return (
     <Formik
       data-testid="login_form"
@@ -47,6 +49,13 @@ const LoginForm: FC<LoginFormPropsType> = ({ onSubmit }) => {
             className="w-full bg-[#3347FF] py-3"
             rounded="full"
             onPress={() => handleSubmit()}
+            leftIcon={
+              isPending ? (
+                <ActivityIndicator size={16} color="white" />
+              ) : (
+                <FontAwesome name="sign-in" size={16} color="white" />
+              )
+            }
           >
             Log in
           </Button>
