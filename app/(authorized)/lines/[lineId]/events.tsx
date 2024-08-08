@@ -38,7 +38,11 @@ const LineEventsScreen: FC<LineEventsScreenPropsType> = ({}) => {
     staleTime: envs.defaultStaleTime,
   });
 
-  const { data: eventData, isPending } = useQuery({
+  const {
+    data: eventData,
+    isPending,
+    status,
+  } = useQuery({
     queryKey: ["lineEvents", lineId],
     queryFn: () =>
       lineId ? API.events.get(lineId).then((data) => data.sort(byDate)) : [],
@@ -74,9 +78,11 @@ const LineEventsScreen: FC<LineEventsScreenPropsType> = ({}) => {
             <HeaderTitle
               title={lineData?.title ?? "Events"}
               subtitle={
-                eventData?.length
-                  ? `${eventData.length} incoming events!`
-                  : "loading"
+                {
+                  error: "Error loading events",
+                  success: `${eventData?.length ?? 0} incoming events!`,
+                  loading: "Loading events",
+                }[status]
               }
               isPending={isPending}
             />
@@ -87,38 +93,42 @@ const LineEventsScreen: FC<LineEventsScreenPropsType> = ({}) => {
         }}
       />
       <Box data-testid="line_events_page" className="bg-white pb-5" flex={1}>
-        <SectionList
-          className="px-4"
-          sections={sections}
-          keyExtractor={(item) => item.id}
-          renderItem={(item) => (
-            <SwipeableItem
-              key={item.item.id}
-              item={item}
-              renderUnderlayLeft={() => (
-                <EventTileActionButtons
-                  lineId={lineId ?? ""}
-                  eventId={item.item.id}
-                />
-              )}
-              snapPointsLeft={[128]}
-            >
-              <TouchableHighlight
-                underlayColor="transparent"
-                onPress={() =>
-                  router.navigate(`lines/${lineId}/events/${item.item.id}`)
-                }
+        {sections.length === 0 ? (
+          <Text className="mt-5 text-center text-gray-500">No events yet</Text>
+        ) : (
+          <SectionList
+            className="px-4"
+            sections={sections}
+            keyExtractor={(item) => item.id}
+            renderItem={(item) => (
+              <SwipeableItem
+                key={item.item.id}
+                item={item}
+                renderUnderlayLeft={() => (
+                  <EventTileActionButtons
+                    lineId={lineId ?? ""}
+                    eventId={item.item.id}
+                  />
+                )}
+                snapPointsLeft={[128]}
               >
-                <EventTile event={item.item} />
-              </TouchableHighlight>
-            </SwipeableItem>
-          )}
-          renderSectionHeader={({ section: { title } }) => (
-            <Text className="bg-white py-0.5 text-lg font-semibold text-[#4B608B]">
-              {title}
-            </Text>
-          )}
-        />
+                <TouchableHighlight
+                  underlayColor="transparent"
+                  onPress={() =>
+                    router.navigate(`lines/${lineId}/events/${item.item.id}`)
+                  }
+                >
+                  <EventTile event={item.item} />
+                </TouchableHighlight>
+              </SwipeableItem>
+            )}
+            renderSectionHeader={({ section: { title } }) => (
+              <Text className="bg-white py-0.5 text-lg font-semibold text-[#4B608B]">
+                {title}
+              </Text>
+            )}
+          />
+        )}
         <Fab
           onPress={() => router.navigate(`/lines/${lineId}/events/create`)}
           renderInPortal={false}
