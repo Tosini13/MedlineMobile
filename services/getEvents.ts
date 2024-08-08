@@ -1,3 +1,4 @@
+import { EventType } from "@/types";
 import { Firestore, collection, getDocs } from "firebase/firestore/lite";
 import { getEventDate } from "./helpers";
 
@@ -10,6 +11,6 @@ export async function getEvents(db: Firestore, lineId: string) {
       ...data,
       date: getEventDate(data.date),
       id: doc.id,
-    };
+    } as EventType;
   });
 }

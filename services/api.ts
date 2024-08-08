@@ -40,10 +40,10 @@ export const API = {
     add: (line: Omit<LineType, "id">) => addLine(db, line) as Promise<LineType>,
     update: (lineId: string, line: Omit<LineType, "id">) =>
       updateLine(db, lineId, line) as Promise<LineType>,
-    delete: (lineId: string) => deleteLine(db, lineId) as Promise<string>,
+    delete: (lineId: string) => deleteLine(db, storage, lineId),
   },
   events: {
-    get: (lineId: string) => getEvents(db, lineId) as Promise<EventType[]>,
+    get: (lineId: string) => getEvents(db, lineId),
     getById: (lineId: string, eventId: string) => getEvent(db, lineId, eventId),
     add: (
       lineId: string,
