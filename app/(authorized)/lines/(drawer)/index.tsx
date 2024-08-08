@@ -62,10 +62,6 @@ const LinesScreen: FC<LinesScreenPropsType> = ({}) => {
 
   const sections = [
     {
-      title: "Upcoming lines",
-      data: data?.length ? [data[0]] : [],
-    },
-    {
       title: "Your lines",
       data: data ?? [],
     },
