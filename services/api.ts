@@ -1,9 +1,12 @@
-import { db } from "@/firebaseConfig";
+import { db, storage } from "@/firebaseConfig";
 import { EventType, LineType } from "@/types";
+import { DocumentPickerAsset } from "expo-document-picker";
+import { UploadTaskSnapshot } from "firebase/storage";
 import { addEvent } from "./addEvent";
 import { addLine } from "./addLine";
 import { deleteEvent } from "./deleteEvent";
 import { deleteLine } from "./deleteLine";
+import { getDocuments } from "./getDocuments";
 import { getEvent } from "./getEvent";
 import { getEvents } from "./getEvents";
 import { getLine } from "./getLine";
@@ -13,12 +16,20 @@ import { signOut } from "./signOut";
 import { signUp } from "./signUp";
 import { updateEvent } from "./updateEvent";
 import { updateLine } from "./updateLine";
+import { uploadDocument } from "./uploadDocument";
 
 export const API = {
   auth: {
     signIn,
     signOut,
     signUp,
+  },
+  files: {
+    uploadDocument: (
+      file: DocumentPickerAsset,
+      path: string,
+      onStateChanged: (snapshot: UploadTaskSnapshot) => void,
+    ) => uploadDocument(storage, file, path, onStateChanged),
   },
   lines: {
     get: () => getLines(db) as Promise<LineType[]>,
@@ -39,5 +50,7 @@ export const API = {
       updateEvent(db, lineId, eventId, event) as Promise<EventType>,
     delete: (lineId: string, eventId: string) =>
       deleteEvent(db, lineId, eventId) as Promise<string>,
+    getDocuments: (lineId: string, eventId: string) =>
+      getDocuments(storage, lineId, eventId),
   },
 };

@@ -1,3 +1,6 @@
+import { UploadTaskSnapshot } from "firebase/storage";
+import { useState } from "react";
+
 export const envs = {
   apiKey: process.env.EXPO_PUBLIC_API_KEY,
   authDomain: process.env.EXPO_PUBLIC_AUTH_DOMAIN,
@@ -28,4 +31,27 @@ export const routes = {
   menu: "menu",
   login: "(non-authorized)/login",
   signup: "(non-authorized)/signup",
+};
+
+export const getStoragePath = (path: string) =>
+  `https://firebasestorage.googleapis.com/v0/b/${envs.storageBucket}/o/${path}`;
+
+export const getEventDocumentPath = (lineId: string, eventId: string) =>
+  `lines/${lineId}/events/${eventId}`;
+
+export const formatFileName = (fileName: string) =>
+  fileName.replace(/[^a-zA-Z0-9.]/g, "");
+
+export const useUploadFileState = () => {
+  const [uploadProgress, setUploadProgress] =
+    useState<Record<string, number>>();
+  const onStateChange = (snapshot: UploadTaskSnapshot) => {
+    const progress = snapshot.bytesTransferred / snapshot.totalBytes;
+    setUploadProgress((prev) => ({
+      ...prev,
+      [snapshot.ref.name]: progress,
+    }));
+  };
+
+  return { uploadProgress, onStateChange };
 };
