@@ -2,12 +2,14 @@ import EventForm, { EventFormType } from "@/components/EventForm/EventForm";
 import HeaderTitle from "@/components/Header/HeaderTitle";
 import { API } from "@/services/api";
 import { EventType } from "@/types";
-import { returnPromiseError, routes } from "@/utils/utils";
+import { returnPromiseError, routes, useUploadFileState } from "@/utils/utils";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { Box } from "native-base";
 import { FC } from "react";
 import { ActivityIndicator } from "react-native";
+
+const STALE_TIME = 1000 * 60 * 60 * 24; // 24 hours
 
 const byDate = (a: EventType, b: EventType) =>
   new Date(b.date).valueOf() - new Date(a.date).valueOf();
@@ -20,6 +22,7 @@ const EditEvent: FC<EditEventPropsType> = ({}) => {
     lineId: string;
     eventId: string;
   }>();
+  const { uploadProgress, onStateChange } = useUploadFileState();
 
   const { data: event, isPending } = useQuery({
     queryKey: ["lineEvents", lineId, eventId],
@@ -28,14 +31,32 @@ const EditEvent: FC<EditEventPropsType> = ({}) => {
     staleTime: 100000,
   });
 
+  const documentsPaths = event?.documents?.map((doc) => doc.path) ?? [];
+  const { data: documentsPage } = useQuery({
+    queryKey: ["documents", lineId, eventId, ...documentsPaths],
+    queryFn: () =>
+      lineId && eventId ? API.events.getDocuments(lineId, eventId) : null,
+    staleTime: STALE_TIME,
+  });
+
   const queryClient = useQueryClient();
   const { mutate, isPending: isMutationPending } = useMutation({
     mutationFn: (values: EventFormType) =>
       lineId && eventId
-        ? API.events.update(lineId, eventId, {
-            ...values,
-            date: values.date.toISOString(),
-          })
+        ? API.events.update(
+            lineId,
+            eventId,
+            {
+              description: values.description,
+              title: values.title,
+              type: values.type,
+              date: values.date.toISOString(),
+              documents: event?.documents ?? [],
+            },
+            values.files?.existing ?? [],
+            values.files?.new ?? [],
+            onStateChange,
+          )
         : returnPromiseError("Line id or event id is missing"),
     onSuccess: (event) => {
       if (event) {
@@ -85,8 +106,18 @@ const EditEvent: FC<EditEventPropsType> = ({}) => {
           <EventForm
             isPending={isMutationPending}
             onSubmit={(values) => mutate(values)}
+            uploadProgress={uploadProgress}
             initialValues={
-              event ? { ...event, date: new Date(event.date) } : undefined
+              event
+                ? {
+                    ...event,
+                    date: new Date(event.date),
+                    files: {
+                      existing: documentsPage?.items ?? [],
+                      new: [],
+                    },
+                  }
+                : undefined
             }
           />
         )}

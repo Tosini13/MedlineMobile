@@ -7,6 +7,8 @@ import {
   StorageReference,
 } from "firebase/storage";
 
+export type DocumentReferenceType = StorageReference & { url: string };
+
 export const getDocuments = async (
   storage: FirebaseStorage,
   lineId: string,
@@ -22,7 +24,7 @@ export const getDocuments = async (
   );
 
   const items = page.items.map((item, key) => {
-    const itemWithUrl = item as StorageReference & { url: string };
+    const itemWithUrl = item as DocumentReferenceType;
     itemWithUrl.url = urls[key];
     return itemWithUrl;
   });

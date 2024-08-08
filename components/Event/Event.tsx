@@ -41,6 +41,7 @@ const Event: FC<EventPropsType> = ({
         {documentsPage ? (
           documentsPage.items?.map((item) => (
             <TouchableOpacity
+              key={item.url}
               onPress={() =>
                 Linking.openURL(item.url).catch((err) => {
                   console.error(err);
@@ -48,7 +49,6 @@ const Event: FC<EventPropsType> = ({
               }
             >
               <DocumentTile
-                key={item.url}
                 name={item.name}
                 url={item.url}
                 mimeType={

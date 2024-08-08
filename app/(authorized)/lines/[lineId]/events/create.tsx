@@ -3,12 +3,7 @@ import HeaderTitle from "@/components/Header/HeaderTitle";
 import { setEventFormTitleData } from "@/helpers/headerHelpers";
 import { API } from "@/services/api";
 import { EventType } from "@/types";
-import {
-  getEventDocumentPath,
-  returnPromiseError,
-  routes,
-  useUploadFileState,
-} from "@/utils/utils";
+import { returnPromiseError, routes, useUploadFileState } from "@/utils/utils";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   Stack,
@@ -48,26 +43,12 @@ const CreateEvent: FC<CreateEventPropsType> = ({}) => {
   const { mutate, isPending } = useMutation({
     mutationFn: (values: EventFormType) =>
       lineId
-        ? API.events
-            .add(lineId, { ...values, date: values.date.toISOString() })
-            .then(async (event) => {
-              if (values.files) {
-                const documents = await Promise.all(
-                  values.files.map((file) =>
-                    API.files.uploadDocument(
-                      file,
-                      getEventDocumentPath(lineId, event.id),
-                      onStateChange,
-                    ),
-                  ),
-                );
-                return await API.events.update(lineId, event.id, {
-                  ...event,
-                  documents,
-                });
-              }
-              return event;
-            })
+        ? API.events.add(
+            lineId,
+            { ...values, date: values.date.toISOString() },
+            values.files?.new ?? [],
+            onStateChange,
+          )
         : returnPromiseError("Line id is missing"),
     onSuccess: (event) => {
       if (event) {

@@ -20,7 +20,7 @@ const DocumentTile: FC<DocumentTilePropsType> = ({
   mimeType,
   uploadingPercentage,
 }) => (
-  <View className="m-1 w-20" data-testid="document_tile">
+  <View className="m-1 w-20 space-y-0.5" data-testid="document_tile">
     <Box className="relative flex h-20 w-20 flex-col items-center justify-center overflow-hidden rounded-md border border-dashed border-gray-500/20">
       {mimeType === "application/pdf" && (
         <FontAwesome6 name="file-pdf" size={32} color="red" />
