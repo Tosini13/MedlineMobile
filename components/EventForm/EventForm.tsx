@@ -171,10 +171,12 @@ const EventForm: FC<EventFormPropsType> = ({
                   type: ["application/pdf", "image/*"],
                 }).then((res) => {
                   const newFiles = res.assets?.map((file) => {
-                    const sameNameFiles = [
-                      ...(values.files?.new ?? []),
-                      ...(values.files?.existing ?? []),
-                    ]?.find((f) => f.name === file.name);
+                    const sameNameFiles =
+                      [
+                        ...(values.files?.new ?? []),
+                        ...(values.files?.existing ?? []),
+                      ]?.some((f) => f.name === file.name) ||
+                      res.assets.some((f) => f.name === file.name);
                     if (sameNameFiles) {
                       file.name = `${file.name}_${randomUUID()}`;
                     }

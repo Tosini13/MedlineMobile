@@ -20,7 +20,7 @@ export async function updateEvent(
   const docsToDelete = event.documents?.filter(
     (doc) => !documentsToDelete?.find((f) => f.fullPath === doc.path),
   );
-  const deletedDocs = docsToDelete
+  const deletedDocs = docsToDelete?.length
     ? await Promise.all(
         docsToDelete.map((doc) => deleteDocument(storage, doc.path)),
       )
@@ -31,7 +31,7 @@ export async function updateEvent(
       (doc) => !deletedDocs?.find((d) => d.fullPath === doc.path),
     ) ?? [];
 
-  const uploadedDocuments = newDocuments
+  const uploadedDocuments = newDocuments.length
     ? await Promise.all(
         newDocuments.map((file) =>
           uploadDocument(

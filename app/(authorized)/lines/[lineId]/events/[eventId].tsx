@@ -2,12 +2,13 @@ import Event from "@/components/Event/Event";
 import HeaderTitle from "@/components/Header/HeaderTitle";
 import { eventTypesTranslationKeys } from "@/constants";
 import { API } from "@/services/api";
-import { envs } from "@/utils/utils";
 import { useQuery } from "@tanstack/react-query";
 import { Stack, useLocalSearchParams } from "expo-router";
 import { Box } from "native-base";
 import { FC } from "react";
 import { ActivityIndicator } from "react-native";
+
+const STALE_TIME = 1000 * 60 * 60 * 24; // 24 hours
 
 type EventPagePropsType = {};
 
@@ -20,7 +21,7 @@ const EventPage: FC<EventPagePropsType> = ({}) => {
     queryKey: ["lineEvents", lineId, eventId],
     queryFn: () =>
       lineId && eventId ? API.events.getById(lineId, eventId) : null,
-    staleTime: envs.defaultStaleTime,
+    staleTime: STALE_TIME,
   });
 
   if (isPending) {
