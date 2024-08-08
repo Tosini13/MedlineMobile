@@ -50,8 +50,8 @@ const EventPage: FC<EventPagePropsType> = ({}) => {
       <Box data-testid="event_page" className="bg-white px-5 py-5" flex={1}>
         {isPending ? (
           <ActivityIndicator />
-        ) : data ? (
-          <Event event={data} />
+        ) : lineId && data ? (
+          <Event event={data} lineId={lineId} />
         ) : null}
       </Box>
     </>

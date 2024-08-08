@@ -2,19 +2,17 @@ import Input from "@/components/form/Input/Input";
 import TextArea from "@/components/form/TextArea/TextArea";
 import { eventType, eventTypesTranslationKeys } from "@/constants";
 import { EventType } from "@/types";
+import { formatFileName } from "@/utils/utils";
 import { FontAwesome6 } from "@expo/vector-icons";
 import { DocumentPickerAsset, getDocumentAsync } from "expo-document-picker";
 import { Formik } from "formik";
-import { Box, Button, Image, Select } from "native-base";
+import { Box, Button, Select } from "native-base";
 import { FC } from "react";
-import { ActivityIndicator, Linking, TouchableOpacity } from "react-native";
+import { ActivityIndicator } from "react-native";
+import { ScrollView } from "react-native-gesture-handler";
 import DateTimePicker from "../DateTimePicker/DateTimePicker";
+import DocumentTile from "../DocumentTile/DocumentTile";
 import { Text, View } from "../Themed";
-
-const imageMimeTypes = ["image/jpeg", "image/png", "image/jpg"];
-
-const fileBoxClassName =
-  "flex h-20 w-20 flex-col items-center justify-center overflow-hidden rounded-md border border-dashed border-gray-500/20";
 
 export type EventFormType = Omit<EventType, "id" | "lineId" | "date"> & {
   date: Date;
@@ -31,6 +29,7 @@ const emptyInitialValues: EventFormType = {
 type EventFormPropsType = {
   initialValues?: EventFormType;
   isPending?: boolean;
+  uploadProgress?: Record<string, number>;
   onSubmit: (values: EventFormType) => void;
 };
 
@@ -38,6 +37,7 @@ const EventForm: FC<EventFormPropsType> = ({
   initialValues,
   onSubmit,
   isPending,
+  uploadProgress,
 }) => {
   return (
     <Formik
@@ -94,39 +94,19 @@ const EventForm: FC<EventFormPropsType> = ({
             <Text>
               {`You chose ${Number(values.files?.length ?? 0)} ${values.files?.length === 1 ? "file" : "files"}`}
             </Text>
-            <View className="flex flex-row">
+            <ScrollView horizontal>
               {values.files?.map((file) => (
-                <View key={file.uri} className="m-1 w-20">
-                  {file.mimeType === "application/pdf" && (
-                    <TouchableOpacity
-                      onPress={() =>
-                        Linking.openURL(file.uri).catch((err) => {
-                          console.error(err);
-                        })
-                      }
-                    >
-                      <Box className={fileBoxClassName}>
-                        <FontAwesome6 name="file-pdf" size={32} color="red" />
-                      </Box>
-                    </TouchableOpacity>
-                  )}
-                  {file.mimeType && imageMimeTypes.includes(file.mimeType) && (
-                    <Box className={fileBoxClassName}>
-                      <Image
-                        className="mb-1 h-full w-full object-cover object-left-top"
-                        alt={file.name}
-                        source={{
-                          uri: file.uri,
-                        }}
-                      />
-                    </Box>
-                  )}
-                  <Text numberOfLines={1} className="text-center">
-                    {file.name}
-                  </Text>
-                </View>
+                <DocumentTile
+                  key={file.uri}
+                  name={file.name}
+                  url={file.uri}
+                  mimeType={file.mimeType}
+                  uploadingPercentage={
+                    uploadProgress && uploadProgress[formatFileName(file.name)]
+                  }
+                />
               ))}
-            </View>
+            </ScrollView>
           </View>
           <Button
             onPress={() =>
