@@ -5,25 +5,25 @@ import { Box, Button } from "native-base";
 import { FC } from "react";
 import { ActivityIndicator } from "react-native";
 
-export type LoginFormType = {
+export type SignUpFormType = {
   identifier: string;
   password: string;
 };
 
-const emptyInitialValues: LoginFormType = {
+const emptyInitialValues: SignUpFormType = {
   identifier: "",
   password: "",
 };
 
-type LoginFormPropsType = {
+type SignUpFormPropsType = {
   isPending?: boolean;
-  onSubmit: (values: LoginFormType) => void;
+  onSubmit: (values: SignUpFormType) => void;
 };
 
-const LoginForm: FC<LoginFormPropsType> = ({ onSubmit, isPending }) => {
+const SignUpForm: FC<SignUpFormPropsType> = ({ onSubmit, isPending }) => {
   return (
     <Formik
-      data-testid="login_form"
+      data-testid="sign_up_form"
       initialValues={emptyInitialValues}
       onSubmit={(values) => onSubmit(values)}
     >
@@ -57,7 +57,7 @@ const LoginForm: FC<LoginFormPropsType> = ({ onSubmit, isPending }) => {
               )
             }
           >
-            Log in
+            Sign up
           </Button>
         </Box>
       )}
@@ -65,4 +65,4 @@ const LoginForm: FC<LoginFormPropsType> = ({ onSubmit, isPending }) => {
   );
 };
 
-export default LoginForm;
+export default SignUpForm;

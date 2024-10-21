@@ -3,7 +3,7 @@ import HeaderTitle from "@/components/Header/HeaderTitle";
 import { setEventFormTitleData } from "@/helpers/headerHelpers";
 import { API } from "@/services/api";
 import { EventType } from "@/types";
-import { returnPromiseError, routes } from "@/utils/utils";
+import { returnPromiseError, routes, useUploadFileState } from "@/utils/utils";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   Stack,
@@ -23,6 +23,7 @@ const CreateEvent: FC<CreateEventPropsType> = ({}) => {
   const router = useRouter();
   const navigation = useNavigation();
   const { lineId } = useLocalSearchParams<{ lineId: string }>();
+  const { uploadProgress, onStateChange } = useUploadFileState();
 
   const { data: lineData } = useQuery({
     queryKey: ["line", lineId],
@@ -42,14 +43,19 @@ const CreateEvent: FC<CreateEventPropsType> = ({}) => {
   const { mutate, isPending } = useMutation({
     mutationFn: (values: EventFormType) =>
       lineId
-        ? API.events.add(lineId, { ...values, date: values.date.toISOString() })
+        ? API.events.add(
+            lineId,
+            { ...values, date: values.date.toISOString() },
+            values.files?.new ?? [],
+            onStateChange,
+          )
         : returnPromiseError("Line id is missing"),
     onSuccess: (event) => {
       if (event) {
-        queryClient.setQueryData(["lineEvents", lineId], (old: EventType[]) =>
+        queryClient.setQueryData(["lineEvents", lineId], (old?: EventType[]) =>
           [...(old ?? []), event].sort(byDate),
         );
-        lineId && router.push(routes.createEvent.replace("[lineId]", lineId));
+        lineId && router.navigate(routes.events.replace("[lineId]", lineId));
       }
     },
   });
@@ -72,6 +78,7 @@ const CreateEvent: FC<CreateEventPropsType> = ({}) => {
         <EventForm
           isPending={isPending}
           onSubmit={(values) => mutate(values)}
+          uploadProgress={uploadProgress}
         />
       </Box>
     </>

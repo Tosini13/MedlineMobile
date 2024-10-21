@@ -1,9 +1,10 @@
 import HeaderTitle from "@/components/Header/HeaderTitle";
 import LineForm from "@/components/LineForm/LineForm";
+import { Text } from "@/components/Themed";
 import { useHeaderContext } from "@/context/HeaderContext";
 import { API } from "@/services/api";
 import { LineType } from "@/types";
-import { envs, routes } from "@/utils/utils";
+import { routes } from "@/utils/utils";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Stack, useRouter } from "expo-router";
 import { Box } from "native-base";
@@ -36,11 +37,13 @@ const CreateLine: FC<CreateLinePropsType> = ({}) => {
 
   const router = useRouter();
   const queryClient = useQueryClient();
-  const { mutate, isPending } = useMutation({
-    mutationFn: (values: CreateLineForm) =>
-      API.lines.add({ ...values, ownerId: envs.testOwnerId }),
+  const { mutate, isPending, error } = useMutation({
+    mutationFn: (values: CreateLineForm) => API.lines.add(values),
     onSuccess: (line) => {
-      queryClient.setQueryData(["lines"], (old: LineType[]) => [...old, line]);
+      queryClient.setQueryData(["lines"], (old?: LineType[]) => [
+        ...(old ?? []),
+        line,
+      ]);
       router.push(routes.lines);
     },
   });
@@ -54,6 +57,7 @@ const CreateLine: FC<CreateLinePropsType> = ({}) => {
         }}
       />
       <Box className="bg-white p-5" flex={1}>
+        {error && <Text className="mb-2 text-red-600">{error.message}</Text>}
         <LineForm
           initialValues={initialValues}
           isPending={isPending}
