@@ -26,7 +26,7 @@ const EventPage: FC<EventPagePropsType> = ({}) => {
 
   if (isPending) {
     return (
-      <Box data-testid="event_page" className="bg-white px-5 py-5" flex={1}>
+      <Box data-testid="event_page" className="bg-primary px-5 py-5" flex={1}>
         <ActivityIndicator />
       </Box>
     );
@@ -48,7 +48,7 @@ const EventPage: FC<EventPagePropsType> = ({}) => {
           ),
         }}
       />
-      <Box data-testid="event_page" className="bg-white px-5 py-5" flex={1}>
+      <Box data-testid="event_page" className="bg-primary px-5 py-5" flex={1}>
         {isPending ? (
           <ActivityIndicator />
         ) : lineId && data ? (

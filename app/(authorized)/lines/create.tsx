@@ -53,7 +53,7 @@ const CreateLine: FC<CreateLinePropsType> = ({}) => {
           headerTitle: () => <HeaderTitle title="Create line" />,
         }}
       />
-      <Box className="bg-white p-5" flex={1}>
+      <Box className="bg-primary p-5" flex={1}>
         {error && <Text className="mb-2 text-red-600">{error.message}</Text>}
         <LineForm
           initialValues={initialValues}

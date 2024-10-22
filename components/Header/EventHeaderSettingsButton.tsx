@@ -11,7 +11,7 @@ import { Box, Popover } from "native-base";
 import { ActivityIndicator } from "react-native";
 import { defaultHeaderButtonProps } from "./HeaderButton";
 
-import { Text } from "@/components/Themed";
+import { Text, useThemeColor } from "@/components/Themed";
 import { API } from "@/services/api";
 import { MaterialIcons } from "@expo/vector-icons";
 
@@ -24,6 +24,7 @@ const EventHeaderSettingsButton: FC<EventHeaderSettingsButtonPropsType> = ({
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
+  const color = useThemeColor({}, "secondary");
 
   const queryClient = useQueryClient();
   const { mutate, isPending } = useMutation({
@@ -50,17 +51,13 @@ const EventHeaderSettingsButton: FC<EventHeaderSettingsButtonPropsType> = ({
           style={defaultHeaderButtonProps.style}
           onPress={() => setIsOpen(true)}
         >
-          <Feather
-            name="settings"
-            size={24}
-            color={defaultHeaderButtonProps.icon.color}
-          />
+          <Feather name="settings" size={24} color={color} />
         </Pressable>
       )}
       isOpen={isOpen}
       onClose={() => setIsOpen(!isOpen)}
     >
-      <Popover.Content w="40" className="bg-white">
+      <Popover.Content w="40" className="bg-primary">
         <Popover.Body className="m-0 flex flex-col items-stretch p-0">
           <Pressable
             accessibilityLabel="Edit line"

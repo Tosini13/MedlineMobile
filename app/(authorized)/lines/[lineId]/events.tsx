@@ -61,7 +61,7 @@ const LineEventsScreen: FC<LineEventsScreenPropsType> = ({}) => {
     return (
       <Box
         data-testid="line_events_page_loading"
-        className="bg-white px-5 py-5"
+        className="bg-primary px-5 py-5"
         flex={1}
       >
         <ActivityIndicator />
@@ -92,7 +92,7 @@ const LineEventsScreen: FC<LineEventsScreenPropsType> = ({}) => {
             : undefined,
         }}
       />
-      <Box data-testid="line_events_page" className="bg-white pb-5" flex={1}>
+      <Box data-testid="line_events_page" className="bg-primary pb-5" flex={1}>
         {sections.length === 0 ? (
           <Text className="mt-5 text-center text-gray-500">No events yet</Text>
         ) : (
@@ -123,7 +123,7 @@ const LineEventsScreen: FC<LineEventsScreenPropsType> = ({}) => {
               </SwipeableItem>
             )}
             renderSectionHeader={({ section: { title } }) => (
-              <Text className="bg-white py-0.5 text-lg font-semibold text-[#4B608B]">
+              <Text className="bg-primary py-0.5 text-lg font-semibold text-[#4B608B]">
                 {title}
               </Text>
             )}

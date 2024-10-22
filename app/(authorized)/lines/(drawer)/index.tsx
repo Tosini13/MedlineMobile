@@ -110,7 +110,7 @@ const LinesScreen: FC<LinesScreenPropsType> = ({}) => {
           </Text>
         </View>
       )}
-      <Box className="bg-white" flex={1}>
+      <Box className="bg-primary" flex={1}>
         {isPending && <ActivityIndicator />}
         {status === "success" && data.length > 0 && (
           <SectionList
@@ -130,7 +130,7 @@ const LinesScreen: FC<LinesScreenPropsType> = ({}) => {
               </TouchableHighlight>
             )}
             renderSectionHeader={({ section: { title } }) => (
-              <Text className="bg-white py-0.5 text-lg font-semibold text-[#4B608B]">
+              <Text className="bg-primary py-0.5 text-lg font-semibold text-[#4B608B]">
                 {title}
               </Text>
             )}
@@ -146,7 +146,7 @@ const LinesScreen: FC<LinesScreenPropsType> = ({}) => {
           placement="bottom-right"
           className="bg-tint"
           size="lg"
-          icon={<PlusIcon className="text-white" width="28" height="28" />}
+          icon={<PlusIcon className="text-primary" width="28" height="28" />}
         />
       </Box>
     </>

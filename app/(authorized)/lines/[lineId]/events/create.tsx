@@ -69,7 +69,7 @@ const CreateEvent: FC<CreateEventPropsType> = ({}) => {
           ),
         }}
       />
-      <Box className="bg-white p-5" flex={1}>
+      <Box className="bg-primary p-5" flex={1}>
         <EventForm
           isPending={isPending}
           onSubmit={(values) => mutate(values)}

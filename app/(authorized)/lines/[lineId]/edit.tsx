@@ -72,7 +72,7 @@ const EditLine: FC<EditLinePropsType> = ({}) => {
           ),
         }}
       />
-      <Box data-testid="edit_line_page" className="bg-white p-5" flex={1}>
+      <Box data-testid="edit_line_page" className="bg-primary p-5" flex={1}>
         {isPending ? (
           <ActivityIndicator />
         ) : (
