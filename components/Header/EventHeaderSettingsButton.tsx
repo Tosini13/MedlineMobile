@@ -75,7 +75,7 @@ const EventHeaderSettingsButton: FC<EventHeaderSettingsButtonPropsType> = ({
           </Pressable>
           <Box className="h-[1px] bg-gray-300" />
           <Pressable
-            accessibilityLabel="Delete event"
+            accessibilityLabel="Delete line"
             className="flex w-full flex-row items-center gap-x-4 px-4 py-3"
             onPress={() => mutate()}
           >

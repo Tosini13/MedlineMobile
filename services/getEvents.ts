@@ -14,3 +14,9 @@ export async function getEvents(db: Firestore, lineId: string) {
     } as EventType;
   });
 }
+
+export async function getEventsNumber(db: Firestore, lineId: string) {
+  const eventsRef = collection(db, "lines", lineId, "events");
+  const eventsSnapshot = await getDocs(eventsRef);
+  return eventsSnapshot.size;
+}

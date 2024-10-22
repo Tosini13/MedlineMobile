@@ -12,9 +12,11 @@ import LineTile from "@/components/LineTile/LineTile";
 import { Text } from "@/components/Themed";
 import { useHeaderContext } from "@/context/HeaderContext";
 import { API } from "@/services/api";
+import { LinesQueryKey } from "@/services/types";
+import { GetLinesType } from "@/types";
 import { envs, routes } from "@/utils/utils";
 import { Feather, FontAwesome6 } from "@expo/vector-icons";
-import { useQuery } from "@tanstack/react-query";
+import { DefaultError, useQuery } from "@tanstack/react-query";
 import { Link, useRouter } from "expo-router";
 import { Drawer } from "expo-router/drawer";
 import { Box, Fab } from "native-base";
@@ -47,7 +49,12 @@ const LinesScreen: FC<LinesScreenPropsType> = ({}) => {
 
   const router = useRouter();
 
-  const { data, isPending, status } = useQuery({
+  const { data, isPending, status } = useQuery<
+    GetLinesType,
+    DefaultError,
+    GetLinesType,
+    LinesQueryKey
+  >({
     queryKey: ["lines"],
     queryFn: API.lines.get,
     staleTime: envs.defaultStaleTime,
@@ -55,7 +62,7 @@ const LinesScreen: FC<LinesScreenPropsType> = ({}) => {
 
   const sections = [
     {
-      title: "Your lines",
+      title: "All lines",
       data: data ?? [],
     },
   ];

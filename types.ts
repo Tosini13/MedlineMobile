@@ -31,3 +31,5 @@ export type LineType = {
   color: string;
   ownerId: string;
 };
+
+export type GetLinesType = Array<LineType & { eventsNumber: number }>;

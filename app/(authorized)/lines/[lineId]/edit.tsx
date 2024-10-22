@@ -2,9 +2,9 @@ import HeaderTitle from "@/components/Header/HeaderTitle";
 import LineForm, { LineFormType } from "@/components/LineForm/LineForm";
 import { setLineFormTitleData } from "@/helpers/headerHelpers";
 import { API } from "@/services/api";
-import { LineType } from "@/types";
+import { useUpdateCache } from "@/services/useUpdateCache";
 import { envs, returnPromiseError } from "@/utils/utils";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import {
   Stack,
   useLocalSearchParams,
@@ -38,7 +38,7 @@ const EditLine: FC<EditLinePropsType> = ({}) => {
     });
   }, [navigation, lineData]);
 
-  const queryClient = useQueryClient();
+  const { onEditLine } = useUpdateCache();
   const { mutate, isPending: isMutationPending } = useMutation({
     mutationFn: (values: LineFormType) =>
       lineId
@@ -48,16 +48,12 @@ const EditLine: FC<EditLinePropsType> = ({}) => {
           })
         : returnPromiseError("Line id is missing"),
     onSuccess: (line) => {
-      if (line) {
-        try {
-          queryClient.setQueryData(["line", lineId], () => line);
-          queryClient.setQueryData(["lines"], (old: LineType[]) =>
-            old.map((e) => (e.id === line.id ? line : e)),
-          );
-          router.navigate(`/lines/${lineId}/events`);
-        } catch (e) {
-          console.log("e", e);
-        }
+      if (!line || !lineId) return;
+      try {
+        onEditLine(lineId, line);
+        router.navigate(`/lines/${lineId}/events`);
+      } catch (e) {
+        console.log("e", e);
       }
     },
   });

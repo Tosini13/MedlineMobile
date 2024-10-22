@@ -3,9 +3,9 @@ import LineForm from "@/components/LineForm/LineForm";
 import { Text } from "@/components/Themed";
 import { useHeaderContext } from "@/context/HeaderContext";
 import { API } from "@/services/api";
-import { LineType } from "@/types";
+import { useUpdateCache } from "@/services/useUpdateCache";
 import { routes } from "@/utils/utils";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { Stack, useRouter } from "expo-router";
 import { Box } from "native-base";
 import { FC, useEffect } from "react";
@@ -36,14 +36,11 @@ const CreateLine: FC<CreateLinePropsType> = ({}) => {
   }, [resetHeaders, setHeaderTitle, setLeftHeader]);
 
   const router = useRouter();
-  const queryClient = useQueryClient();
+  const { onCreateLine } = useUpdateCache();
   const { mutate, isPending, error } = useMutation({
     mutationFn: (values: CreateLineForm) => API.lines.add(values),
     onSuccess: (line) => {
-      queryClient.setQueryData(["lines"], (old?: LineType[]) => [
-        ...(old ?? []),
-        line,
-      ]);
+      onCreateLine(line);
       router.push(routes.lines);
     },
   });
