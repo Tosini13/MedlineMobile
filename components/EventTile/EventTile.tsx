@@ -1,28 +1,53 @@
+import { eventTypesTranslationKeys } from "@/constants";
 import { EventType } from "@/types";
+import { FontAwesome5 } from "@expo/vector-icons";
 import { format } from "date-fns";
+import { Box } from "native-base";
 import { FC } from "react";
-import { Text, View } from "../Themed";
-import EventTileIcon from "./EventTileIcon";
+import { Text, useThemeColor } from "../Themed";
 
 type EventTilePropsType = {
   event: EventType;
 };
 
-const EventTile: FC<EventTilePropsType> = ({ event }) => (
-  <View className="flex flex-row rounded-lg bg-gray-100 px-3 py-3">
-    <View className="my-auto h-fit bg-transparent">
-      <EventTileIcon type={event.type} />
-    </View>
-    <Text
-      numberOfLines={2}
-      className="mx-3 my-auto flex-1 text-2xl font-medium text-[#061C49]"
-    >
-      {event.title}
-    </Text>
-    <Text className="text-md my-auto ml-auto font-medium text-[#7c7e83]">
-      {format(event.date, "HH:mm")}
-    </Text>
-  </View>
-);
+const EventTile: FC<EventTilePropsType> = ({ event }) => {
+  const color = useThemeColor({}, "secondary-accent");
+  return (
+    <Box className="space-y-2 rounded-lg border border-primary-accent bg-primary p-4">
+      <Box className="flex flex-row items-center justify-between">
+        <Box className="flex flex-row items-center space-x-2">
+          <Box className="flex flex-row items-center">
+            <FontAwesome5 name="calendar-alt" size={16} color={color} />
+            <Text className="ml-1.5 text-base text-secondary-accent">
+              {format(event.date, "dd.MM.yyyy")}
+            </Text>
+          </Box>
+          <Box className="flex flex-row items-center">
+            <FontAwesome5 name="clock" size={16} color={color} />
+            <Text className="ml-1.5 text-base text-secondary-accent">
+              {format(event.date, "HH:mm")}
+            </Text>
+          </Box>
+        </Box>
+        <Text className="text-base text-secondary-accent">
+          {eventTypesTranslationKeys[event.type]}
+        </Text>
+      </Box>
+      <Box className="flex flex-row items-end justify-between space-x-2">
+        <Text
+          numberOfLines={2}
+          className="flex-1 text-2xl font-medium text-secondary"
+        >
+          {event.title}
+        </Text>
+        <Text className="text-md ml-auto shrink-0 text-base text-secondary-accent">
+          {event.documents && event.documents.length > 0
+            ? `${event.documents.length} ${event.documents.length === 1 ? "document" : "documents"}`
+            : "no documents"}
+        </Text>
+      </Box>
+    </Box>
+  );
+};
 
 export default EventTile;
