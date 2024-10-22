@@ -73,7 +73,7 @@ const EditEvent: FC<EditEventPropsType> = ({}) => {
           );
           lineId &&
             eventId &&
-            router.replace(
+            router.navigate(
               routes.event
                 .replace("[lineId]", lineId)
                 .replace("[eventId]", eventId),
