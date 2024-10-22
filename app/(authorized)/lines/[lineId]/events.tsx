@@ -11,12 +11,10 @@ import { Text } from "@/components/Themed";
 import { useQuery } from "@tanstack/react-query";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { Box } from "native-base";
-import SwipeableItem from "react-native-swipeable-item";
 
 import React from "react";
 
-import EventTileActionButtons from "@/components/EventTile/EventTileActionButtons";
-import EventHeaderSettingsButton from "@/components/Header/EventHeaderSettingsButton";
+import EventsHeaderSettingsButton from "@/components/Header/EventsHeaderSettingsButton";
 import HeaderTitle from "@/components/Header/HeaderTitle";
 import PlusIcon from "@/components/icons/PlusIcon";
 import { API } from "@/services/api";
@@ -94,7 +92,7 @@ const LineEventsScreen: FC<LineEventsScreenPropsType> = ({}) => {
             />
           ),
           headerRight: lineId
-            ? () => <EventHeaderSettingsButton lineId={lineId} />
+            ? () => <EventsHeaderSettingsButton lineId={lineId} />
             : undefined,
         }}
       />
@@ -122,26 +120,14 @@ const LineEventsScreen: FC<LineEventsScreenPropsType> = ({}) => {
             sections={sections}
             keyExtractor={(item) => item.id}
             renderItem={(item) => (
-              <SwipeableItem
-                key={item.item.id}
-                item={item}
-                renderUnderlayLeft={() => (
-                  <EventTileActionButtons
-                    lineId={lineId ?? ""}
-                    eventId={item.item.id}
-                  />
-                )}
-                snapPointsLeft={[128]}
+              <TouchableHighlight
+                underlayColor="transparent"
+                onPress={() =>
+                  router.navigate(`lines/${lineId}/events/${item.item.id}`)
+                }
               >
-                <TouchableHighlight
-                  underlayColor="transparent"
-                  onPress={() =>
-                    router.navigate(`lines/${lineId}/events/${item.item.id}`)
-                  }
-                >
-                  <EventTile event={item.item} />
-                </TouchableHighlight>
-              </SwipeableItem>
+                <EventTile event={item.item} />
+              </TouchableHighlight>
             )}
             renderSectionHeader={({ section: { title, data } }) =>
               data.length > 0 ? (

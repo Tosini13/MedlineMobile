@@ -1,7 +1,8 @@
 import React, { FC, useState } from "react";
 
+import { LineType } from "@/types";
 import { Feather } from "@expo/vector-icons";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
 
 import { Pressable } from "react-native";
@@ -12,32 +13,33 @@ import { defaultHeaderButtonProps } from "./HeaderButton";
 
 import { Text, useThemeColor } from "@/components/Themed";
 import { API } from "@/services/api";
-import { useUpdateCache } from "@/services/useUpdateCache";
-import { routes } from "@/utils/utils";
 import { MaterialIcons } from "@expo/vector-icons";
 
-type EventHeaderSettingsButtonPropsType = {
+type EventsHeaderSettingsButtonPropsType = {
   lineId: string;
-  eventId: string;
 };
 
-const EventHeaderSettingsButton: FC<EventHeaderSettingsButtonPropsType> = ({
+const EventsHeaderSettingsButton: FC<EventsHeaderSettingsButtonPropsType> = ({
   lineId,
-  eventId,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
   const color = useThemeColor({}, "secondary");
 
-  const { onDeleteEvent } = useUpdateCache();
+  const queryClient = useQueryClient();
   const { mutate, isPending } = useMutation({
-    mutationFn: () => API.events.delete(lineId, eventId),
-    onSuccess: () => {
-      onDeleteEvent(lineId, eventId);
-      setIsOpen(false);
-      lineId &&
-        eventId &&
-        router.replace(routes.events.replace("[lineId]", lineId));
+    mutationFn: () => API.lines.delete(lineId),
+    onSuccess: (lineId) => {
+      try {
+        queryClient.setQueryData(["line", lineId], () => undefined);
+        queryClient.setQueryData(["lines"], (old: LineType[]) =>
+          old.filter((e) => e.id !== lineId),
+        );
+        setIsOpen(false);
+        router.navigate("/(authorized)/lines");
+      } catch (e) {
+        console.log("e", e);
+      }
     },
   });
 
@@ -62,9 +64,7 @@ const EventHeaderSettingsButton: FC<EventHeaderSettingsButtonPropsType> = ({
             className="flex w-full flex-row items-center gap-x-4 px-4 py-3"
             onPress={() => {
               setIsOpen(false);
-              router.navigate(
-                `/(authorized)/lines/${lineId}/events/${eventId}/edit`,
-              );
+              router.navigate(`/(authorized)/lines/${lineId}/edit`);
             }}
           >
             <MaterialIcons name="edit" size={26} color="black" />
@@ -89,4 +89,4 @@ const EventHeaderSettingsButton: FC<EventHeaderSettingsButtonPropsType> = ({
   );
 };
 
-export default EventHeaderSettingsButton;
+export default EventsHeaderSettingsButton;

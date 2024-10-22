@@ -1,4 +1,5 @@
 import Event from "@/components/Event/Event";
+import EventHeaderSettingsButton from "@/components/Header/EventHeaderSettingsButton";
 import HeaderTitle from "@/components/Header/HeaderTitle";
 import { eventTypesTranslationKeys } from "@/constants";
 import { API } from "@/services/api";
@@ -46,6 +47,15 @@ const EventPage: FC<EventPagePropsType> = ({}) => {
               isPending={isPending}
             />
           ),
+          headerRight:
+            lineId && eventId
+              ? () => (
+                  <EventHeaderSettingsButton
+                    lineId={lineId}
+                    eventId={eventId}
+                  />
+                )
+              : undefined,
         }}
       />
       <Box data-testid="event_page" className="bg-primary px-5 py-5" flex={1}>
