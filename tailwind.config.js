@@ -8,7 +8,7 @@ module.exports = {
         "primary-accent": "#DFE1E7",
         secondary: "#041A41",
         "secondary-accent": "#7E89A0",
-        tertiary: "#036DFF",
+        tint: "#036DFF",
       },
     },
   },
