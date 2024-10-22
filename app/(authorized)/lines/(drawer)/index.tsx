@@ -8,7 +8,6 @@ import {
 import HeaderButton, {
   defaultHeaderButtonProps,
 } from "@/components/Header/HeaderButton";
-import HeaderTitle from "@/components/Header/HeaderTitle";
 import LineTile from "@/components/LineTile/LineTile";
 import { Text } from "@/components/Themed";
 import { useHeaderContext } from "@/context/HeaderContext";
@@ -20,11 +19,6 @@ import { Link, useRouter } from "expo-router";
 import { Drawer } from "expo-router/drawer";
 import { Box, Fab } from "native-base";
 import { twMerge } from "tailwind-merge";
-
-const HEADER_TITLE = {
-  title: "Welcome back",
-  subtitle: "How are you feeling today?",
-};
 
 const LEFT_HEADER = {
   node: (
@@ -47,7 +41,6 @@ const LinesScreen: FC<LinesScreenPropsType> = ({}) => {
     useHeaderContext();
 
   useEffect(() => {
-    setHeaderTitle(HEADER_TITLE);
     setLeftHeader(LEFT_HEADER);
     return () => resetHeaders();
   }, [setRightHeader, resetHeaders, setHeaderTitle, setLeftHeader]);
@@ -72,13 +65,7 @@ const LinesScreen: FC<LinesScreenPropsType> = ({}) => {
       <Drawer.Screen
         options={{
           title: "Lines",
-          headerTitle: () => (
-            <HeaderTitle
-              title={"Welcome back"}
-              subtitle="How are you feeling today?"
-              isPending={isPending}
-            />
-          ),
+          headerTitle: () => null,
         }}
       />
       <Box className="bg-white" flex={1}>

@@ -1,3 +1,4 @@
+import { useThemeColor } from "@/components/Themed";
 import { useAuthContext } from "@/context/auth.context";
 import { routes } from "@/utils/utils";
 import { Redirect, Stack } from "expo-router";
@@ -8,6 +9,8 @@ type LayoutPropsType = {};
 
 const Layout: FC<LayoutPropsType> = ({}) => {
   const { isLoggedIn } = useAuthContext();
+  const bg = useThemeColor({}, "background");
+  const text = useThemeColor({}, "text");
 
   if (!isLoggedIn) {
     return <Redirect href={`/${routes.login}`} />;
@@ -17,9 +20,9 @@ const Layout: FC<LayoutPropsType> = ({}) => {
       screenOptions={{
         headerTitleAlign: "center",
         headerStyle: {
-          backgroundColor: "#608ae3",
+          backgroundColor: bg,
         },
-        headerTintColor: "#fff",
+        headerTintColor: text,
       }}
     >
       <Stack.Screen

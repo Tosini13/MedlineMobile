@@ -30,11 +30,11 @@ const HeaderTitle: FC<HeaderTitlePropsType> = ({
       data-testid="header_title"
       className="flex max-w-[200px] flex-col items-center justify-center space-y-0.5"
     >
-      <Text numberOfLines={1} className="text-center font-semibold text-white">
+      <Text numberOfLines={1} className="text-center font-semibold">
         {title}
       </Text>
       {subtitle && (
-        <Text numberOfLines={1} className="text-center text-white">
+        <Text numberOfLines={1} className="text-center">
           {subtitle}
         </Text>
       )}

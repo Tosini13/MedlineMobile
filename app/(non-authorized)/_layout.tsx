@@ -1,3 +1,4 @@
+import { useThemeColor } from "@/components/Themed";
 import { useAuthContext } from "@/context/auth.context";
 import { routes } from "@/utils/utils";
 import {
@@ -12,6 +13,8 @@ type NonAuthorizedLayoutPropsType = {};
 
 const NonAuthorizedLayout: FC<NonAuthorizedLayoutPropsType> = ({}) => {
   const { isLoggedIn } = useAuthContext();
+  const bg = useThemeColor({}, "background");
+  const text = useThemeColor({}, "text");
 
   if (isLoggedIn) {
     return <Redirect href={`/${routes.lines}`} />;
@@ -23,9 +26,9 @@ const NonAuthorizedLayout: FC<NonAuthorizedLayoutPropsType> = ({}) => {
       screenOptions={{
         headerTitleAlign: "center",
         headerStyle: {
-          backgroundColor: "#608ae3",
+          backgroundColor: bg,
         },
-        headerTintColor: "#fff",
+        headerTintColor: text,
       }}
       drawerContent={(props) => {
         return (
