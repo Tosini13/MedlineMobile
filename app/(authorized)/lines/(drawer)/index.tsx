@@ -1,14 +1,9 @@
 import { FC, useEffect } from "react";
-import {
-  ActivityIndicator,
-  SectionList,
-  TouchableHighlight,
-} from "react-native";
+import { ActivityIndicator } from "react-native";
 
 import HeaderButton, {
   defaultHeaderButtonProps,
 } from "@/components/Header/HeaderButton";
-import LineTile from "@/components/LineTile/LineTile";
 import { Text } from "@/components/Themed";
 import { useHeaderContext } from "@/context/HeaderContext";
 import { API } from "@/services/api";
@@ -20,7 +15,16 @@ import { DefaultError, useQuery } from "@tanstack/react-query";
 import { Link, useRouter } from "expo-router";
 import { Drawer } from "expo-router/drawer";
 import { Box, Fab } from "native-base";
+import { useState } from "react";
+import { SectionList, TouchableHighlight } from "react-native";
+
+import LineTile from "@/components/LineTile/LineTile";
+import { View } from "@/components/Themed";
+import { useUpdateCache } from "@/services/useUpdateCache";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { twMerge } from "tailwind-merge";
+
+const launchedKey = "IS_AFTER_FIRST_LAUNCHED";
 
 const LEFT_HEADER = {
   node: (
@@ -41,6 +45,26 @@ type LinesScreenPropsType = {};
 const LinesScreen: FC<LinesScreenPropsType> = ({}) => {
   const { setRightHeader, resetHeaders, setHeaderTitle, setLeftHeader } =
     useHeaderContext();
+
+  const [showWelcomeText, setShowWelcomeText] = useState(true);
+  const { onLaunchedFirstTime } = useUpdateCache();
+
+  const { data: isAfterFirstLaunched } = useQuery({
+    queryKey: ["isAfterFirstLaunched"],
+    queryFn: async () => await AsyncStorage.getItem(launchedKey),
+    staleTime: Infinity,
+  });
+
+  useEffect(() => {
+    setTimeout(() => {
+      setShowWelcomeText(false);
+    }, 8000);
+
+    return () => {
+      AsyncStorage.setItem(launchedKey, "true");
+      onLaunchedFirstTime();
+    };
+  }, [isAfterFirstLaunched]);
 
   useEffect(() => {
     setLeftHeader(LEFT_HEADER);
@@ -75,6 +99,16 @@ const LinesScreen: FC<LinesScreenPropsType> = ({}) => {
           headerTitle: () => null,
         }}
       />
+      {showWelcomeText && (
+        <View className="py-4">
+          <Text className="text-center text-2xl font-medium">
+            Welcome {isAfterFirstLaunched ? "back" : ""},
+          </Text>
+          <Text className="text-center text-2xl font-medium">
+            how do you feel today?
+          </Text>
+        </View>
+      )}
       <Box className="bg-white" flex={1}>
         {isPending && <ActivityIndicator />}
         {status === "success" && data.length > 0 && (

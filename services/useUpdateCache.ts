@@ -29,6 +29,9 @@ export const useUpdateCache = () => {
   const queryClient = useQueryClient();
 
   return {
+    onLaunchedFirstTime: () => {
+      queryClient.setQueryData(["isAfterFirstLaunched"], "true");
+    },
     onCreateLine: (line: LineType) => {
       queryClient.setQueryData<GetLinesType, LinesQueryKey>(
         ["lines"],
