@@ -2,7 +2,7 @@ import { FC } from "react";
 import Svg, { Path, SvgProps } from "react-native-svg";
 
 const PlusIcon: FC<SvgProps> = (props) => (
-  <Svg width="28" height="28" {...props}>
+  <Svg viewBox="0 0 28 28" {...props}>
     <Path
       d="M12.7271 10.2813L13.9998 12.4688L15.2725 10.2813V0H12.7271V10.2813Z"
       fill="currentColor"

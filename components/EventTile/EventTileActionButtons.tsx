@@ -27,7 +27,6 @@ const EventTileActionButtons: FC<EventTileActionButtonsPropsType> = ({
   const { mutate, isPending } = useMutation({
     mutationFn: () => API.events.delete(lineId, eventId),
     onSuccess: () => {
-      console.log("event deleted !log");
       onDeleteEvent(lineId, eventId);
       close();
     },

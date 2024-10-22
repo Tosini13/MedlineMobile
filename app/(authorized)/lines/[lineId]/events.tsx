@@ -3,16 +3,14 @@ import {
   ActivityIndicator,
   SectionList,
   TouchableHighlight,
+  TouchableOpacity,
 } from "react-native";
 
 import EventTile from "@/components/EventTile/EventTile";
 import { Text } from "@/components/Themed";
-import { EVENT_DATE_FORMAT } from "@/constants/date";
-import { FontAwesome6 } from "@expo/vector-icons";
 import { useQuery } from "@tanstack/react-query";
-import { format } from "date-fns";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
-import { Box, Fab } from "native-base";
+import { Box } from "native-base";
 import SwipeableItem from "react-native-swipeable-item";
 
 import React from "react";
@@ -20,6 +18,7 @@ import React from "react";
 import EventTileActionButtons from "@/components/EventTile/EventTileActionButtons";
 import EventHeaderSettingsButton from "@/components/Header/EventHeaderSettingsButton";
 import HeaderTitle from "@/components/Header/HeaderTitle";
+import PlusIcon from "@/components/icons/PlusIcon";
 import { API } from "@/services/api";
 import { EventType } from "@/types";
 import { envs } from "@/utils/utils";
@@ -51,11 +50,18 @@ const LineEventsScreen: FC<LineEventsScreenPropsType> = ({}) => {
 
   const router = useRouter();
 
-  const sections =
-    eventData?.map((event) => ({
-      title: format(new Date(event.date), EVENT_DATE_FORMAT),
-      data: [event],
-    })) ?? [];
+  const sections = [
+    {
+      title: "Upcoming",
+      data:
+        eventData?.filter((event) => new Date(event.date) > new Date()) ?? [],
+    },
+    {
+      title: "Past",
+      data:
+        eventData?.filter((event) => new Date(event.date) <= new Date()) ?? [],
+    },
+  ];
 
   if (isPending) {
     return (
@@ -92,12 +98,27 @@ const LineEventsScreen: FC<LineEventsScreenPropsType> = ({}) => {
             : undefined,
         }}
       />
-      <Box data-testid="line_events_page" className="bg-primary pb-5" flex={1}>
+      <Box
+        data-testid="line_events_page"
+        className="bg-primary px-4 pb-5"
+        flex={1}
+      >
+        <TouchableOpacity
+          onPress={() => router.navigate(`/lines/${lineId}/events/create`)}
+        >
+          <Box className="mt-5 rounded-lg border border-dashed border-secondary-accent bg-primary-accent p-5">
+            <Box className="mx-auto flex w-fit flex-row items-center space-x-2">
+              <PlusIcon className="h-4 w-4 text-secondary-accent" />
+              <Text className="text-xl text-secondary-accent">
+                Add new record
+              </Text>
+            </Box>
+          </Box>
+        </TouchableOpacity>
         {sections.length === 0 ? (
           <Text className="mt-5 text-center text-gray-500">No events yet</Text>
         ) : (
           <SectionList
-            className="px-4"
             sections={sections}
             keyExtractor={(item) => item.id}
             renderItem={(item) => (
@@ -122,23 +143,15 @@ const LineEventsScreen: FC<LineEventsScreenPropsType> = ({}) => {
                 </TouchableHighlight>
               </SwipeableItem>
             )}
-            renderSectionHeader={({ section: { title } }) => (
-              <Text className="bg-primary py-0.5 text-lg font-semibold text-[#4B608B]">
-                {title}
-              </Text>
-            )}
+            renderSectionHeader={({ section: { title, data } }) =>
+              data.length > 0 ? (
+                <Text className="bg-primary py-1 text-lg font-normal text-secondary-accent">
+                  {title}
+                </Text>
+              ) : null
+            }
           />
         )}
-        <Fab
-          onPress={() => router.navigate(`/lines/${lineId}/events/create`)}
-          renderInPortal={false}
-          shadow={0}
-          placement="bottom-right"
-          backgroundColor="#3347FF"
-          size="lg"
-          icon={<FontAwesome6 name="plus" size={16} color="white" />}
-          label="Add Event"
-        />
       </Box>
     </>
   );

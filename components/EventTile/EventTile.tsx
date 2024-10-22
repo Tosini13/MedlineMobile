@@ -15,16 +15,17 @@ const EventTile: FC<EventTilePropsType> = ({ event }) => {
   return (
     <Box className="space-y-2 rounded-lg border border-primary-accent bg-primary p-4">
       <Box className="flex flex-row items-center justify-between">
-        <Box className="flex flex-row items-center space-x-2">
+        <Box className="flex flex-row items-center space-x-1">
           <Box className="flex flex-row items-center">
             <FontAwesome5 name="calendar-alt" size={16} color={color} />
-            <Text className="ml-1.5 text-base text-secondary-accent">
+            <Text className="ml-1 text-base text-secondary-accent">
               {format(event.date, "dd.MM.yyyy")}
             </Text>
           </Box>
+          <Box className="my-1 w-0 self-stretch border-r border-primary-accent" />
           <Box className="flex flex-row items-center">
             <FontAwesome5 name="clock" size={16} color={color} />
-            <Text className="ml-1.5 text-base text-secondary-accent">
+            <Text className="ml-1 text-base text-secondary-accent">
               {format(event.date, "HH:mm")}
             </Text>
           </Box>

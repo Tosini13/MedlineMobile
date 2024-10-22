@@ -146,7 +146,7 @@ const LinesScreen: FC<LinesScreenPropsType> = ({}) => {
           placement="bottom-right"
           className="bg-tint"
           size="lg"
-          icon={<PlusIcon className="text-primary" width="28" height="28" />}
+          icon={<PlusIcon className="h-7 w-7 text-primary" />}
         />
       </Box>
     </>
