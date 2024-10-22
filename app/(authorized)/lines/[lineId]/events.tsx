@@ -121,6 +121,7 @@ const LineEventsScreen: FC<LineEventsScreenPropsType> = ({}) => {
             keyExtractor={(item) => item.id}
             renderItem={(item) => (
               <TouchableHighlight
+                className="my-1"
                 underlayColor="transparent"
                 onPress={() =>
                   router.navigate(`lines/${lineId}/events/${item.item.id}`)

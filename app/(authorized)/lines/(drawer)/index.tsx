@@ -121,7 +121,7 @@ const LinesScreen: FC<LinesScreenPropsType> = ({}) => {
               <TouchableHighlight
                 onPress={() => router.push(`/lines/${item.item.id}/events`)}
                 className={twMerge(
-                  "my-2",
+                  "my-1",
                   item.index === (data?.length ?? 0) - 1 && "mb-10",
                 )}
                 underlayColor="transparent"
