@@ -36,7 +36,7 @@ const DocumentsList: FC<DocumentsListPropsType> = ({
 
   if (status === "pending") {
     return (
-      <View className="mt-2 flex flex-1 items-center justify-center">
+      <View className="my-2 flex flex-1 items-center justify-center">
         <ActivityIndicator />
       </View>
     );
@@ -97,17 +97,17 @@ const Event: FC<EventPropsType> = ({
       <Box className="space-y-2">
         <Text className="text-2xl font-medium text-secondary">{title}</Text>
         <Box className="flex flex-row items-center gap-x-2">
-          <Box className="rounded-full border border-primary-accent p-1 px-3">
+          <Box className="border-primary-accent-2 rounded-full border p-1 px-3">
             <Text className="text-base text-secondary-accent">
               {eventTypesTranslationKeys[type]}
             </Text>
           </Box>
-          <Box className="rounded-full border border-primary-accent p-1 px-3">
+          <Box className="border-primary-accent-2 rounded-full border p-1 px-3">
             <EventDateTime date={date} color={color} />
           </Box>
         </Box>
       </Box>
-      <Box className="border-b border-primary-accent" />
+      <Box className="-mx-4 border-b border-primary-accent" />
       {description && (
         <Box className="space-y-1">
           <Text className="text-base text-secondary-accent">Description</Text>
@@ -124,7 +124,9 @@ const Event: FC<EventPropsType> = ({
         )}
         <Box>
           <ScreenButton
-            onPress={() => router.navigate(`/lines/${lineId}/events/create`)}
+            onPress={() =>
+              router.navigate(`/lines/${lineId}/events/${id}/edit`)
+            }
           >
             <PlusIcon className="h-4 w-4 text-secondary-accent" />
             <Text className="text-xl text-secondary-accent">Add document</Text>

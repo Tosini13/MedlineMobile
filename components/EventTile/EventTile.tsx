@@ -26,11 +26,11 @@ const EventTile: FC<EventTilePropsType> = ({ event }) => {
         >
           {event.title}
         </Text>
-        <Text className="text-md ml-auto shrink-0 text-base text-secondary-accent">
-          {event.documents && event.documents.length > 0
-            ? `${event.documents.length} ${event.documents.length === 1 ? "document" : "documents"}`
-            : "no documents"}
-        </Text>
+        {event.documents && event.documents.length > 0 && (
+          <Text className="text-md ml-auto shrink-0 text-base text-secondary-accent">
+            {`${event.documents.length} ${event.documents.length === 1 ? "document" : "documents"}`}
+          </Text>
+        )}
       </Box>
     </Box>
   );

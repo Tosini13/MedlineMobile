@@ -50,6 +50,7 @@ const EventPage: FC<EventPagePropsType> = ({}) => {
       <Stack.Screen
         options={{
           title: "Event",
+          headerShadowVisible: false,
           headerTitle: () =>
             lineData ? (
               <Box className="flex w-full flex-row items-center justify-start">
@@ -70,7 +71,7 @@ const EventPage: FC<EventPagePropsType> = ({}) => {
               : undefined,
         }}
       />
-      <Box data-testid="event_page" className="bg-primary px-5 py-3" flex={1}>
+      <Box data-testid="event_page" className="bg-primary px-4 py-2" flex={1}>
         {isPending ? (
           <ActivityIndicator />
         ) : lineId && data ? (
