@@ -24,7 +24,9 @@ const NonAuthorizedLayout: FC<NonAuthorizedLayoutPropsType> = ({}) => {
     <Drawer
       initialRouteName={isLoggedIn ? routes.lines : routes.login}
       screenOptions={{
+        headerTitle: "",
         headerTitleAlign: "center",
+        headerShadowVisible: false,
         headerStyle: {
           backgroundColor: bg,
         },

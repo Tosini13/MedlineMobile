@@ -13,7 +13,7 @@ const Input: FC<InputPropsType> = (props) => {
   const [visible, setVisible] = useState(false);
 
   return (
-    <Box className="rounded-lg bg-[#EFF2F6]">
+    <Box className="rounded-lg bg-primary">
       <NativeBaseInput
         className="w-full py-3"
         size="2xl"

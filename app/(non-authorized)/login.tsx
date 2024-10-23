@@ -1,3 +1,4 @@
+import Logo from "@/components/Logo/Logo";
 import { View } from "@/components/Themed";
 import LoginForm, {
   LoginFormType,
@@ -7,6 +8,7 @@ import { API } from "@/services/api";
 import { routes } from "@/utils/utils";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
+import { Box } from "native-base";
 import { FC, useEffect } from "react";
 
 type LoginPropsType = {};
@@ -37,8 +39,11 @@ const Login: FC<LoginPropsType> = ({}) => {
   return (
     <View
       data-testid="login"
-      className="flex h-full flex-col items-center justify-between p-4 pb-8"
+      className="flex h-full flex-1 flex-col items-center justify-center p-4 pb-8"
     >
+      <Box className="my-8">
+        <Logo />
+      </Box>
       <LoginForm isPending={isPending} onSubmit={(values) => mutate(values)} />
     </View>
   );

@@ -1,4 +1,5 @@
-import { Text, useThemeColor, View } from "@/components/Themed";
+import Logo from "@/components/Logo/Logo";
+import { useThemeColor } from "@/components/Themed";
 import { useAuthContext } from "@/context/auth.context";
 import { API } from "@/services/api";
 import { routes } from "@/utils/utils";
@@ -11,8 +12,9 @@ import {
 import { useMutation } from "@tanstack/react-query";
 import { Redirect, useRouter } from "expo-router";
 import { Drawer } from "expo-router/drawer";
+import { Box } from "native-base";
 import { FC } from "react";
-import { ActivityIndicator, Image, Pressable } from "react-native";
+import { ActivityIndicator, Pressable } from "react-native";
 
 type LayoutPropsType = {};
 
@@ -50,14 +52,9 @@ const Layout: FC<LayoutPropsType> = ({}) => {
           },
           headerTintColor: text,
           headerLeft: () => (
-            <View className="ml-3 flex flex-row items-center justify-start space-x-2">
-              <Image
-                alt="MedTracker-io logo"
-                source={require("@/assets/images/logomark-dark.png")}
-                className="h-5 w-5"
-              />
-              <Text className="text-2xl font-medium">MedTracker-io</Text>
-            </View>
+            <Box className="ml-3">
+              <Logo />
+            </Box>
           ),
           headerRight: () => {
             const isOpen = !!navigation

@@ -1,5 +1,7 @@
 import Input from "@/components/form/Input/Input";
-import { FontAwesome } from "@expo/vector-icons";
+import { Text, useThemeColor } from "@/components/Themed";
+import { routes } from "@/utils/utils";
+import { Link } from "expo-router";
 import { Formik } from "formik";
 import { Box, Button } from "native-base";
 import { FC } from "react";
@@ -21,6 +23,7 @@ type LoginFormPropsType = {
 };
 
 const LoginForm: FC<LoginFormPropsType> = ({ onSubmit, isPending }) => {
+  const color = useThemeColor({}, "tint");
   return (
     <Formik
       data-testid="login_form"
@@ -28,37 +31,66 @@ const LoginForm: FC<LoginFormPropsType> = ({ onSubmit, isPending }) => {
       onSubmit={(values) => onSubmit(values)}
     >
       {({ handleChange, handleSubmit, values }) => (
-        <Box className="w-full space-y-3" flex={1}>
+        <Box className="w-full space-y-5" flex={1}>
           <Box>
             <Input
               autoComplete="email"
-              placeholder="identifier"
+              placeholder="User identification"
               onChangeText={handleChange("identifier")}
               value={values.identifier}
             />
           </Box>
           <Box>
             <Input
-              placeholder="password"
               type="password"
+              placeholder="Password"
               onChangeText={handleChange("password")}
               value={values.password}
             />
           </Box>
+          {/* <Box>
+            <Text className="text-base">
+              Forgot your{" "}
+              <Link
+                className="underline"
+                style={{
+                  color,
+                }}
+                href={routes.signup}
+              >
+                password?
+              </Link>
+            </Text>
+          </Box> */}
           <Button
-            className="w-full bg-[#3347FF] py-3"
+            className="w-full py-3"
+            style={{
+              backgroundColor: color,
+            }}
             rounded="full"
             onPress={() => handleSubmit()}
             leftIcon={
               isPending ? (
                 <ActivityIndicator size={16} color="white" />
-              ) : (
-                <FontAwesome name="sign-in" size={16} color="white" />
-              )
+              ) : undefined
             }
           >
-            Log in
+            <Text className="text-base font-semibold text-primary">Log in</Text>
           </Button>
+          <Box className="space-y-1 pt-4">
+            <Text className="text-center text-base text-secondary-accent">
+              Don't you have account yet?
+            </Text>
+            <Link
+              className="text-center text-base font-bold"
+              style={{
+                color,
+              }}
+              href={routes.signup}
+            >
+              Create new account
+            </Link>
+          </Box>
         </Box>
       )}
     </Formik>
