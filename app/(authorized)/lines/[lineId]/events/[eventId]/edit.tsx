@@ -26,7 +26,7 @@ const EditEvent: FC<EditEventPropsType> = ({}) => {
 
   const { data: event, isPending } = useQuery({
     queryKey: ["lineEvents", lineId, eventId],
-    queryFn: async () =>
+    queryFn: () =>
       lineId && eventId ? API.events.getById(lineId, eventId) : null,
     staleTime: 100000,
   });

@@ -2,9 +2,11 @@ import HeaderTitle from "@/components/Header/HeaderTitle";
 import LineForm, { LineFormType } from "@/components/LineForm/LineForm";
 import { setLineFormTitleData } from "@/helpers/headerHelpers";
 import { API } from "@/services/api";
+import { LineQueryKey } from "@/services/types";
 import { useUpdateCache } from "@/services/useUpdateCache";
+import { GetLinesByIdType } from "@/types";
 import { envs, returnPromiseError } from "@/utils/utils";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { DefaultError, useMutation, useQuery } from "@tanstack/react-query";
 import {
   Stack,
   useLocalSearchParams,
@@ -24,7 +26,12 @@ const EditLine: FC<EditLinePropsType> = ({}) => {
     lineId: string;
   }>();
 
-  const { data: lineData, isPending } = useQuery({
+  const { data: lineData, isPending } = useQuery<
+    GetLinesByIdType | null,
+    DefaultError,
+    GetLinesByIdType,
+    LineQueryKey
+  >({
     queryKey: ["line", lineId],
     queryFn: () => (lineId ? API.lines.getById(lineId) : null),
     staleTime: Infinity,

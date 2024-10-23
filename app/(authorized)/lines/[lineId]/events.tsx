@@ -3,22 +3,23 @@ import {
   ActivityIndicator,
   SectionList,
   TouchableHighlight,
-  TouchableOpacity,
 } from "react-native";
 
 import EventTile from "@/components/EventTile/EventTile";
 import { Text } from "@/components/Themed";
-import { useQuery } from "@tanstack/react-query";
+import { DefaultError, useQuery } from "@tanstack/react-query";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { Box } from "native-base";
 
 import React from "react";
 
 import EventsHeaderSettingsButton from "@/components/Header/EventsHeaderSettingsButton";
-import HeaderTitle from "@/components/Header/HeaderTitle";
+import EventsHeaderTitle from "@/components/Header/EventsHeaderTitle";
 import PlusIcon from "@/components/icons/PlusIcon";
+import ScreenButton from "@/components/ScreenButton/ScreenButton";
 import { API } from "@/services/api";
-import { EventType } from "@/types";
+import { LineQueryKey } from "@/services/types";
+import { EventType, GetLinesByIdType } from "@/types";
 import { envs } from "@/utils/utils";
 
 const byDate = (eventA: EventType, eventB: EventType) =>
@@ -29,7 +30,12 @@ type LineEventsScreenPropsType = {};
 const LineEventsScreen: FC<LineEventsScreenPropsType> = ({}) => {
   const { lineId } = useLocalSearchParams<{ lineId: string }>();
 
-  const { data: lineData } = useQuery({
+  const { data: lineData } = useQuery<
+    GetLinesByIdType | null,
+    DefaultError,
+    GetLinesByIdType,
+    LineQueryKey
+  >({
     queryKey: ["line", lineId],
     queryFn: () => (lineId ? API.lines.getById(lineId) : null),
     staleTime: envs.defaultStaleTime,
@@ -78,19 +84,14 @@ const LineEventsScreen: FC<LineEventsScreenPropsType> = ({}) => {
       <Stack.Screen
         options={{
           title: "Events",
-          headerTitle: () => (
-            <HeaderTitle
-              title={lineData?.title ?? "Events"}
-              subtitle={
-                {
-                  error: "Error loading events",
-                  success: `${eventData?.length ?? 0} incoming events!`,
-                  loading: "Loading events",
-                }[status]
-              }
-              isPending={isPending}
-            />
-          ),
+          headerTitle: lineData
+            ? () => (
+                <EventsHeaderTitle
+                  title={lineData?.title}
+                  color={lineData.color}
+                />
+              )
+            : undefined,
           headerRight: lineId
             ? () => <EventsHeaderSettingsButton lineId={lineId} />
             : undefined,
@@ -101,18 +102,16 @@ const LineEventsScreen: FC<LineEventsScreenPropsType> = ({}) => {
         className="bg-primary px-4 pb-5"
         flex={1}
       >
-        <TouchableOpacity
-          onPress={() => router.navigate(`/lines/${lineId}/events/create`)}
-        >
-          <Box className="mt-5 rounded-lg border border-dashed border-secondary-accent bg-primary-accent p-5">
-            <Box className="mx-auto flex w-fit flex-row items-center space-x-2">
-              <PlusIcon className="h-4 w-4 text-secondary-accent" />
-              <Text className="text-xl text-secondary-accent">
-                Add new record
-              </Text>
-            </Box>
-          </Box>
-        </TouchableOpacity>
+        <Box className="mt-3">
+          <ScreenButton
+            onPress={() => router.navigate(`/lines/${lineId}/events/create`)}
+          >
+            <PlusIcon className="h-4 w-4 text-secondary-accent" />
+            <Text className="text-xl text-secondary-accent">
+              Add new record
+            </Text>
+          </ScreenButton>
+        </Box>
         {sections.length === 0 ? (
           <Text className="mt-5 text-center text-gray-500">No events yet</Text>
         ) : (

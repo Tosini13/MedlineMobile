@@ -1,7 +1,7 @@
 import React, { FC, useState } from "react";
 
 import { LineType } from "@/types";
-import { Feather } from "@expo/vector-icons";
+import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
 
@@ -13,7 +13,6 @@ import { defaultHeaderButtonProps } from "./HeaderButton";
 
 import { Text, useThemeColor } from "@/components/Themed";
 import { API } from "@/services/api";
-import { MaterialIcons } from "@expo/vector-icons";
 
 type EventsHeaderSettingsButtonPropsType = {
   lineId: string;
@@ -25,6 +24,7 @@ const EventsHeaderSettingsButton: FC<EventsHeaderSettingsButtonPropsType> = ({
   const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
   const color = useThemeColor({}, "secondary");
+  const borderColor = useThemeColor({}, "primary-accent-2");
 
   const queryClient = useQueryClient();
   const { mutate, isPending } = useMutation({
@@ -57,29 +57,43 @@ const EventsHeaderSettingsButton: FC<EventsHeaderSettingsButtonPropsType> = ({
       isOpen={isOpen}
       onClose={() => setIsOpen(!isOpen)}
     >
-      <Popover.Content w="40" className="bg-primary">
-        <Popover.Body className="m-0 flex flex-col items-stretch p-0">
+      <Popover.Content
+        w="40"
+        className="bg-primary"
+        right="8"
+        top="-20"
+        borderColor={borderColor}
+      >
+        <Popover.Body className="m-0 flex flex-col items-stretch border-primary-accent bg-primary p-0">
           <Pressable
             accessibilityLabel="Edit line"
-            className="flex w-full flex-row items-center gap-x-4 px-4 py-3"
+            className="flex w-full flex-row items-center gap-x-3 border-primary-accent px-4 py-3"
             onPress={() => {
               setIsOpen(false);
               router.navigate(`/(authorized)/lines/${lineId}/edit`);
             }}
           >
-            <MaterialIcons name="edit" size={26} color="black" />
+            <MaterialCommunityIcons
+              name="pencil-outline"
+              size={24}
+              color={color}
+            />
             <Text className="text-xl">Edit</Text>
           </Pressable>
-          <Box className="h-[1px] bg-gray-300" />
+          <Box className="bg-primary-accent-2 h-[1px]" />
           <Pressable
             accessibilityLabel="Delete line"
-            className="flex w-full flex-row items-center gap-x-4 px-4 py-3"
+            className="flex w-full flex-row items-center gap-x-3 px-4 py-3"
             onPress={() => mutate()}
           >
             {isPending ? (
-              <ActivityIndicator color="black" />
+              <ActivityIndicator color={color} />
             ) : (
-              <MaterialIcons name="delete" size={26} color="black" />
+              <MaterialCommunityIcons
+                name="trash-can-outline"
+                size={24}
+                color={color}
+              />
             )}
             <Text className="text-xl">Delete</Text>
           </Pressable>

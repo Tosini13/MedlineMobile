@@ -50,11 +50,11 @@ const Layout: FC<LayoutPropsType> = ({}) => {
           },
           headerTintColor: text,
           headerLeft: () => (
-            <View className="ml-2 flex flex-row items-center justify-start">
+            <View className="ml-3 flex flex-row items-center justify-start space-x-2">
               <Image
                 alt="MedTracker-io logo"
                 source={require("@/assets/images/logomark-dark.png")}
-                className="mr-1 h-5 w-5"
+                className="h-5 w-5"
               />
               <Text className="text-2xl font-medium">MedTracker-io</Text>
             </View>

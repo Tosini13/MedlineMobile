@@ -33,3 +33,4 @@ export type LineType = {
 };
 
 export type GetLinesType = Array<LineType & { eventsNumber: number }>;
+export type GetLinesByIdType = LineType;

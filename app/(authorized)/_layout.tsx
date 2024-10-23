@@ -1,29 +1,43 @@
 import { useThemeColor } from "@/components/Themed";
 import { useAuthContext } from "@/context/auth.context";
 import { routes } from "@/utils/utils";
+import { Feather } from "@expo/vector-icons";
 import { Redirect, Stack } from "expo-router";
 import { FC } from "react";
-import { ActivityIndicator } from "react-native";
+import { ActivityIndicator, Pressable } from "react-native";
 
 type LayoutPropsType = {};
 
 const Layout: FC<LayoutPropsType> = ({}) => {
   const { isLoggedIn } = useAuthContext();
   const bg = useThemeColor({}, "background");
-  const text = useThemeColor({}, "text");
+  const text = useThemeColor({}, "secondary");
 
   if (!isLoggedIn) {
     return <Redirect href={`/${routes.login}`} />;
   }
   return (
     <Stack
-      screenOptions={{
+      screenOptions={({ navigation }) => ({
         headerTitleAlign: "center",
         headerStyle: {
           backgroundColor: bg,
         },
         headerTintColor: text,
-      }}
+        headerLeft: navigation.canGoBack
+          ? () => {
+              console.log("navigation !log", navigation);
+              return (
+                <Pressable
+                  onPress={() => navigation.goBack()}
+                  className="flex h-11 w-11 items-center justify-center"
+                >
+                  <Feather name="arrow-left" size={26} color={text} />
+                </Pressable>
+              );
+            }
+          : undefined,
+      })}
     >
       <Stack.Screen
         name={routes.events}

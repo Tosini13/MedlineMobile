@@ -1,4 +1,8 @@
 export type LinesQueryKey = ["lines"];
-export type LineQueryKey = ["lines", string];
-export type LineEventsQueryKey = ["lineEvents", string];
-export type LineEventQueryKey = ["lineEvents", string, string];
+export type LineQueryKey = ["line", string | undefined];
+export type LineEventsQueryKey = ["lineEvents", string | undefined];
+export type LineEventQueryKey = [
+  "lineEvents",
+  string | undefined,
+  string | undefined,
+];
