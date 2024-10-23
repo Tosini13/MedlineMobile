@@ -25,17 +25,14 @@ const Layout: FC<LayoutPropsType> = ({}) => {
         },
         headerTintColor: text,
         headerLeft: navigation.canGoBack
-          ? () => {
-              console.log("navigation !log", navigation);
-              return (
-                <Pressable
-                  onPress={() => navigation.goBack()}
-                  className="flex h-11 w-11 items-center justify-center"
-                >
-                  <Feather name="arrow-left" size={26} color={text} />
-                </Pressable>
-              );
-            }
+          ? () => (
+              <Pressable
+                onPress={() => navigation.goBack()}
+                className="flex h-11 w-11 items-center justify-center"
+              >
+                <Feather name="arrow-left" size={26} color={text} />
+              </Pressable>
+            )
           : undefined,
       })}
     >
