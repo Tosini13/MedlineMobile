@@ -12,8 +12,10 @@ const EventsHeaderTitle: FC<EventsHeaderTitlePropsType> = ({
   title,
   color,
 }) => (
-  <Box className="flex flex-row items-center">
-    <ColorDot color={color} />
+  <Box className="flex flex-row">
+    <Box className="mt-1">
+      <ColorDot color={color} />
+    </Box>
     <Text className="mx-2 text-xl font-medium text-secondary">{title}</Text>
   </Box>
 );

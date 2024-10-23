@@ -52,7 +52,7 @@ const EventPage: FC<EventPagePropsType> = ({}) => {
           title: "Event",
           headerTitle: () =>
             lineData ? (
-              <Box className="mx-0 flex w-full flex-row items-center">
+              <Box className="flex w-full flex-row items-center justify-start">
                 <EventHeaderTitle
                   title={lineData.title}
                   color={lineData.color}

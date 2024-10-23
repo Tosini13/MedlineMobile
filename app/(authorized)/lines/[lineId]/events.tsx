@@ -30,7 +30,7 @@ type LineEventsScreenPropsType = {};
 const LineEventsScreen: FC<LineEventsScreenPropsType> = ({}) => {
   const { lineId } = useLocalSearchParams<{ lineId: string }>();
 
-  const { data: lineData } = useQuery<
+  const { data: lineData, status } = useQuery<
     GetLinesByIdType | null,
     DefaultError,
     GetLinesByIdType,
@@ -41,11 +41,7 @@ const LineEventsScreen: FC<LineEventsScreenPropsType> = ({}) => {
     staleTime: envs.defaultStaleTime,
   });
 
-  const {
-    data: eventData,
-    isPending,
-    status,
-  } = useQuery({
+  const { data: eventData, isPending } = useQuery({
     queryKey: ["lineEvents", lineId],
     queryFn: () =>
       lineId ? API.events.get(lineId).then((data) => data.sort(byDate)) : [],
@@ -83,26 +79,34 @@ const LineEventsScreen: FC<LineEventsScreenPropsType> = ({}) => {
     <>
       <Stack.Screen
         options={{
-          title: "Events",
-          headerTitle: lineData
-            ? () => (
-                <EventsHeaderTitle
-                  title={lineData?.title}
-                  color={lineData.color}
-                />
-              )
-            : undefined,
+          headerTitle: () => "",
           headerRight: lineId
             ? () => <EventsHeaderSettingsButton lineId={lineId} />
             : undefined,
+          headerShadowVisible: false,
         }}
       />
       <Box
         data-testid="line_events_page"
-        className="bg-primary px-4 pb-5"
+        className="bg-primary px-4 pb-5 pt-2"
         flex={1}
       >
-        <Box className="mt-3">
+        {status !== "error" && (
+          <Box className="border-primary-accent-2 -mx-4 mb-4 border-b bg-primary px-7 pb-4">
+            {status === "pending" && (
+              <Box className="ml-0 mr-auto">
+                <ActivityIndicator />
+              </Box>
+            )}
+            {lineData && (
+              <EventsHeaderTitle
+                title={lineData?.title}
+                color={lineData.color}
+              />
+            )}
+          </Box>
+        )}
+        <Box>
           <ScreenButton
             onPress={() => router.navigate(`/lines/${lineId}/events/create`)}
           >

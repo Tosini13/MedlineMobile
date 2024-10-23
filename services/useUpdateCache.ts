@@ -40,7 +40,7 @@ export const useUpdateCache = () => {
     },
     onEditLine: (lineId: string, line: LineType) => {
       queryClient.setQueryData<LineType, LineQueryKey>(
-        ["lines", lineId],
+        ["line", lineId],
         () => line,
       );
       queryClient.setQueryData<GetLinesType, LinesQueryKey>(["lines"], (old) =>
