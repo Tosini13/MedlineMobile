@@ -2,11 +2,11 @@ import Input from "@/components/form/Input/Input";
 import { Text, useThemeColor } from "@/components/Themed";
 import { routes } from "@/utils/utils";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { Link } from "expo-router";
+import { useRouter } from "expo-router";
 import { Formik } from "formik";
 import { Box, Button } from "native-base";
 import { FC } from "react";
-import { ActivityIndicator } from "react-native";
+import { ActivityIndicator, Pressable } from "react-native";
 
 type InfoTextPropsType = {
   label: string;
@@ -43,6 +43,7 @@ type SignUpFormPropsType = {
 
 const SignUpForm: FC<SignUpFormPropsType> = ({ onSubmit, isPending }) => {
   const color = useThemeColor({}, "tint");
+  const router = useRouter();
   return (
     <Formik
       data-testid="sign_up_form"
@@ -99,15 +100,16 @@ const SignUpForm: FC<SignUpFormPropsType> = ({ onSubmit, isPending }) => {
             <Text className="text-center text-base text-secondary-accent">
               Do you have already account?
             </Text>
-            <Link
-              className="text-center text-base font-bold"
-              style={{
-                color,
-              }}
-              href={routes.login}
-            >
-              Log in
-            </Link>
+            <Pressable onPress={() => router.replace(routes.login)}>
+              <Text
+                className="text-center text-base font-bold"
+                style={{
+                  color,
+                }}
+              >
+                Log in
+              </Text>
+            </Pressable>
           </Box>
         </Box>
       )}

@@ -20,10 +20,6 @@ const Layout: FC<LayoutPropsType> = ({}) => {
     <Stack
       screenOptions={({ navigation }) => ({
         headerTitleAlign: "center",
-        headerStyle: {
-          backgroundColor: bg,
-        },
-        headerTintColor: text,
         headerLeft: navigation.canGoBack
           ? () => (
               <Pressable
