@@ -10,11 +10,11 @@ import { DocumentPickerAsset, getDocumentAsync } from "expo-document-picker";
 import { Formik } from "formik";
 import { Box, Button, Select } from "native-base";
 import { FC } from "react";
-import { ActivityIndicator } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import DateTimePicker from "../DateTimePicker/DateTimePicker";
 import DocumentTile from "../DocumentTile/DocumentTile";
 import { Text, View } from "../Themed";
+import SubmitButton from "../form/Button/SubmitButton";
 
 export type EventFormType = Omit<EventType, "id" | "lineId" | "date"> & {
   date: Date;
@@ -191,21 +191,13 @@ const EventForm: FC<EventFormPropsType> = ({
             >
               Add files
             </Button>
-            <Button
-              className="w-full bg-[#3347FF] py-3"
-              rounded="full"
-              onPress={() => handleSubmit()}
-              disabled={isPending}
-              leftIcon={
-                isPending ? (
-                  <ActivityIndicator size={16} color="white" />
-                ) : (
-                  <FontAwesome6 name="plus" size={16} color="white" />
-                )
-              }
-            >
-              {initialValues ? "Save event" : "Create event"}
-            </Button>
+            <Box>
+              <SubmitButton
+                isPending={isPending}
+                label={initialValues ? "Save event" : "Create event"}
+                onPress={() => handleSubmit()}
+              />
+            </Box>
           </Box>
         );
       }}

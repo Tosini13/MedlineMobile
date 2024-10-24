@@ -1,12 +1,13 @@
+import SubmitButton from "@/components/form/Button/SubmitButton";
 import Input from "@/components/form/Input/Input";
 import { Text, useThemeColor } from "@/components/Themed";
 import { routes } from "@/utils/utils";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { Formik } from "formik";
-import { Box, Button } from "native-base";
+import { Box } from "native-base";
 import { FC } from "react";
-import { ActivityIndicator, Pressable } from "react-native";
+import { Pressable } from "react-native";
 
 type InfoTextPropsType = {
   label: string;
@@ -79,23 +80,13 @@ const SignUpForm: FC<SignUpFormPropsType> = ({ onSubmit, isPending }) => {
               </Box>
             </Box>
           </Box>
-          <Button
-            className="w-full py-3"
-            rounded="full"
-            style={{
-              backgroundColor: color,
-            }}
-            onPress={() => handleSubmit()}
-            leftIcon={
-              isPending ? (
-                <ActivityIndicator size={16} color="white" />
-              ) : undefined
-            }
-          >
-            <Text className="text-base font-semibold text-primary">
-              Sign Up
-            </Text>
-          </Button>
+          <Box>
+            <SubmitButton
+              isPending={isPending}
+              label="Sign Up"
+              onPress={() => handleSubmit()}
+            />
+          </Box>
           <Box className="space-y-1 pt-4">
             <Text className="text-center text-base text-secondary-accent">
               Do you have already account?

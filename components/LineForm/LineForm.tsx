@@ -1,12 +1,11 @@
 import Input from "@/components/form/Input/Input";
 import TextArea from "@/components/form/TextArea/TextArea";
 import { LineType } from "@/types";
-import { FontAwesome6 } from "@expo/vector-icons";
 import { Formik } from "formik";
-import { Box, Button } from "native-base";
+import { Box } from "native-base";
 import { FC } from "react";
-import { ActivityIndicator } from "react-native";
 import ColorPicker, { HueSlider } from "reanimated-color-picker";
+import SubmitButton from "../form/Button/SubmitButton";
 
 export type LineFormType = Omit<LineType, "id" | "ownerId">;
 
@@ -57,20 +56,13 @@ const LineForm: FC<LineFormPropsType> = ({
               <HueSlider />
             </ColorPicker>
           </Box>
-          <Button
-            className="w-full bg-[#3347FF] py-3"
-            rounded="full"
-            onPress={() => handleSubmit()}
-            leftIcon={
-              isPending ? (
-                <ActivityIndicator size={16} color="white" />
-              ) : (
-                <FontAwesome6 name="plus" size={16} color="white" />
-              )
-            }
-          >
-            {initialValues ? "Save line" : "Create line"}
-          </Button>
+          <Box>
+            <SubmitButton
+              isPending={isPending}
+              label={initialValues ? "Save line" : "Create line"}
+              onPress={() => handleSubmit()}
+            />
+          </Box>
         </Box>
       )}
     </Formik>
