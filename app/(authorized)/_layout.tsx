@@ -10,7 +10,6 @@ type LayoutPropsType = {};
 
 const Layout: FC<LayoutPropsType> = ({}) => {
   const { isLoggedIn } = useAuthContext();
-  const bg = useThemeColor({}, "background");
   const text = useThemeColor({}, "secondary");
 
   if (!isLoggedIn) {
