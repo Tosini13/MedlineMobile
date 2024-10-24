@@ -119,6 +119,7 @@ const LinesScreen: FC<LinesScreenPropsType> = ({}) => {
             keyExtractor={(item) => item.id}
             renderItem={(item) => (
               <TouchableHighlight
+                key={item.item.id}
                 onPress={() => router.push(`/lines/${item.item.id}/events`)}
                 className={twMerge(
                   "my-1",

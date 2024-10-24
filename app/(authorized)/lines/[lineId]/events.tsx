@@ -122,15 +122,16 @@ const LineEventsScreen: FC<LineEventsScreenPropsType> = ({}) => {
           <SectionList
             sections={sections}
             keyExtractor={(item) => item.id}
-            renderItem={(item) => (
+            renderItem={({ item }) => (
               <TouchableHighlight
+                key={item.id}
                 className="my-1"
                 underlayColor="transparent"
                 onPress={() =>
-                  router.navigate(`lines/${lineId}/events/${item.item.id}`)
+                  router.navigate(`lines/${lineId}/events/${item.id}`)
                 }
               >
-                <EventTile event={item.item} />
+                <EventTile event={item} />
               </TouchableHighlight>
             )}
             renderSectionHeader={({ section: { title, data } }) =>
