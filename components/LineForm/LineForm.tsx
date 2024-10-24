@@ -36,7 +36,7 @@ const LineForm: FC<LineFormPropsType> = ({
         <Box className="space-y-3" flex={1}>
           <Box>
             <Input
-              placeholder="Line name"
+              placeholder="Line title"
               onChangeText={handleChange("title")}
               value={values.title}
             />
