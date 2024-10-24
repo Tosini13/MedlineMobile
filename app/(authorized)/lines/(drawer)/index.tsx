@@ -12,8 +12,7 @@ import { GetLinesType } from "@/types";
 import { envs, routes } from "@/utils/utils";
 import { Feather } from "@expo/vector-icons";
 import { DefaultError, useQuery } from "@tanstack/react-query";
-import { Link, useRouter } from "expo-router";
-import { Drawer } from "expo-router/drawer";
+import { Link, Stack, useRouter } from "expo-router";
 import { Box, Fab } from "native-base";
 import { useState } from "react";
 import { SectionList, TouchableHighlight } from "react-native";
@@ -94,10 +93,9 @@ const LinesScreen: FC<LinesScreenPropsType> = ({}) => {
 
   return (
     <>
-      <Drawer.Screen
+      <Stack.Screen
         options={{
-          title: "Lines",
-          headerTitle: () => null,
+          title: "",
         }}
       />
       {showWelcomeText && (

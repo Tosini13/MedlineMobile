@@ -31,7 +31,7 @@ const Signup: FC<SignupPropsType> = ({}) => {
     mutationFn: (values: LoginFormType) =>
       API.auth.signUp(values.identifier, values.password),
     onSuccess: () => {
-      router.push(routes.lines);
+      router.navigate(routes.lines);
     },
   });
 

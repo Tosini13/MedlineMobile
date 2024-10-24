@@ -10,7 +10,7 @@ import {
   DrawerItemList,
 } from "@react-navigation/drawer";
 import { useMutation } from "@tanstack/react-query";
-import { Redirect, useRouter } from "expo-router";
+import { Redirect, Stack, useRouter } from "expo-router";
 import { Drawer } from "expo-router/drawer";
 import { Box } from "native-base";
 import { FC } from "react";
@@ -35,6 +35,44 @@ const Layout: FC<LayoutPropsType> = ({}) => {
   if (!isLoggedIn) {
     return <Redirect href={`/${routes.login}`} />;
   }
+
+  return (
+    <>
+      <Stack.Screen
+        options={{
+          title: "",
+          headerShown: false,
+        }}
+      />
+      <Stack
+        initialRouteName={routes.lines}
+        screenOptions={({ navigation }) => ({
+          animation: "slide_from_left",
+          headerShadowVisible: false,
+          headerTitleAlign: "center",
+          headerStyle: {
+            backgroundColor: bg,
+          },
+          headerTitle: "",
+          headerTintColor: text,
+          headerLeft: () => <Logo />,
+          headerRight: () => {
+            const isMenuOpen = navigation.canGoBack();
+            return (
+              <Pressable
+                onPress={() =>
+                  isMenuOpen ? navigation.goBack() : navigation.navigate("menu")
+                }
+                className="flex h-11 w-11 flex-row items-center justify-end"
+              >
+                <Feather name={isMenuOpen ? "minus" : "menu"} size={26} />
+              </Pressable>
+            );
+          },
+        })}
+      />
+    </>
+  );
   return (
     <>
       <Drawer.Screen

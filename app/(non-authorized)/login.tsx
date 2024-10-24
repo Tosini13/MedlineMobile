@@ -32,7 +32,7 @@ const Login: FC<LoginPropsType> = ({}) => {
     mutationFn: (values: LoginFormType) =>
       API.auth.signIn(values.identifier, values.password),
     onSuccess: () => {
-      router.push(routes.lines);
+      router.replace(routes.lines);
     },
   });
 
