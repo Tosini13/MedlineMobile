@@ -4,13 +4,13 @@ import { ActivityIndicator } from "react-native";
 import HeaderButton, {
   defaultHeaderButtonProps,
 } from "@/components/Header/HeaderButton";
-import { Text } from "@/components/Themed";
+import { Text, useThemeColor } from "@/components/Themed";
 import { useHeaderContext } from "@/context/HeaderContext";
 import { API } from "@/services/api";
 import { LinesQueryKey } from "@/services/types";
 import { GetLinesType } from "@/types";
 import { envs, routes } from "@/utils/utils";
-import { Feather } from "@expo/vector-icons";
+import { Feather, MaterialIcons } from "@expo/vector-icons";
 import { DefaultError, useQuery } from "@tanstack/react-query";
 import { Link, Stack, useRouter } from "expo-router";
 import { Box, Fab } from "native-base";
@@ -44,6 +44,7 @@ const LEFT_HEADER = {
 type LinesScreenPropsType = {};
 
 const LinesScreen: FC<LinesScreenPropsType> = ({}) => {
+  const iconColor = useThemeColor({}, "secondary-accent");
   const { setRightHeader, resetHeaders, setHeaderTitle, setLeftHeader } =
     useHeaderContext();
   const [keyword, setKeyword] = useState<string>("");
@@ -86,12 +87,14 @@ const LinesScreen: FC<LinesScreenPropsType> = ({}) => {
     staleTime: envs.defaultStaleTime,
   });
 
+  const lines = data?.filter(({ title }) =>
+    title.match(new RegExp(keyword, "i")),
+  );
+
   const sections = [
     {
       title: keyword ? "Searched lines" : "All lines",
-      data:
-        data?.filter(({ title }) => title.match(new RegExp(keyword, "i"))) ??
-        [],
+      data: lines ?? [],
     },
   ];
 
@@ -117,7 +120,15 @@ const LinesScreen: FC<LinesScreenPropsType> = ({}) => {
           <SearchForm onSubmit={(k) => setKeyword(k)} />
         </Box>
         {isPending && <ActivityIndicator />}
-        {status === "success" && data.length > 0 && (
+        {status === "success" && lines?.length === 0 && !!keyword && (
+          <Box className="flex items-center space-y-2">
+            <MaterialIcons name="search-off" size={120} color={iconColor} />
+            <Text className="text-center text-lg font-semibold text-[#4B608B]">
+              No results of searched phrase
+            </Text>
+          </Box>
+        )}
+        {status === "success" && (lines?.length ?? 0) > 0 && (
           <SectionList
             className="px-4"
             sections={sections}
