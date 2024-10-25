@@ -34,6 +34,7 @@ const EditLine: FC<EditLinePropsType> = ({}) => {
   >({
     queryKey: ["line", lineId],
     queryFn: () => (lineId ? API.lines.getById(lineId) : null),
+    enabled: !!lineId,
     staleTime: Infinity,
   });
 
