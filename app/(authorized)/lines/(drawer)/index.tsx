@@ -19,6 +19,7 @@ import { SectionList, TouchableHighlight } from "react-native";
 
 import PlusIcon from "@/components/icons/PlusIcon";
 import LineTile from "@/components/LineTile/LineTile";
+import SearchForm from "@/components/SearchForm/SearchForm";
 import { View } from "@/components/Themed";
 import { useUpdateCache } from "@/services/useUpdateCache";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -45,6 +46,7 @@ type LinesScreenPropsType = {};
 const LinesScreen: FC<LinesScreenPropsType> = ({}) => {
   const { setRightHeader, resetHeaders, setHeaderTitle, setLeftHeader } =
     useHeaderContext();
+  const [keyword, setKeyword] = useState<string>("");
 
   const [showWelcomeText, setShowWelcomeText] = useState(true);
   const { onLaunchedFirstTime } = useUpdateCache();
@@ -86,8 +88,10 @@ const LinesScreen: FC<LinesScreenPropsType> = ({}) => {
 
   const sections = [
     {
-      title: "All lines",
-      data: data ?? [],
+      title: keyword ? "Searched lines" : "All lines",
+      data:
+        data?.filter(({ title }) => title.match(new RegExp(keyword, "i"))) ??
+        [],
     },
   ];
 
@@ -98,17 +102,20 @@ const LinesScreen: FC<LinesScreenPropsType> = ({}) => {
           title: "",
         }}
       />
-      {showWelcomeText && (
-        <View className="py-4">
-          <Text className="text-center text-2xl font-medium">
-            Welcome {isAfterFirstLaunched ? "back" : ""},
-          </Text>
-          <Text className="text-center text-2xl font-medium">
-            how do you feel today?
-          </Text>
-        </View>
-      )}
-      <Box className="bg-primary" flex={1}>
+      <Box className="space-y-4 bg-primary pt-4" flex={1}>
+        {showWelcomeText && (
+          <View>
+            <Text className="text-center text-2xl font-medium">
+              Welcome {isAfterFirstLaunched ? "back" : ""},
+            </Text>
+            <Text className="text-center text-2xl font-medium">
+              how do you feel today?
+            </Text>
+          </View>
+        )}
+        <Box className="px-4">
+          <SearchForm onSubmit={(k) => setKeyword(k)} />
+        </Box>
         {isPending && <ActivityIndicator />}
         {status === "success" && data.length > 0 && (
           <SectionList

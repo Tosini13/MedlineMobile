@@ -57,6 +57,7 @@ const HeaderSettingsButton: FC<HeaderSettingsButtonPropsType> = ({
           {items.map(({ label, icon, isPending, onPress }, index) => (
             <>
               <Pressable
+                key={label}
                 accessibilityLabel="Edit line"
                 disabled={isPending}
                 className="flex w-full flex-row items-center gap-x-3 border-primary-accent px-4 py-3"
