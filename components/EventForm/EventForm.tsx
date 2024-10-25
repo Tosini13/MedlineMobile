@@ -13,8 +13,10 @@ import { FC } from "react";
 import { ScrollView } from "react-native-gesture-handler";
 import DateTimePicker from "../DateTimePicker/DateTimePicker";
 import DocumentTile from "../DocumentTile/DocumentTile";
-import { Text, View } from "../Themed";
+import ScreenButton from "../ScreenButton/ScreenButton";
+import { Text, useThemeColor, View } from "../Themed";
 import SubmitButton from "../form/Button/SubmitButton";
+import PlusIcon from "../icons/PlusIcon";
 
 export type EventFormType = Omit<EventType, "id" | "lineId" | "date"> & {
   date: Date;
@@ -44,6 +46,9 @@ const EventForm: FC<EventFormPropsType> = ({
   isPending,
   uploadProgress,
 }) => {
+  const color = useThemeColor({}, "primary-accent-2");
+  const textColor = useThemeColor({}, "secondary");
+  const iconColor = useThemeColor({}, "secondary-accent");
   return (
     <Formik
       data-testid="event_form"
@@ -51,120 +56,127 @@ const EventForm: FC<EventFormPropsType> = ({
       enableReinitialize
       onSubmit={(values) => onSubmit(values)}
     >
-      {({ handleChange, handleSubmit, values, setFieldValue }) => {
-        const filesNumber = values.files
-          ? (values.files.new?.length ?? 0) +
-            (values.files.existing?.length ?? 0)
-          : 0;
-        return (
-          <Box className="space-y-3" flex={1}>
-            <Box>
-              <Select
-                selectedValue={values.type}
-                accessibilityLabel="Choose event type"
-                placeholder="Event type"
-                _selectedItem={{
-                  bg: "teal.600",
-                  endIcon: (
-                    <FontAwesome6 name="check" size={16} color="white" />
-                  ),
-                }}
-                onValueChange={(itemValue) => setFieldValue("type", itemValue)}
-              >
-                {Object.values(eventType).map((type) => (
-                  <Select.Item
-                    key={type}
-                    label={eventTypesTranslationKeys[type]}
-                    value={type}
+      {({ handleChange, handleSubmit, values, setFieldValue }) => (
+        <Box className="space-y-3" flex={1}>
+          <Box>
+            <Select
+              rounded="md"
+              className="w-full bg-primary py-3"
+              size="2xl"
+              selectedValue={values.type}
+              accessibilityLabel="Choose event type"
+              placeholder="Event type"
+              _selectedItem={{
+                bg: color,
+                color: textColor,
+                endIcon: (
+                  <FontAwesome6 name="check" size={20} color={textColor} />
+                ),
+              }}
+              onValueChange={(itemValue) => setFieldValue("type", itemValue)}
+              dropdownIcon={
+                <Box className="mr-3">
+                  <FontAwesome6
+                    name="chevron-down"
+                    size={20}
+                    color={iconColor}
                   />
-                ))}
-              </Select>
-            </Box>
-            <Box>
-              <DateTimePicker
-                value={values.date}
-                mode="datetime"
-                onChange={(date) => {
-                  setFieldValue("date", date);
-                }}
-              />
-            </Box>
-            <Box>
-              <Input
-                placeholder="Event title"
-                onChangeText={handleChange("title")}
-                value={values.title}
-              />
-            </Box>
-            <Box>
-              <TextArea
-                placeholder="Description"
-                onChangeText={handleChange("description")}
-                value={values.description}
-              />
-            </Box>
-            <View>
-              <Text>
-                {`You chose ${filesNumber} ${filesNumber === 1 ? "file" : "files"}`}
-              </Text>
-              <ScrollView horizontal className="space-x-1">
-                {values.files?.existing?.map((file) => (
-                  <View className="flex-1 space-y-0.5" key={file.url}>
-                    <DocumentTile
-                      name={file.name}
-                      url={file.url}
-                      mimeType={
-                        initialValues?.documents?.find(
-                          (doc) => doc.path === file.fullPath,
-                        )?.type
-                      }
-                      uploadingPercentage={
-                        uploadProgress &&
-                        uploadProgress[formatFileName(file.name)]
-                      }
-                    />
-                    <Button
-                      onPress={() =>
-                        setFieldValue(
-                          "files.existing",
-                          values.files?.existing?.filter(
-                            (f) => f.url !== file.url,
-                          ),
-                        )
-                      }
-                      variant="outline"
-                    >
-                      <FontAwesome6 name="trash-alt" size={16} color="red" />
-                    </Button>
-                  </View>
-                ))}
-                {values.files?.new?.map((file) => (
-                  <View className="flex-1 space-y-0.5" key={file.uri}>
-                    <DocumentTile
-                      name={file.name}
-                      url={file.uri}
-                      mimeType={file.mimeType}
-                      uploadingPercentage={
-                        uploadProgress &&
-                        uploadProgress[formatFileName(file.name)]
-                      }
-                    />
-                    <Button
-                      onPress={() =>
-                        setFieldValue(
-                          "files.new",
-                          values.files?.new?.filter((f) => f.uri !== file.uri),
-                        )
-                      }
-                      variant="outline"
-                    >
-                      <FontAwesome6 name="trash-alt" size={16} color="red" />
-                    </Button>
-                  </View>
-                ))}
-              </ScrollView>
-            </View>
-            <Button
+                </Box>
+              }
+            >
+              {Object.values(eventType).map((type) => (
+                <Select.Item
+                  key={type}
+                  label={eventTypesTranslationKeys[type]}
+                  value={type}
+                  className="text-secondary-accent"
+                />
+              ))}
+            </Select>
+          </Box>
+          <Box>
+            <DateTimePicker
+              value={values.date}
+              mode="datetime"
+              onChange={(date) => {
+                setFieldValue("date", date);
+              }}
+            />
+          </Box>
+          <Box>
+            <Input
+              placeholder="Event title"
+              onChangeText={handleChange("title")}
+              value={values.title}
+            />
+          </Box>
+          <Box>
+            <TextArea
+              placeholder="Description"
+              onChangeText={handleChange("description")}
+              value={values.description}
+            />
+          </Box>
+          <View>
+            <ScrollView horizontal className="space-x-1">
+              {values.files?.existing?.map((file) => (
+                <View className="flex-1 space-y-0.5" key={file.url}>
+                  <DocumentTile
+                    name={file.name}
+                    url={file.url}
+                    mimeType={
+                      initialValues?.documents?.find(
+                        (doc) => doc.path === file.fullPath,
+                      )?.type
+                    }
+                    uploadingPercentage={
+                      uploadProgress &&
+                      uploadProgress[formatFileName(file.name)]
+                    }
+                  />
+                  <Button
+                    onPress={() =>
+                      setFieldValue(
+                        "files.existing",
+                        values.files?.existing?.filter(
+                          (f) => f.url !== file.url,
+                        ),
+                      )
+                    }
+                    variant="outline"
+                  >
+                    <FontAwesome6 name="trash-alt" size={16} color="red" />
+                  </Button>
+                </View>
+              ))}
+              {values.files?.new?.map((file) => (
+                <View className="flex-1 space-y-0.5" key={file.uri}>
+                  <DocumentTile
+                    name={file.name}
+                    url={file.uri}
+                    mimeType={file.mimeType}
+                    uploadingPercentage={
+                      uploadProgress &&
+                      uploadProgress[formatFileName(file.name)]
+                    }
+                  />
+                  <Button
+                    onPress={() =>
+                      setFieldValue(
+                        "files.new",
+                        values.files?.new?.filter((f) => f.uri !== file.uri),
+                      )
+                    }
+                    variant="outline"
+                  >
+                    <FontAwesome6 name="trash-alt" size={16} color="red" />
+                  </Button>
+                </View>
+              ))}
+            </ScrollView>
+          </View>
+          <Box>
+            <ScreenButton
               onPress={() =>
                 getDocumentAsync({
                   multiple: true,
@@ -189,18 +201,21 @@ const EventForm: FC<EventFormPropsType> = ({
                 })
               }
             >
-              Add files
-            </Button>
-            <Box>
-              <SubmitButton
-                isPending={isPending}
-                label={initialValues ? "Save event" : "Create event"}
-                onPress={() => handleSubmit()}
-              />
-            </Box>
+              <PlusIcon className="h-4 w-4 text-secondary-accent" />
+              <Text className="text-xl text-secondary-accent">
+                Add document
+              </Text>
+            </ScreenButton>
           </Box>
-        );
-      }}
+          <Box>
+            <SubmitButton
+              isPending={isPending}
+              label={initialValues ? "Save event" : "Create event"}
+              onPress={() => handleSubmit()}
+            />
+          </Box>
+        </Box>
+      )}
     </Formik>
   );
 };
