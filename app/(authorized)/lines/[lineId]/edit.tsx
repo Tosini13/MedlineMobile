@@ -1,4 +1,4 @@
-import HeaderTitle from "@/components/Header/HeaderTitle";
+import EventsHeaderTitle from "@/components/Header/EventsHeaderTitle";
 import LineForm, { LineFormType } from "@/components/LineForm/LineForm";
 import { setLineFormTitleData } from "@/helpers/headerHelpers";
 import { API } from "@/services/api";
@@ -70,13 +70,13 @@ const EditLine: FC<EditLinePropsType> = ({}) => {
       <Stack.Screen
         options={{
           title: lineData?.title ?? "Events",
-          headerTitle: () => (
-            <HeaderTitle
-              title="Edit line"
-              subtitle={lineData?.title}
-              isPending={isPending}
-            />
-          ),
+          headerTitle: () =>
+            lineData ? (
+              <EventsHeaderTitle
+                title={lineData?.title}
+                color={lineData.color}
+              />
+            ) : null,
         }}
       />
       <Box data-testid="edit_line_page" className="bg-primary p-5" flex={1}>
