@@ -55,9 +55,8 @@ const HeaderSettingsButton: FC<HeaderSettingsButtonPropsType> = ({
       >
         <Popover.Body className="m-0 flex flex-col items-stretch border-primary-accent bg-primary p-0">
           {items.map(({ label, icon, isPending, onPress }, index) => (
-            <>
+            <React.Fragment key={label}>
               <Pressable
-                key={label}
                 accessibilityLabel="Edit line"
                 disabled={isPending}
                 className="flex w-full flex-row items-center gap-x-3 border-primary-accent px-4 py-3"
@@ -73,7 +72,7 @@ const HeaderSettingsButton: FC<HeaderSettingsButtonPropsType> = ({
               {items.length - 1 > index && (
                 <Box className="bg-primary-accent-2 h-[1px]" />
               )}
-            </>
+            </React.Fragment>
           ))}
         </Popover.Body>
       </Popover.Content>

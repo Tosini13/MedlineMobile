@@ -1,5 +1,5 @@
 import EventForm, { EventFormType } from "@/components/EventForm/EventForm";
-import HeaderTitle from "@/components/Header/HeaderTitle";
+import EventHeaderTitle from "@/components/Header/EventHeaderTitle";
 import { setEventFormTitleData } from "@/helpers/headerHelpers";
 import { API } from "@/services/api";
 import { LineQueryKey } from "@/services/types";
@@ -67,13 +67,16 @@ const CreateEvent: FC<CreateEventPropsType> = ({}) => {
       <Stack.Screen
         options={{
           title: "Create Event",
-          headerTitle: () => (
-            <HeaderTitle
-              title="Create event"
-              subtitle={lineData?.title}
-              isPending={isPending}
-            />
-          ),
+          headerShadowVisible: false,
+          headerTitle: () =>
+            lineData ? (
+              <Box className="flex w-full flex-row items-center justify-start">
+                <EventHeaderTitle
+                  title={lineData.title}
+                  color={lineData.color}
+                />
+              </Box>
+            ) : null,
         }}
       />
       <Box className="bg-primary p-5" flex={1}>
