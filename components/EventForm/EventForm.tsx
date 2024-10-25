@@ -130,8 +130,7 @@ const EventForm: FC<EventFormPropsType> = ({
                       )?.type
                     }
                     uploadingPercentage={
-                      uploadProgress &&
-                      uploadProgress[formatFileName(file.name)]
+                      uploadProgress?.[formatFileName(file.name)]
                     }
                   />
                   <Button
@@ -156,8 +155,7 @@ const EventForm: FC<EventFormPropsType> = ({
                     url={file.uri}
                     mimeType={file.mimeType}
                     uploadingPercentage={
-                      uploadProgress &&
-                      uploadProgress[formatFileName(file.name)]
+                      uploadProgress?.[formatFileName(file.name)]
                     }
                   />
                   <Button
