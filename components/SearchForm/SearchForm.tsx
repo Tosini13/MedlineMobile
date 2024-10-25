@@ -30,12 +30,16 @@ const SearchForm: FC<SearchFormPropsType> = ({ isPending, onSubmit }) => {
         debounced(text);
       }}
       value={keyword}
+      accessibilityLabel="Search input"
+      accessibilityHint="Enter text to search"
       leftElement={
         <Box className="pl-2">
           <Feather
             name="search"
             size={24}
             color={isFocused ? text : textAccent}
+            accessibilityRole="image"
+            accessibilityLabel="Search icon"
           />
         </Box>
       }
@@ -46,6 +50,7 @@ const SearchForm: FC<SearchFormPropsType> = ({ isPending, onSubmit }) => {
               <ActivityIndicator
                 size={24}
                 color={isFocused ? text : textAccent}
+                accessibilityLabel="Loading results"
               />
             ) : (
               <Pressable
@@ -53,6 +58,10 @@ const SearchForm: FC<SearchFormPropsType> = ({ isPending, onSubmit }) => {
                   setKeyword("");
                   onSubmit("");
                 }}
+                accessibilityLabel="Clear search"
+                accessibilityRole="button"
+                android_ripple={{ color: textAccent }}
+                style={({ pressed }) => [pressed && { opacity: 0.7 }]}
               >
                 <AntDesign
                   name="close"
