@@ -8,9 +8,7 @@ import { Box } from "native-base";
 import { FC } from "react";
 import { ActivityIndicator, Pressable } from "react-native";
 
-type MenuPropsType = {};
-
-const Menu: FC<MenuPropsType> = ({}) => {
+const Menu: FC = () => {
   const color = useThemeColor({}, "secondary-accent");
   const router = useRouter();
   const { mutate, isPending } = useMutation({
