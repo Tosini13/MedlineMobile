@@ -16,6 +16,7 @@ const Layout: FC = () => {
   return (
     <Stack
       screenOptions={({ navigation }) => ({
+        headerBackVisible: false,
         headerTitleAlign: "center",
         headerLeft: navigation.canGoBack
           ? () => (

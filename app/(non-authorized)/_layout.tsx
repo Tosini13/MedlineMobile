@@ -4,9 +4,7 @@ import { routes } from "@/utils/utils";
 import { Redirect, Stack } from "expo-router";
 import { FC } from "react";
 
-type NonAuthorizedLayoutPropsType = {};
-
-const NonAuthorizedLayout: FC<NonAuthorizedLayoutPropsType> = ({}) => {
+const NonAuthorizedLayout: FC = () => {
   const { isLoggedIn } = useAuthContext();
   const bg = useThemeColor({}, "background");
   const text = useThemeColor({}, "text");
@@ -19,6 +17,7 @@ const NonAuthorizedLayout: FC<NonAuthorizedLayoutPropsType> = ({}) => {
     <Stack
       initialRouteName={isLoggedIn ? routes.lines : routes.login}
       screenOptions={{
+        headerBackVisible: false,
         headerTitle: "",
         headerTitleAlign: "center",
         headerShadowVisible: false,
