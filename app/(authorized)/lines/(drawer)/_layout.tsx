@@ -52,7 +52,9 @@ const Layout: FC = () => {
             return (
               <Pressable
                 onPress={() =>
-                  isMenuOpen ? navigation.goBack() : navigation.navigate("menu")
+                  isMenuOpen
+                    ? navigation.goBack()
+                    : navigation.navigate(routes.menu)
                 }
                 className="flex h-11 w-11 flex-row items-center justify-end"
               >
