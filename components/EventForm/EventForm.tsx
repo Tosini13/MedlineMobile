@@ -8,11 +8,10 @@ import { FontAwesome6 } from "@expo/vector-icons";
 import { randomUUID } from "expo-crypto";
 import { DocumentPickerAsset, getDocumentAsync } from "expo-document-picker";
 import { Formik } from "formik";
-import { Box, Button, Select } from "native-base";
+import { Box, Button, ScrollView, Select } from "native-base";
 import { FC } from "react";
-import { ScrollView } from "react-native-gesture-handler";
 import DateTimePicker from "../DateTimePicker/DateTimePicker";
-import DocumentTile from "../DocumentTile/DocumentTile";
+import DocumentTileWide from "../DocumentTile/DocumentTileWide";
 import ScreenButton from "../ScreenButton/ScreenButton";
 import { Text, useThemeColor, View } from "../Themed";
 import SubmitButton from "../form/Button/SubmitButton";
@@ -117,23 +116,25 @@ const EventForm: FC<EventFormPropsType> = ({
               value={values.description}
             />
           </Box>
-          <View>
-            <ScrollView horizontal className="space-x-1">
+          <View className="flex-1">
+            <ScrollView className="-mx-2 space-y-2 px-2">
               {values.files?.existing?.map((file) => (
-                <View className="flex-1 space-y-0.5" key={file.url}>
-                  <DocumentTile
-                    name={file.name}
-                    url={file.url}
-                    mimeType={
-                      initialValues?.documents?.find(
-                        (doc) => doc.path === file.fullPath,
-                      )?.type
-                    }
-                    uploadingPercentage={
-                      uploadProgress?.[formatFileName(file.name)]
-                    }
-                  />
+                <Box className="flex flex-1 flex-row space-x-1" key={file.url}>
+                  <Box className="flex-1">
+                    <DocumentTileWide
+                      name={file.name}
+                      mimeType={
+                        initialValues?.documents?.find(
+                          (doc) => doc.path === file.fullPath,
+                        )?.type
+                      }
+                      uploadingPercentage={
+                        uploadProgress?.[formatFileName(file.name)]
+                      }
+                    />
+                  </Box>
                   <Button
+                    className="w-11"
                     onPress={() =>
                       setFieldValue(
                         "files.existing",
@@ -146,19 +147,21 @@ const EventForm: FC<EventFormPropsType> = ({
                   >
                     <FontAwesome6 name="trash-alt" size={16} color="red" />
                   </Button>
-                </View>
+                </Box>
               ))}
               {values.files?.new?.map((file) => (
-                <View className="flex-1 space-y-0.5" key={file.uri}>
-                  <DocumentTile
-                    name={file.name}
-                    url={file.uri}
-                    mimeType={file.mimeType}
-                    uploadingPercentage={
-                      uploadProgress?.[formatFileName(file.name)]
-                    }
-                  />
+                <Box className="flex flex-1 flex-row space-x-1" key={file.uri}>
+                  <Box className="flex-1">
+                    <DocumentTileWide
+                      name={file.name}
+                      mimeType={file.mimeType}
+                      uploadingPercentage={
+                        uploadProgress?.[formatFileName(file.name)]
+                      }
+                    />
+                  </Box>
                   <Button
+                    className="w-11"
                     onPress={() =>
                       setFieldValue(
                         "files.new",
@@ -169,7 +172,7 @@ const EventForm: FC<EventFormPropsType> = ({
                   >
                     <FontAwesome6 name="trash-alt" size={16} color="red" />
                   </Button>
-                </View>
+                </Box>
               ))}
             </ScrollView>
           </View>

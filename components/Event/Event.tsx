@@ -2,7 +2,7 @@ import { eventTypesTranslationKeys } from "@/constants";
 import { API } from "@/services/api";
 import { DocumentType, EventType } from "@/types";
 import { useQuery } from "@tanstack/react-query";
-import { Box } from "native-base";
+import { Box, ScrollView } from "native-base";
 import { FC } from "react";
 import { ActivityIndicator, Linking } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
@@ -64,7 +64,6 @@ const DocumentsList: FC<DocumentsListPropsType> = ({
           >
             <DocumentTileWide
               name={item.name}
-              url={item.url}
               mimeType={
                 documents?.find((doc) => doc.path === item.fullPath)?.type
               }
@@ -93,7 +92,10 @@ const Event: FC<EventPropsType> = ({
   const color = useThemeColor({}, "secondary");
   const router = useRouter();
   return (
-    <View data-testid="event" className="flex flex-col items-stretch space-y-4">
+    <View
+      data-testid="event"
+      className="flex flex-1 flex-col items-stretch space-y-4 pb-3"
+    >
       <Box className="space-y-2">
         <Text className="text-2xl font-medium text-secondary">{title}</Text>
         <Box className="flex flex-row items-center gap-x-2">
@@ -114,27 +116,30 @@ const Event: FC<EventPropsType> = ({
           <Text className="text-sm">{description}</Text>
         </Box>
       )}
-
-      <Box className="space-y-2">
-        <Text className="text-base text-secondary-accent">Documents</Text>
-        {documents && (
-          <Box>
-            <DocumentsList documents={documents} eventId={id} lineId={lineId} />
-          </Box>
-        )}
-        <Box>
-          <ScreenButton
-            onPress={() =>
-              router.navigate(`/lines/${lineId}/events/${id}/edit`)
-            }
-            accessible={true}
-            accessibilityRole="button"
-            accessibilityHint="Go to edit event page"
-          >
-            <PlusIcon className="h-4 w-4 text-secondary-accent" />
-            <Text className="text-xl text-secondary-accent">Add document</Text>
-          </ScreenButton>
-        </Box>
+      {documents && (
+        <View className="flex-1 space-y-2">
+          <Text className="text-base text-secondary-accent">Documents</Text>
+          <ScrollView className="-mx-2 space-y-2 px-2">
+            <Box>
+              <DocumentsList
+                documents={documents}
+                eventId={id}
+                lineId={lineId}
+              />
+            </Box>
+          </ScrollView>
+        </View>
+      )}
+      <Box>
+        <ScreenButton
+          onPress={() => router.navigate(`/lines/${lineId}/events/${id}/edit`)}
+          accessible={true}
+          accessibilityRole="button"
+          accessibilityHint="Go to edit event page"
+        >
+          <PlusIcon className="h-4 w-4 text-secondary-accent" />
+          <Text className="text-xl text-secondary-accent">Add document</Text>
+        </ScreenButton>
       </Box>
     </View>
   );

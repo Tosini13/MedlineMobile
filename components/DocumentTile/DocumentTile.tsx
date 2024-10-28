@@ -1,6 +1,6 @@
-import { FontAwesome6 } from "@expo/vector-icons";
+import { FontAwesome } from "@expo/vector-icons";
 import { DocumentPickerAsset } from "expo-document-picker";
-import { Box, Image } from "native-base";
+import { Box } from "native-base";
 import { FC } from "react";
 import { Circle } from "react-native-progress";
 import { Text, View } from "../Themed";
@@ -23,16 +23,10 @@ const DocumentTile: FC<DocumentTilePropsType> = ({
   <View className="m-1 w-20 space-y-0.5" data-testid="document_tile">
     <Box className="relative flex h-20 w-20 flex-col items-center justify-center overflow-hidden rounded-md border border-dashed border-gray-500/20">
       {mimeType === "application/pdf" && (
-        <FontAwesome6 name="file-pdf" size={32} color="red" />
+        <FontAwesome name="file-pdf-o" size={32} color="red" />
       )}
       {mimeType && imageMimeTypes.includes(mimeType) && (
-        <Image
-          className="mb-1 h-full w-full object-cover object-left-top"
-          alt={name}
-          source={{
-            uri: url,
-          }}
-        />
+        <FontAwesome name="file-image-o" size={32} color="red" />
       )}
       {typeof uploadingPercentage === "number" ? (
         <Box className="absolute left-0 top-0 flex h-full w-full items-center justify-center bg-gray-700/80">
