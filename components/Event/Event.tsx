@@ -97,12 +97,12 @@ const Event: FC<EventPropsType> = ({
       <Box className="space-y-2">
         <Text className="text-2xl font-medium text-secondary">{title}</Text>
         <Box className="flex flex-row items-center gap-x-2">
-          <Box className="border-primary-accent-2 rounded-full border p-1 px-3">
+          <Box className="rounded-full border border-primary-accent-2 p-1 px-3">
             <Text className="text-base text-secondary-accent">
               {eventTypesTranslationKeys[type]}
             </Text>
           </Box>
-          <Box className="border-primary-accent-2 rounded-full border p-1 px-3">
+          <Box className="rounded-full border border-primary-accent-2 p-1 px-3">
             <EventDateTime date={date} color={color} />
           </Box>
         </Box>
@@ -127,6 +127,9 @@ const Event: FC<EventPropsType> = ({
             onPress={() =>
               router.navigate(`/lines/${lineId}/events/${id}/edit`)
             }
+            accessible={true}
+            accessibilityRole="button"
+            accessibilityHint="Go to edit event page"
           >
             <PlusIcon className="h-4 w-4 text-secondary-accent" />
             <Text className="text-xl text-secondary-accent">Add document</Text>

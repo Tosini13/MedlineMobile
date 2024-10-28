@@ -1,23 +1,30 @@
 import { FC } from "react";
-import { TouchableOpacity } from "react-native";
+import { TouchableOpacity, TouchableOpacityProps } from "react-native";
 
 import { Box } from "native-base";
 
 import React from "react";
+import { useThemeColor } from "../Themed";
 
-type ScreenButtonPropsType = {
-  children: React.ReactNode;
-  onPress: () => void;
-};
-
-const ScreenButton: FC<ScreenButtonPropsType> = ({ onPress, children }) => (
-  <TouchableOpacity onPress={onPress}>
-    <Box className="rounded-lg border border-dashed border-secondary-accent bg-primary-accent p-4">
-      <Box className="mx-auto flex w-fit flex-row items-center space-x-2">
-        {children}
+const ScreenButton: FC<TouchableOpacityProps> = ({ onPress, children }) => {
+  const borderColor = useThemeColor({}, "secondary-accent");
+  return (
+    <TouchableOpacity onPress={onPress}>
+      <Box
+        className="bg-primary-accent p-4"
+        style={{
+          borderWidth: 1,
+          borderColor: borderColor,
+          borderStyle: "dashed",
+          borderRadius: 8,
+        }}
+      >
+        <Box className="mx-auto flex w-fit flex-row items-center space-x-2">
+          {children}
+        </Box>
       </Box>
-    </Box>
-  </TouchableOpacity>
-);
+    </TouchableOpacity>
+  );
+};
 
 export default ScreenButton;

@@ -110,6 +110,9 @@ const LineEventsScreen: FC<LineEventsScreenPropsType> = ({}) => {
         <Box>
           <ScreenButton
             onPress={() => router.navigate(`/lines/${lineId}/events/create`)}
+            accessible={true}
+            accessibilityRole="button"
+            accessibilityHint="Go to create new record page"
           >
             <PlusIcon className="h-4 w-4 text-secondary-accent" />
             <Text className="text-xl text-secondary-accent">

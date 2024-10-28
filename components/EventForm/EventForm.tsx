@@ -198,6 +198,9 @@ const EventForm: FC<EventFormPropsType> = ({
                   ]);
                 })
               }
+              accessible={true}
+              accessibilityRole="button"
+              accessibilityHint="Add new document"
             >
               <PlusIcon className="h-4 w-4 text-secondary-accent" />
               <Text className="text-xl text-secondary-accent">
