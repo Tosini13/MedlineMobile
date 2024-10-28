@@ -50,18 +50,19 @@ const LineEventsScreen: FC<LineEventsScreenPropsType> = ({}) => {
 
   const router = useRouter();
 
-  const sections = [
-    {
-      title: "Upcoming",
-      data:
-        eventData?.filter((event) => new Date(event.date) > new Date()) ?? [],
-    },
-    {
-      title: "Past",
-      data:
-        eventData?.filter((event) => new Date(event.date) <= new Date()) ?? [],
-    },
-  ];
+  const now = new Date();
+  const sections =
+    eventData?.reduce(
+      (acc, event) => {
+        const section = new Date(event.date) > now ? acc[0] : acc[1];
+        section.data.push(event);
+        return acc;
+      },
+      [
+        { title: "Upcoming", data: [] as EventType[] },
+        { title: "Past", data: [] as EventType[] },
+      ],
+    ) ?? [];
 
   if (isPending) {
     return (
@@ -92,7 +93,7 @@ const LineEventsScreen: FC<LineEventsScreenPropsType> = ({}) => {
         flex={1}
       >
         {status !== "error" && (
-          <Box className="border-primary-accent-2 -mx-4 mb-4 border-b bg-primary px-7 pb-4">
+          <Box className="-mx-4 mb-4 border-b border-primary-accent-2 bg-primary px-7 pb-4">
             {status === "pending" && (
               <Box className="ml-0 mr-auto">
                 <ActivityIndicator />
