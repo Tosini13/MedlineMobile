@@ -18,6 +18,7 @@ const SubmitButton: FC<SubmitButtonPropsType> = ({
   return (
     <Button
       className="w-full py-3"
+      disabled={isPending}
       rounded="full"
       style={{
         backgroundColor: color,
