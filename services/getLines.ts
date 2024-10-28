@@ -1,4 +1,4 @@
-import { getAuth } from "firebase/auth";
+import { getAuth } from "@/firebaseConfig";
 import {
   Firestore,
   collection,

@@ -1,5 +1,5 @@
+import { getAuth } from "@/firebaseConfig";
 import { LineType } from "@/types";
-import { getAuth } from "firebase/auth";
 import { Firestore, addDoc, collection } from "firebase/firestore/lite";
 
 export async function addLine(
