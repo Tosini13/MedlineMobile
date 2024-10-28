@@ -7,6 +7,12 @@ import { Redirect, Stack } from "expo-router";
 import { FC } from "react";
 import { Pressable } from "react-native";
 
+type RouteType = {
+  key: string;
+  name?: string;
+  params: any;
+};
+
 const Layout: FC = () => {
   const bg = useThemeColor({}, "background");
   const text = useThemeColor({}, "text");
@@ -27,7 +33,8 @@ const Layout: FC = () => {
       <Stack
         initialRouteName={routes.lines}
         screenOptions={({ navigation }) => ({
-          animation: "slide_from_left",
+          headerBackVisible: false,
+          animation: "ios",
           headerShadowVisible: false,
           headerTitleAlign: "center",
           headerStyle: {
@@ -37,13 +44,13 @@ const Layout: FC = () => {
           headerTintColor: text,
           headerLeft: () => <Logo />,
           headerRight: () => {
-            const isMenuOpen = navigation.canGoBack();
+            const isMenuOpen = navigation
+              .getState()
+              .routes.some((route: RouteType) => route.name === "menu");
             return (
               <Pressable
                 onPress={() =>
-                  isMenuOpen
-                    ? navigation.goBack()
-                    : navigation.navigate(routes.menu)
+                  isMenuOpen ? navigation.goBack() : navigation.navigate("menu")
                 }
                 className="flex h-11 w-11 flex-row items-center justify-end"
               >
