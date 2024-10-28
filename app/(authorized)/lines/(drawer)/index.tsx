@@ -27,6 +27,8 @@ import { twMerge } from "tailwind-merge";
 
 const launchedKey = "IS_AFTER_FIRST_LAUNCHED";
 
+const WELCOME_TEXT_TIMEOUT = 8000;
+
 const LEFT_HEADER = {
   node: (
     <Link href={routes.search} asChild>
@@ -59,11 +61,12 @@ const LinesScreen: FC<LinesScreenPropsType> = ({}) => {
   });
 
   useEffect(() => {
-    setTimeout(() => {
+    const timeoutId = setTimeout(() => {
       setShowWelcomeText(false);
-    }, 8000);
+    }, WELCOME_TEXT_TIMEOUT);
 
     return () => {
+      clearTimeout(timeoutId);
       AsyncStorage.setItem(launchedKey, "true");
       onLaunchedFirstTime();
     };
