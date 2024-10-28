@@ -19,6 +19,7 @@ import { SectionList, TouchableHighlight } from "react-native";
 
 import PlusIcon from "@/components/icons/PlusIcon";
 import LineTile from "@/components/LineTile/LineTile";
+import ScreenButton from "@/components/ScreenButton/ScreenButton";
 import SearchForm from "@/components/SearchForm/SearchForm";
 import { View } from "@/components/Themed";
 import { useUpdateCache } from "@/services/useUpdateCache";
@@ -150,14 +151,27 @@ const LinesScreen: FC<LinesScreenPropsType> = ({}) => {
               </TouchableHighlight>
             )}
             renderSectionHeader={({ section: { title } }) => (
-              <Text className="bg-primary py-0.5 text-lg font-semibold text-[#4B608B]">
+              <Text className="bg-primary py-0.5 text-lg font-medium text-secondary-accent">
                 {title}
               </Text>
             )}
           />
         )}
         {status === "success" && !data.length && (
-          <Text className="mt-5 text-center text-gray-500">No lines yet</Text>
+          <Box className="mt-4 px-4">
+            <Text className="mb-1 bg-primary py-0.5 text-lg font-medium text-secondary-accent">
+              No lines yet
+            </Text>
+            <ScreenButton
+              onPress={() => router.navigate(routes.createLine)}
+              accessible={true}
+              accessibilityRole="button"
+              accessibilityHint="Go to create new record page"
+            >
+              <PlusIcon className="h-4 w-4 text-secondary-accent" />
+              <Text className="text-xl text-secondary-accent">Create line</Text>
+            </ScreenButton>
+          </Box>
         )}
         <Fab
           onPress={() => router.push("/(authorized)/lines/create")}

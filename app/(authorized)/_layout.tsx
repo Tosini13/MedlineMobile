@@ -18,6 +18,7 @@ const Layout: FC = () => {
       screenOptions={({ navigation }) => ({
         headerBackVisible: false,
         headerTitleAlign: "center",
+        animation: "ios",
         headerLeft: navigation.canGoBack
           ? () => (
               <Pressable
