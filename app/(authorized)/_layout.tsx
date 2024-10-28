@@ -6,9 +6,7 @@ import { Redirect, Stack } from "expo-router";
 import { FC } from "react";
 import { ActivityIndicator, Pressable } from "react-native";
 
-type LayoutPropsType = {};
-
-const Layout: FC<LayoutPropsType> = ({}) => {
+const Layout: FC = () => {
   const { isLoggedIn } = useAuthContext();
   const text = useThemeColor({}, "secondary");
 
