@@ -1,9 +1,15 @@
 import EventForm, { EventFormType } from "@/components/EventForm/EventForm";
-import HeaderTitle from "@/components/Header/HeaderTitle";
+import EventHeaderTitle from "@/components/Header/EventHeaderTitle";
 import { API } from "@/services/api";
-import { EventType } from "@/types";
+import { LineQueryKey } from "@/services/types";
+import { EventType, GetLinesByIdType } from "@/types";
 import { returnPromiseError, routes, useUploadFileState } from "@/utils/utils";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  DefaultError,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { Box } from "native-base";
 import { FC } from "react";
@@ -24,9 +30,20 @@ const EditEvent: FC<EditEventPropsType> = ({}) => {
   }>();
   const { uploadProgress, onStateChange } = useUploadFileState();
 
+  const { data: lineData } = useQuery<
+    GetLinesByIdType | null,
+    DefaultError,
+    GetLinesByIdType,
+    LineQueryKey
+  >({
+    queryKey: ["line", lineId],
+    queryFn: () => (lineId ? API.lines.getById(lineId) : null),
+    staleTime: Infinity,
+  });
+
   const { data: event, isPending } = useQuery({
     queryKey: ["lineEvents", lineId, eventId],
-    queryFn: async () =>
+    queryFn: () =>
       lineId && eventId ? API.events.getById(lineId, eventId) : null,
     staleTime: 100000,
   });
@@ -73,7 +90,7 @@ const EditEvent: FC<EditEventPropsType> = ({}) => {
           );
           lineId &&
             eventId &&
-            router.replace(
+            router.navigate(
               routes.event
                 .replace("[lineId]", lineId)
                 .replace("[eventId]", eventId),
@@ -90,16 +107,18 @@ const EditEvent: FC<EditEventPropsType> = ({}) => {
       <Stack.Screen
         options={{
           title: "Edit Event",
-          headerTitle: () => (
-            <HeaderTitle
-              title="Edit event"
-              subtitle={event?.title}
-              isPending={isPending}
-            />
-          ),
+          headerTitle: () =>
+            lineData ? (
+              <Box className="flex w-full flex-row items-center justify-start">
+                <EventHeaderTitle
+                  title={lineData.title}
+                  color={lineData.color}
+                />
+              </Box>
+            ) : null,
         }}
       />
-      <Box data-testid="edit_event_page" className="bg-white p-5" flex={1}>
+      <Box data-testid="edit_event_page" className="bg-primary p-5" flex={1}>
         {isPending ? (
           <ActivityIndicator />
         ) : (

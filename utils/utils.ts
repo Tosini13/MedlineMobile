@@ -28,7 +28,7 @@ export const routes = {
   createEvent: "lines/[lineId]/events/create",
   editEvent: "lines/[lineId]/events/[eventId]/edit",
   search: "search",
-  menu: "menu",
+  menu: "/lines/(drawer)/menu",
   login: "(non-authorized)/login",
   signup: "(non-authorized)/signup",
 };

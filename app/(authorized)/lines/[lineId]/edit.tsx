@@ -1,10 +1,12 @@
-import HeaderTitle from "@/components/Header/HeaderTitle";
+import EventsHeaderTitle from "@/components/Header/EventsHeaderTitle";
 import LineForm, { LineFormType } from "@/components/LineForm/LineForm";
 import { setLineFormTitleData } from "@/helpers/headerHelpers";
 import { API } from "@/services/api";
-import { LineType } from "@/types";
+import { LineQueryKey } from "@/services/types";
+import { useUpdateCache } from "@/services/useUpdateCache";
+import { GetLinesByIdType } from "@/types";
 import { envs, returnPromiseError } from "@/utils/utils";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { DefaultError, useMutation, useQuery } from "@tanstack/react-query";
 import {
   Stack,
   useLocalSearchParams,
@@ -24,9 +26,15 @@ const EditLine: FC<EditLinePropsType> = ({}) => {
     lineId: string;
   }>();
 
-  const { data: lineData, isPending } = useQuery({
+  const { data: lineData, isPending } = useQuery<
+    GetLinesByIdType | null,
+    DefaultError,
+    GetLinesByIdType,
+    LineQueryKey
+  >({
     queryKey: ["line", lineId],
     queryFn: () => (lineId ? API.lines.getById(lineId) : null),
+    enabled: !!lineId,
     staleTime: Infinity,
   });
 
@@ -38,7 +46,7 @@ const EditLine: FC<EditLinePropsType> = ({}) => {
     });
   }, [navigation, lineData]);
 
-  const queryClient = useQueryClient();
+  const { onEditLine } = useUpdateCache();
   const { mutate, isPending: isMutationPending } = useMutation({
     mutationFn: (values: LineFormType) =>
       lineId
@@ -48,16 +56,12 @@ const EditLine: FC<EditLinePropsType> = ({}) => {
           })
         : returnPromiseError("Line id is missing"),
     onSuccess: (line) => {
-      if (line) {
-        try {
-          queryClient.setQueryData(["line", lineId], () => line);
-          queryClient.setQueryData(["lines"], (old: LineType[]) =>
-            old.map((e) => (e.id === line.id ? line : e)),
-          );
-          router.navigate(`/lines/${lineId}/events`);
-        } catch (e) {
-          console.log("e", e);
-        }
+      if (!line || !lineId) return;
+      try {
+        onEditLine(lineId, line);
+        router.navigate(`/lines/${lineId}/events`);
+      } catch (e) {
+        console.log("e", e);
       }
     },
   });
@@ -67,16 +71,16 @@ const EditLine: FC<EditLinePropsType> = ({}) => {
       <Stack.Screen
         options={{
           title: lineData?.title ?? "Events",
-          headerTitle: () => (
-            <HeaderTitle
-              title="Edit line"
-              subtitle={lineData?.title}
-              isPending={isPending}
-            />
-          ),
+          headerTitle: () =>
+            lineData ? (
+              <EventsHeaderTitle
+                title={lineData?.title}
+                color={lineData.color}
+              />
+            ) : null,
         }}
       />
-      <Box data-testid="edit_line_page" className="bg-white p-5" flex={1}>
+      <Box data-testid="edit_line_page" className="bg-primary p-5" flex={1}>
         {isPending ? (
           <ActivityIndicator />
         ) : (

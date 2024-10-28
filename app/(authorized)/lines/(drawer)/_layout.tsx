@@ -1,71 +1,64 @@
+import Logo from "@/components/Logo/Logo";
+import { useThemeColor } from "@/components/Themed";
 import { useAuthContext } from "@/context/auth.context";
-import { API } from "@/services/api";
 import { routes } from "@/utils/utils";
-import { MaterialIcons } from "@expo/vector-icons";
-import {
-  DrawerContentScrollView,
-  DrawerItem,
-  DrawerItemList,
-} from "@react-navigation/drawer";
-import { useMutation } from "@tanstack/react-query";
-import { Redirect, useRouter } from "expo-router";
-import { Drawer } from "expo-router/drawer";
+import { Feather } from "@expo/vector-icons";
+import { Redirect, Stack } from "expo-router";
 import { FC } from "react";
-import { ActivityIndicator } from "react-native";
+import { Pressable } from "react-native";
 
-type LayoutPropsType = {};
+type RouteType = {
+  key: string;
+  name?: string;
+  params: any;
+};
 
-const Layout: FC<LayoutPropsType> = ({}) => {
+const Layout: FC = () => {
+  const bg = useThemeColor({}, "background");
+  const text = useThemeColor({}, "text");
   const { isLoggedIn } = useAuthContext();
-  const router = useRouter();
-  const { mutate, isPending } = useMutation({
-    mutationKey: ["logout"],
-    mutationFn: async () =>
-      API.auth.signOut().then(() => {
-        router.back();
-        router.navigate(routes.login);
-      }),
-  });
 
   if (!isLoggedIn) {
     return <Redirect href={`/${routes.login}`} />;
   }
+
   return (
     <>
-      <Drawer.Screen
+      <Stack.Screen
         options={{
-          title: "Lines",
+          title: "",
           headerShown: false,
         }}
       />
-      <Drawer
+      <Stack
         initialRouteName={routes.lines}
-        screenOptions={{
+        screenOptions={({ navigation }) => ({
+          headerBackVisible: false,
+          animation: "ios",
+          headerShadowVisible: false,
           headerTitleAlign: "center",
           headerStyle: {
-            backgroundColor: "#608ae3",
+            backgroundColor: bg,
           },
-          headerTintColor: "#fff",
-        }}
-        backBehavior="firstRoute"
-        drawerContent={(props) => {
-          return (
-            <DrawerContentScrollView {...props}>
-              <DrawerItemList {...props} />
-              <DrawerItem
-                label="Logout"
-                onPress={() => mutate()}
-                icon={({ color, size }) =>
-                  isPending ? (
-                    <ActivityIndicator color={color} size={size} />
-                  ) : (
-                    <MaterialIcons name="logout" color={color} size={size} />
-                  )
+          headerTitle: "",
+          headerTintColor: text,
+          headerLeft: () => <Logo />,
+          headerRight: () => {
+            const isMenuOpen = navigation
+              .getState()
+              .routes.some((route: RouteType) => route.name === "menu");
+            return (
+              <Pressable
+                onPress={() =>
+                  isMenuOpen ? navigation.goBack() : navigation.navigate("menu")
                 }
-              />
-            </DrawerContentScrollView>
-          );
-        }}
+                className="flex h-11 w-11 flex-row items-center justify-end"
+              >
+                <Feather name={isMenuOpen ? "minus" : "menu"} size={26} />
+              </Pressable>
+            );
+          },
+        })}
       />
     </>
   );

@@ -7,21 +7,19 @@ import {
 
 import EventTile from "@/components/EventTile/EventTile";
 import { Text } from "@/components/Themed";
-import { EVENT_DATE_FORMAT } from "@/constants/date";
-import { FontAwesome6 } from "@expo/vector-icons";
-import { useQuery } from "@tanstack/react-query";
-import { format } from "date-fns";
+import { DefaultError, useQuery } from "@tanstack/react-query";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
-import { Box, Fab } from "native-base";
-import SwipeableItem from "react-native-swipeable-item";
+import { Box } from "native-base";
 
 import React from "react";
 
-import EventTileActionButtons from "@/components/EventTile/EventTileActionButtons";
-import EventHeaderSettingsButton from "@/components/Header/EventHeaderSettingsButton";
-import HeaderTitle from "@/components/Header/HeaderTitle";
+import EventsHeaderSettingsButton from "@/components/Header/EventsHeaderSettingsButton";
+import EventsHeaderTitle from "@/components/Header/EventsHeaderTitle";
+import PlusIcon from "@/components/icons/PlusIcon";
+import ScreenButton from "@/components/ScreenButton/ScreenButton";
 import { API } from "@/services/api";
-import { EventType } from "@/types";
+import { LineQueryKey } from "@/services/types";
+import { EventType, GetLinesByIdType } from "@/types";
 import { envs } from "@/utils/utils";
 
 const byDate = (eventA: EventType, eventB: EventType) =>
@@ -32,17 +30,18 @@ type LineEventsScreenPropsType = {};
 const LineEventsScreen: FC<LineEventsScreenPropsType> = ({}) => {
   const { lineId } = useLocalSearchParams<{ lineId: string }>();
 
-  const { data: lineData } = useQuery({
+  const { data: lineData, status } = useQuery<
+    GetLinesByIdType | null,
+    DefaultError,
+    GetLinesByIdType,
+    LineQueryKey
+  >({
     queryKey: ["line", lineId],
     queryFn: () => (lineId ? API.lines.getById(lineId) : null),
     staleTime: envs.defaultStaleTime,
   });
 
-  const {
-    data: eventData,
-    isPending,
-    status,
-  } = useQuery({
+  const { data: eventData, isPending } = useQuery({
     queryKey: ["lineEvents", lineId],
     queryFn: () =>
       lineId ? API.events.get(lineId).then((data) => data.sort(byDate)) : [],
@@ -51,17 +50,25 @@ const LineEventsScreen: FC<LineEventsScreenPropsType> = ({}) => {
 
   const router = useRouter();
 
+  const now = new Date();
   const sections =
-    eventData?.map((event) => ({
-      title: format(new Date(event.date), EVENT_DATE_FORMAT),
-      data: [event],
-    })) ?? [];
+    eventData?.reduce(
+      (acc, event) => {
+        const section = new Date(event.date) > now ? acc[0] : acc[1];
+        section.data.push(event);
+        return acc;
+      },
+      [
+        { title: "Upcoming", data: [] as EventType[] },
+        { title: "Past", data: [] as EventType[] },
+      ],
+    ) ?? [];
 
   if (isPending) {
     return (
       <Box
         data-testid="line_events_page_loading"
-        className="bg-white px-5 py-5"
+        className="bg-primary px-5 py-5"
         flex={1}
       >
         <ActivityIndicator />
@@ -73,72 +80,73 @@ const LineEventsScreen: FC<LineEventsScreenPropsType> = ({}) => {
     <>
       <Stack.Screen
         options={{
-          title: "Events",
-          headerTitle: () => (
-            <HeaderTitle
-              title={lineData?.title ?? "Events"}
-              subtitle={
-                {
-                  error: "Error loading events",
-                  success: `${eventData?.length ?? 0} incoming events!`,
-                  loading: "Loading events",
-                }[status]
-              }
-              isPending={isPending}
-            />
-          ),
+          headerTitle: () => "",
           headerRight: lineId
-            ? () => <EventHeaderSettingsButton lineId={lineId} />
+            ? () => <EventsHeaderSettingsButton lineId={lineId} />
             : undefined,
+          headerShadowVisible: false,
         }}
       />
-      <Box data-testid="line_events_page" className="bg-white pb-5" flex={1}>
+      <Box
+        data-testid="line_events_page"
+        className="bg-primary px-4 pb-5 pt-2"
+        flex={1}
+      >
+        {status !== "error" && (
+          <Box className="-mx-4 mb-4 border-b border-primary-accent-2 bg-primary px-7 pb-4">
+            {status === "pending" && (
+              <Box className="ml-0 mr-auto">
+                <ActivityIndicator />
+              </Box>
+            )}
+            {lineData && (
+              <EventsHeaderTitle
+                title={lineData?.title}
+                color={lineData.color}
+              />
+            )}
+          </Box>
+        )}
+        <Box>
+          <ScreenButton
+            onPress={() => router.navigate(`/lines/${lineId}/events/create`)}
+            accessible={true}
+            accessibilityRole="button"
+            accessibilityHint="Go to create new record page"
+          >
+            <PlusIcon className="h-4 w-4 text-secondary-accent" />
+            <Text className="text-xl text-secondary-accent">
+              Add new record
+            </Text>
+          </ScreenButton>
+        </Box>
         {sections.length === 0 ? (
           <Text className="mt-5 text-center text-gray-500">No events yet</Text>
         ) : (
           <SectionList
-            className="px-4"
             sections={sections}
             keyExtractor={(item) => item.id}
-            renderItem={(item) => (
-              <SwipeableItem
-                key={item.item.id}
-                item={item}
-                renderUnderlayLeft={() => (
-                  <EventTileActionButtons
-                    lineId={lineId ?? ""}
-                    eventId={item.item.id}
-                  />
-                )}
-                snapPointsLeft={[128]}
+            renderItem={({ item }) => (
+              <TouchableHighlight
+                key={item.id}
+                className="my-1"
+                underlayColor="transparent"
+                onPress={() =>
+                  router.navigate(`lines/${lineId}/events/${item.id}`)
+                }
               >
-                <TouchableHighlight
-                  underlayColor="transparent"
-                  onPress={() =>
-                    router.navigate(`lines/${lineId}/events/${item.item.id}`)
-                  }
-                >
-                  <EventTile event={item.item} />
-                </TouchableHighlight>
-              </SwipeableItem>
+                <EventTile event={item} />
+              </TouchableHighlight>
             )}
-            renderSectionHeader={({ section: { title } }) => (
-              <Text className="bg-white py-0.5 text-lg font-semibold text-[#4B608B]">
-                {title}
-              </Text>
-            )}
+            renderSectionHeader={({ section: { title, data } }) =>
+              data.length > 0 ? (
+                <Text className="bg-primary py-1 text-lg font-normal text-secondary-accent">
+                  {title}
+                </Text>
+              ) : null
+            }
           />
         )}
-        <Fab
-          onPress={() => router.navigate(`/lines/${lineId}/events/create`)}
-          renderInPortal={false}
-          shadow={0}
-          placement="bottom-right"
-          backgroundColor="#3347FF"
-          size="lg"
-          icon={<FontAwesome6 name="plus" size={16} color="white" />}
-          label="Add Event"
-        />
       </Box>
     </>
   );

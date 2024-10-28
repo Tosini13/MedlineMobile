@@ -1,38 +1,31 @@
+import { useThemeColor } from "@/components/Themed";
 import { useAuthContext } from "@/context/auth.context";
 import { routes } from "@/utils/utils";
-import {
-  DrawerContentScrollView,
-  DrawerItemList,
-} from "@react-navigation/drawer";
-import { Redirect } from "expo-router";
-import { Drawer } from "expo-router/drawer";
+import { Redirect, Stack } from "expo-router";
 import { FC } from "react";
 
-type NonAuthorizedLayoutPropsType = {};
-
-const NonAuthorizedLayout: FC<NonAuthorizedLayoutPropsType> = ({}) => {
+const NonAuthorizedLayout: FC = () => {
   const { isLoggedIn } = useAuthContext();
+  const bg = useThemeColor({}, "background");
+  const text = useThemeColor({}, "text");
 
   if (isLoggedIn) {
     return <Redirect href={`/${routes.lines}`} />;
   }
 
   return (
-    <Drawer
+    <Stack
       initialRouteName={isLoggedIn ? routes.lines : routes.login}
       screenOptions={{
+        headerBackVisible: false,
+        headerTitle: "",
         headerTitleAlign: "center",
+        headerShadowVisible: false,
         headerStyle: {
-          backgroundColor: "#608ae3",
+          backgroundColor: bg,
         },
-        headerTintColor: "#fff",
-      }}
-      drawerContent={(props) => {
-        return (
-          <DrawerContentScrollView {...props}>
-            <DrawerItemList {...props} />
-          </DrawerContentScrollView>
-        );
+        headerTintColor: text,
+        animation: "none",
       }}
     />
   );

@@ -1,4 +1,5 @@
-import { User, getAuth } from "firebase/auth";
+import { getAuth } from "@/firebaseConfig";
+import { User } from "firebase/auth";
 import { createContext, useContext, useEffect, useState } from "react";
 
 const AuthContext = createContext<{ user: User | null; isLoggedIn: boolean }>({

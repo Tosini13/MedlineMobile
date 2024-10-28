@@ -1,10 +1,12 @@
 import EventForm, { EventFormType } from "@/components/EventForm/EventForm";
-import HeaderTitle from "@/components/Header/HeaderTitle";
+import EventHeaderTitle from "@/components/Header/EventHeaderTitle";
 import { setEventFormTitleData } from "@/helpers/headerHelpers";
 import { API } from "@/services/api";
-import { EventType } from "@/types";
+import { LineQueryKey } from "@/services/types";
+import { useUpdateCache } from "@/services/useUpdateCache";
+import { GetLinesByIdType } from "@/types";
 import { returnPromiseError, routes, useUploadFileState } from "@/utils/utils";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { DefaultError, useMutation, useQuery } from "@tanstack/react-query";
 import {
   Stack,
   useLocalSearchParams,
@@ -14,9 +16,6 @@ import {
 import { Box } from "native-base";
 import { FC, useEffect } from "react";
 
-const byDate = (a: EventType, b: EventType) =>
-  new Date(b.date).valueOf() - new Date(a.date).valueOf();
-
 type CreateEventPropsType = {};
 
 const CreateEvent: FC<CreateEventPropsType> = ({}) => {
@@ -25,7 +24,12 @@ const CreateEvent: FC<CreateEventPropsType> = ({}) => {
   const { lineId } = useLocalSearchParams<{ lineId: string }>();
   const { uploadProgress, onStateChange } = useUploadFileState();
 
-  const { data: lineData } = useQuery({
+  const { data: lineData } = useQuery<
+    GetLinesByIdType | null,
+    DefaultError,
+    GetLinesByIdType,
+    LineQueryKey
+  >({
     queryKey: ["line", lineId],
     queryFn: () => (lineId ? API.lines.getById(lineId) : null),
     staleTime: Infinity,
@@ -39,7 +43,7 @@ const CreateEvent: FC<CreateEventPropsType> = ({}) => {
     });
   }, [navigation, lineData]);
 
-  const queryClient = useQueryClient();
+  const { onCreateEvent } = useUpdateCache();
   const { mutate, isPending } = useMutation({
     mutationFn: (values: EventFormType) =>
       lineId
@@ -51,10 +55,8 @@ const CreateEvent: FC<CreateEventPropsType> = ({}) => {
           )
         : returnPromiseError("Line id is missing"),
     onSuccess: (event) => {
-      if (event) {
-        queryClient.setQueryData(["lineEvents", lineId], (old?: EventType[]) =>
-          [...(old ?? []), event].sort(byDate),
-        );
+      if (lineId && event) {
+        onCreateEvent(lineId, event);
         lineId && router.navigate(routes.events.replace("[lineId]", lineId));
       }
     },
@@ -65,16 +67,19 @@ const CreateEvent: FC<CreateEventPropsType> = ({}) => {
       <Stack.Screen
         options={{
           title: "Create Event",
-          headerTitle: () => (
-            <HeaderTitle
-              title="Create event"
-              subtitle={lineData?.title}
-              isPending={isPending}
-            />
-          ),
+          headerShadowVisible: false,
+          headerTitle: () =>
+            lineData ? (
+              <Box className="flex w-full flex-row items-center justify-start">
+                <EventHeaderTitle
+                  title={lineData.title}
+                  color={lineData.color}
+                />
+              </Box>
+            ) : null,
         }}
       />
-      <Box className="bg-white p-5" flex={1}>
+      <Box className="bg-primary p-5" flex={1}>
         <EventForm
           isPending={isPending}
           onSubmit={(values) => mutate(values)}

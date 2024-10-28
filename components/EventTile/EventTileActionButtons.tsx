@@ -2,13 +2,13 @@ import { FC } from "react";
 import { ActivityIndicator, TouchableHighlight } from "react-native";
 
 import { View } from "@/components/Themed";
-import { EventType } from "@/types";
 import { MaterialIcons } from "@expo/vector-icons";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
 import { useSwipeableItemParams } from "react-native-swipeable-item";
 
 import { API } from "@/services/api";
+import { useUpdateCache } from "@/services/useUpdateCache";
 import React from "react";
 
 type EventTileActionButtonsPropsType = {
@@ -23,18 +23,11 @@ const EventTileActionButtons: FC<EventTileActionButtonsPropsType> = ({
   const router = useRouter();
   const { close } = useSwipeableItemParams();
 
-  const queryClient = useQueryClient();
+  const { onDeleteEvent } = useUpdateCache();
   const { mutate, isPending } = useMutation({
     mutationFn: () => API.events.delete(lineId, eventId),
     onSuccess: () => {
-      const updateLineEvents = (old: EventType[]) =>
-        old.filter((e) => e.id !== eventId);
-
-      queryClient.setQueryData(["lineEvents", lineId], updateLineEvents);
-      queryClient.setQueryData(
-        ["lineEvents", lineId, eventId],
-        updateLineEvents,
-      );
+      onDeleteEvent(lineId, eventId);
       close();
     },
   });

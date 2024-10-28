@@ -1,25 +1,22 @@
-import { LineType } from "@/types";
+import { GetLinesType } from "@/types";
 import { FC } from "react";
-import { StyleSheet } from "react-native";
+import ColorDot from "../ColorDot/ColorDot";
 import { Text, View } from "../Themed";
 
 type LineTilePropsType = {
-  line: LineType;
+  line: GetLinesType[number];
 };
 
 const LineTile: FC<LineTilePropsType> = ({ line }) => {
-  const styles = StyleSheet.create({
-    tileBar: {
-      backgroundColor: line.color,
-    },
-  });
-
   return (
-    <View className="flex flex-row rounded-lg bg-gray-100">
-      <View className="w-1.5 rounded-md" style={styles.tileBar} />
-      <Text className="mx-4 my-6 text-2xl font-medium text-[#061C49]">
-        {line.title}
-      </Text>
+    <View className="space-y-2 rounded-lg border border-primary-accent bg-transparent p-4">
+      <View className="flex flex-row items-center">
+        <ColorDot color={line.color} />
+        <Text className="ml-1.5 text-secondary-accent">
+          {line.eventsNumber} {line.eventsNumber > 1 ? "records" : "record"}
+        </Text>
+      </View>
+      <Text className="text-2xl font-medium">{line.title}</Text>
     </View>
   );
 };
